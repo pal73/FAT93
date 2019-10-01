@@ -1,0 +1,6 @@
+Added Component: Designator=X7(DJ614-2.8)
+Added Pin To Net: NetName=NetK1_4 Pin=K1-4
+Added Pin To Net: NetName=NetK1_4 Pin=X7-1
+Added Net: Name=NetK1_4
+Added Member To Class: ClassName=FAT93 Member=Component X7 Socket
+Added Room: Name=FAT93
