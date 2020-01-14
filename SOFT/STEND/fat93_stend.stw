@@ -1,0 +1,16 @@
+;	STMicroelectronics Workspace file
+
+[Version]
+Keyword=ST7Workspace-V0.7
+
+[Project0]
+Filename=dat\fat90_dat.stp
+Dependencies=
+
+[Project1]
+Filename=kontr\fat93_stend.stp
+Dependencies=
+[Options]
+ActiveProject=fat93_stend
+ActiveConfig=Debug
+AddSortedElements=0
