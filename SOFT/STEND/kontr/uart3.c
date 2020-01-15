@@ -177,7 +177,7 @@ if(bRXIN3)
 			{
 			memcpy(MAIN_NUMBER,"9139294352",10);
 			AUTH_NUMBER_FLAGS=0x01;
-			//modem_send_sms('p',MAIN_NUMBER,"Ваш номер установлен как главный");
+			modem_send_sms('p',MAIN_NUMBER,"Ваш номер установлен как главный");
 			HUMAN_SET_EE=1;
 			}
 		}

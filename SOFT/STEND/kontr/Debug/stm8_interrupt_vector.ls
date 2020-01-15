@@ -67,11 +67,11 @@
  133  0049 00            	dc.b	page(f_NonHandledInterrupt)
  134  004a 0000          	dc.w	f_NonHandledInterrupt
  135  004c 82            	dc.b	130
- 137  004d 00            	dc.b	page(f_NonHandledInterrupt)
- 138  004e 0000          	dc.w	f_NonHandledInterrupt
+ 137  004d 00            	dc.b	page(f_UART1TxInterrupt)
+ 138  004e 0000          	dc.w	f_UART1TxInterrupt
  139  0050 82            	dc.b	130
- 141  0051 00            	dc.b	page(f_NonHandledInterrupt)
- 142  0052 0000          	dc.w	f_NonHandledInterrupt
+ 141  0051 00            	dc.b	page(f_UART1RxInterrupt)
+ 142  0052 0000          	dc.w	f_UART1RxInterrupt
  143  0054 82            	dc.b	130
  145  0055 00            	dc.b	page(f_NonHandledInterrupt)
  146  0056 0000          	dc.w	f_NonHandledInterrupt
@@ -109,5 +109,7 @@
  238                     	xref	__stext
  239                     	xref	f_TIM4_UPD_Interrupt
  240                     	xref	f_UART3RxInterrupt
- 241                     	xdef	f_NonHandledInterrupt
- 260                     	end
+ 241                     	xref	f_UART1RxInterrupt
+ 242                     	xref	f_UART1TxInterrupt
+ 243                     	xdef	f_NonHandledInterrupt
+ 262                     	end

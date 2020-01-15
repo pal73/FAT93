@@ -125,7 +125,7 @@ else
 }
 
 //-----------------------------------------------
-void putchar(char c)
+void putchar1(char c)
 {
 while (tx_counter1 == TX_BUFFER_1_SIZE);
 disableInterrupts();

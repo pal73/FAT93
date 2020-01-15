@@ -176,6 +176,102 @@ bool bDEB;
 @near char version_show_cnt=10;
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+//-----------------------------------------------
+//Испытатель
+@near long isp_main_cnt;
+
+//-----------------------------------------------
+//Статус питающей сети
+void power_in_drv(void)
+{
+//Статус сети 
+GPIOA->DDR&=~(1<<6);		
+GPIOA->CR1&=~(1<<6);		
+GPIOA->CR2&=~(1<<6);
+GPIOA->ODR&=~(1<<6);
+
+if(!((GPIOA->IDR)&(1<<6)))
+	{
+	if(power_in_drv_off_cnt<10)
+		{
+		power_in_drv_off_cnt++;	
+		}
+	else
+		{
+		powerStat=psOFF;
+		}
+	
+	if(power_in_drv_alarm_cnt<60)
+		{
+		power_in_drv_alarm_cnt++;	
+		if((power_in_drv_alarm_cnt>=60)&&(powerAlarm!=paALARM))
+			{
+			powerAlarm=paALARM;
+			
+			strcpy(tempRussianText,"Электричество отключено"); 
+#ifdef FINAL_RELEASE						
+			if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+				{
+				modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+				}
+			if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+				{
+				modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+				}	
+			if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+				{
+				modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+				}	
+			if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+				{
+				modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+				}
+#endif				
+			}
+		}		
+	}
+else
+	{
+	if(power_in_drv_off_cnt)
+		{
+		power_in_drv_off_cnt--;
+		version_show_cnt=10;			
+		}
+	else
+		{
+		powerStat=psON;
+		}
+	
+	if(power_in_drv_alarm_cnt)
+		{
+		power_in_drv_alarm_cnt--;	
+		if((power_in_drv_alarm_cnt==0)&&(powerAlarm!=paNORM))
+			{
+			powerAlarm=paNORM;
+#ifdef FINAL_RELEASE			
+			strcpy(tempRussianText,"Электричество включено"); 
+						
+			if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+				{
+				modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+				}
+			if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+				{
+				modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+				}	
+			if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+				{
+				modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+				}	
+			if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+				{
+				modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+				}
+#endif
+			}
+		}		
+	}
+}
 
 //-----------------------------------------------
 //Статус питающей сети (разовый, при старте)
@@ -250,9 +346,26 @@ else
 
 if((airSensorErrorStat!=taesNORM)&&(airSensorErrorStatOld==taesNORM))
 	{
-	//strcpy(tempRussianText,"Неисправность датчика температуры воздуха"); 
+	strcpy(tempRussianText,"Неисправность датчика температуры воздуха"); 
 
-
+#ifdef FINAL_RELEASE
+	if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+		{
+		modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+		}
+	if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+		{
+		modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+		}	
+	if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+		{
+		modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+		}	
+	if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+		{
+		modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+		}	
+#endif		
 	}
 airSensorErrorStatOld=airSensorErrorStat;
 }
@@ -285,26 +398,26 @@ else if(waterTemperAlarmCnt<1)
 	
 if((waterTemperAlarm!=wtaNORM)&&(waterTemperAlarmOld==wtaNORM))
 	{
-//	if(waterTemperAlarm==wtaCOOL) strcpy(tempRussianText,"Температура воды в системе ниже 3 гр.Ц."); 
-//	else if(waterTemperAlarm==wtaHEAT) strcpy(tempRussianText,"Температура воды в системе выше 90 гр.Ц."); 
+	if(waterTemperAlarm==wtaCOOL) strcpy(tempRussianText,"Температура воды в системе ниже 3 гр.Ц."); 
+	else if(waterTemperAlarm==wtaHEAT) strcpy(tempRussianText,"Температура воды в системе выше 90 гр.Ц."); 
 
 
 	if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
 		{
-		//modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+		modem_send_sms('p',MAIN_NUMBER,tempRussianText);
 		}
 #ifdef FINAL_RELEASE	
 	if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
 		{
-		//modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+		modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
 		}	
 	if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
 		{
-		//modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+		modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
 		}	
 	if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
 		{
-		//modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+		modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
 		}	
 #endif		
 	}
@@ -395,7 +508,41 @@ else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][4])&&(day_sheduler
 	}	
 }
 
-
+//-----------------------------------------------
+void power_off_hndl(void)
+{
+if(powerStat==psON)
+	{
+	main_power_off_hndl_cnt=0;
+	return;
+	}
+if(main_power_off_hndl_cnt<POWER_OFF_HNDL_PERIOD_IN_SEC)
+	{
+	main_power_off_hndl_cnt++;
+	}
+if(main_power_off_hndl_cnt==POWER_OFF_HNDL_PERIOD_IN_SEC)
+	{
+	printf("AT + CBC \r");
+	cbcSystemRequ++;
+	if(cbcSystemRequ>=4)
+		{
+		GPIOD->ODR|=0b00111100;
+		halt();
+		}
+	main_power_off_hndl_cnt=0;
+	bCBC_SELF=1;
+	}
+if(bCBC_SELF==2)
+	{
+	bCBC_SELF=0;
+	
+	cbcSystemRequ=0;
+	if(cbcVoltage<3500)
+		{
+		modemDrvPowerDownStepCnt=1;	
+		}
+	}
+}
 
 //-----------------------------------------------
 void power_hndl(void)
@@ -483,7 +630,7 @@ void ind_hndl(void)
 {
 char i;
 
-if(version_show_cnt)
+/*if(version_show_cnt)
 	{
 	int2indII_slkuf(VERSION,3, 1, 1, 0, 0);
 	int2indII_slkuf(BUILD,0, 3, 0, 0, 0);
@@ -493,36 +640,18 @@ else if(powerStat==psOFF)
 	{
 	int2indII_slkuf(cbcVoltage,0, 4, 3, 0, 0);
 	}
-else if(ind==iMn)
+else */if(ind==iMn)
 	{
-	int2indII_slkuf(time_hour,2, 2, 0, 0, 0);
-	int2indII_slkuf(time_min,0, 2, 0, 0, 0);
+	//int2indII_slkuf(time_hour,2, 2, 0, 0, 0);
+	int2indII_slkuf(isp_main_cnt%10000,0, 4, 0, 0, 0);
+	int2indI_slkuf(isp_main_cnt/10000,1, 3, 0, 0, 0);
 	//int2indII_slkuf(power_in_drv_off_cnt,2, 2, 0, 0, 0);
 	//int2indII_slkuf(power_in_drv_alarm_cnt,0, 2, 0, 0, 0);
-	if(bFL2)	ind_outG[2]&=0b11111110;
+	//if(bFL2)	ind_outG[2]&=0b11111110;
 	//int2indII_slkuf(time_sec,0, 2, 0, 0, 0);
 	//else 		int2indII_slkuf(time_sec,0, 2, 1, 0, 0);
 	
-	if(aktualTemper>=0)
-		{
-		int2indI_slkuf(aktualTemper,2, 2, 0, 1, 0);
-		ind_outB[1]=0b10011100;
-		}
-	else 
-		{
-		if(-aktualTemper<10)
-			{
-			ind_outB[3]=0b10111111;
-			int2indI_slkuf(-aktualTemper,2, 1, 0, 1, 0);
-			ind_outB[1]=0b10011100;
-			}
-		else
-			{
-			ind_outB[3]=0b10111111;
-			int2indI_slkuf(-aktualTemper,1, 2, 0, 1, 0);
-			}
-		}
-	
+		
 	//int2indI_slkuf(powerStat,3, 1, 0, 1, 0);
 	//int2indI_slkuf(powerAlarm,1, 1, 0, 1, 0);
 	
@@ -556,8 +685,8 @@ else if(ind==iMn)
 
 	//led_set(2,0);
 	//led_set(3,2);
-//	if(modemState==MS_LINKED_INITIALIZED)	led_on(8);
-//	else 									led_off(8);
+	if(modemState==MS_LINKED_INITIALIZED)	led_on(8);
+	else 									led_off(8);
 	}
 	
 else if(ind==iDate_W)
@@ -756,9 +885,9 @@ else if(ind==iDeb)
 
 	else if(sub_ind==5)
 		{
-		//int2indI_slkuf(modemDrvPDUSMSSendStepCnt,1, 3, 0, 0, 0);	
+		int2indI_slkuf(modemDrvPDUSMSSendStepCnt,1, 3, 0, 0, 0);	
 		//int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
-		//int2indII_slkuf(modemDrvWatchDogCnt,0, 3, 0, 0, 0);
+		int2indII_slkuf(modemDrvWatchDogCnt,0, 3, 0, 0, 0);
 		//int2indII_slkuf(out_stat[1],2, 1, 0, 0, 0);
 		//int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
 		int2indII_slkuf(4,3, 1, 0, 0, 1);
@@ -768,16 +897,16 @@ else if(ind==iDeb)
 		int2indI_slkuf(main_power_off_hndl_cnt,1, 3, 0, 0, 0);	
 		//int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
 		int2indII_slkuf(cbcSystemRequ,0, 1, 0, 0, 0);
-		//int2indII_slkuf(modemDrvPowerDownStepCnt,2, 2, 0, 0, 0);
+		int2indII_slkuf(modemDrvPowerDownStepCnt,2, 2, 0, 0, 0);
 		//int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
 		//int2indII_slkuf(4,3, 1, 0, 0, 1);
 		}
 
 	else if(sub_ind==7)
 		{
-		//int2indI_slkuf(tx_counter1,1, 3, 0, 0, 0);	
+		int2indI_slkuf(tx_counter1,1, 3, 0, 0, 0);	
 		//int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
-		//int2indII_slkuf(tx_wr_index1,0, 3, 0, 0, 0);
+		int2indII_slkuf(tx_wr_index1,0, 3, 0, 0, 0);
 		//int2indII_slkuf(modemDrvPowerDownStepCnt,2, 2, 0, 0, 0);
 		//int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
 		//int2indII_slkuf(4,3, 1, 0, 0, 1);
@@ -892,12 +1021,12 @@ else if(ind==iModem_deb)
 	
 	if(sub_ind==0)
 		{
-		//int2indI_slkuf(modemState,3, 1, 0, 0, 0);
-		//int2indI_slkuf(modem_plazma,1, 1, 0, 0, 0);
-		//int2indI_slkuf(modem_plazma1,2, 1, 0, 0, 0);
+		int2indI_slkuf(modemState,3, 1, 0, 0, 0);
+		int2indI_slkuf(modem_plazma,1, 1, 0, 0, 0);
+		int2indI_slkuf(modem_plazma1,2, 1, 0, 0, 0);
 		//int2indI_slkuf(modemLinkState,1, 1, 0, 0, 0);
-		//int2indII_slkuf(modemDrvPDUSMSSendStepCnt,2, 2, 0, 0, 0);
-		//int2indII_slkuf(modemDrvInitStepCnt,0, 2, 0, 0, 0);
+		int2indII_slkuf(modemDrvPDUSMSSendStepCnt,2, 2, 0, 0, 0);
+		int2indII_slkuf(modemDrvInitStepCnt,0, 2, 0, 0, 0);
 		if(AUTH_NUMBER_FLAGS&0x01)led_on(8);
 		if(AUTH_NUMBER_FLAGS&0x02)led_on(7);
 		if(AUTH_NUMBER_FLAGS&0x04)led_on(6);
@@ -1983,8 +2112,8 @@ GPIOG->CR1&=0b11111110;		//....
 GPIOG->CR2&=0b11111110;		//....
 t4_init();
 uart3_init();
-//uart1_init();
-//modem_gpio_init();
+uart1_init();
+modem_gpio_init();
 
 enableInterrupts();
 
@@ -1998,7 +2127,7 @@ ind=iMn;//iModem_deb;
 bERR=0;
 bWARN=0;
 
-//modemDrvInitStepCnt=1;
+modemDrvInitStepCnt=1;
 
 //PDU2text("043E0442043F044004300432044C0442043500200441043C04410031003200330034");
 //ODE_EE=1;
@@ -2011,17 +2140,19 @@ if(power_in_test()==0)
 	halt();
 	}
 
+isp_main_cnt=0;
+
 while (1)
 	{
-	//uart1_in_an();
+	uart1_in_an();
 	if(b100Hz)
 		{
 		b100Hz=0;
 		
 		but_drv();
 		but_an();
-		beep_drv();
-		//modem_stat_drv();
+		//beep_drv();
+		modem_stat_drv();
 		
 		}
 	if(b10Hz)
@@ -2033,9 +2164,9 @@ while (1)
 		uart3_in_an();
 		out_drv();
 		matemath();
-		//modem_drv();
-		//sms_fifo_drv();
-		//power_in_drv();
+		modem_drv();
+		sms_fifo_drv();
+		power_in_drv();
 		}
 	if(b5Hz)
 		{
@@ -2053,6 +2184,8 @@ while (1)
 		{
 		b1Hz=0;
 		
+		isp_main_cnt++;
+		
 		if(mainCnt<1000)
 			{
 			mainCnt++;
@@ -2068,7 +2201,7 @@ while (1)
 		error_warn_hndl();
 		airSensorLineErrorDrv();
 		waterTemperAlarmHndl();
-//		power_off_hndl();
+		power_off_hndl();
 		
 		//printf("%s \r", MAIN_NUMBER);
 		//printf("OK%dCRC%d\n",13,14);
