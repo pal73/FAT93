@@ -1,0 +1,52 @@
+Added Component: Designator=X1(k13-4-9)
+Added Component: Designator=X2(k13-4-9)
+Added Component: Designator=X3(k13-4-9)
+Added Component: Designator=X4(k13-4-9)
+Added Component: Designator=X5(k13-4-9)
+Added Component: Designator=X6(k13-4-9)
+Added Pin To Net: NetName=NetK1_1 Pin=K1-1
+Added Pin To Net: NetName=NetK1_1 Pin=K1-6
+Added Pin To Net: NetName=NetK1_1 Pin=X1-1
+Added Pin To Net: NetName=NetK1_1 Pin=X1-1
+Added Pin To Net: NetName=NetK1_1 Pin=X1-1
+Added Pin To Net: NetName=NetK1_1 Pin=X1-1
+Added Net: Name=NetK1_1
+Added Pin To Net: NetName=NetK1_3 Pin=K1-3
+Added Pin To Net: NetName=NetK1_3 Pin=X2-1
+Added Pin To Net: NetName=NetK1_3 Pin=X2-1
+Added Pin To Net: NetName=NetK1_3 Pin=X2-1
+Added Pin To Net: NetName=NetK1_3 Pin=X2-1
+Added Net: Name=NetK1_3
+Added Pin To Net: NetName=NetK2_1 Pin=K2-1
+Added Pin To Net: NetName=NetK2_1 Pin=K2-6
+Added Pin To Net: NetName=NetK2_1 Pin=X3-1
+Added Pin To Net: NetName=NetK2_1 Pin=X3-1
+Added Pin To Net: NetName=NetK2_1 Pin=X3-1
+Added Pin To Net: NetName=NetK2_1 Pin=X3-1
+Added Net: Name=NetK2_1
+Added Pin To Net: NetName=NetK2_3 Pin=K2-3
+Added Pin To Net: NetName=NetK2_3 Pin=X4-1
+Added Pin To Net: NetName=NetK2_3 Pin=X4-1
+Added Pin To Net: NetName=NetK2_3 Pin=X4-1
+Added Pin To Net: NetName=NetK2_3 Pin=X4-1
+Added Net: Name=NetK2_3
+Added Pin To Net: NetName=NetK3_1 Pin=K3-1
+Added Pin To Net: NetName=NetK3_1 Pin=K3-6
+Added Pin To Net: NetName=NetK3_1 Pin=X5-1
+Added Pin To Net: NetName=NetK3_1 Pin=X5-1
+Added Pin To Net: NetName=NetK3_1 Pin=X5-1
+Added Pin To Net: NetName=NetK3_1 Pin=X5-1
+Added Net: Name=NetK3_1
+Added Pin To Net: NetName=NetK3_3 Pin=K3-3
+Added Pin To Net: NetName=NetK3_3 Pin=X6-1
+Added Pin To Net: NetName=NetK3_3 Pin=X6-1
+Added Pin To Net: NetName=NetK3_3 Pin=X6-1
+Added Pin To Net: NetName=NetK3_3 Pin=X6-1
+Added Net: Name=NetK3_3
+Added Member To Class: ClassName=FAT93 Member=Component X1 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X2 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X3 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X4 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X5 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X6 Socket
+Added Room: Name=FAT93

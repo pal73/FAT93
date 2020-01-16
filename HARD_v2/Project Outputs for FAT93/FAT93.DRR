@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+NCDrill File Report For: FAT93.PcbDoc   2019-10-07  10:30:46
+---------------------------------------------------------------------------
+
+
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII File : NCDrillOutput.TXT
+EIA File   : NCDrillOutput.DRL
+
+Tool         Hole Size          Hole Count Plated       Tool Travel
+---------------------------------------------------------------------------
+T1        1.1mm (43.307mil)        6                131.67 mm (5.18 Inch)
+T2        1.4mm (55.118mil)        8                185.62 mm (7.31 Inch)
+T3        2.1mm (82.677mil)        12               248.00 mm (9.76 Inch)
+T4        2.5mm (98.425mil)        24               320.63 mm (12.62 Inch)
+T5        4.1mm (161.417mil)       4                242.58 mm (9.55 Inch)
+---------------------------------------------------------------------------
+Totals                             54               1128.50 mm (44.43 Inch)
+
+Total Processing Time : 0:00:06

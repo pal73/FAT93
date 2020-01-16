@@ -1,0 +1,22 @@
+Removed Pin From Net: NetName=NetK1_4 Pin=K2-4
+Removed Pin From Net: NetName=NetK1_4 Pin=K3-4
+Change Component Footprint: Designator=X10 Old Footprint=DJ614-2.8 New Footprint=DJ610A-4.8
+Change Component Footprint: Designator=X9 Old Footprint=DJ614-2.8 New Footprint=DJ610A-4.8
+Change Component Footprint: Designator=X8 Old Footprint=DJ614-2.8 New Footprint=DJ610A-4.8
+Change Component Footprint: Designator=X7 Old Footprint=DJ614-2.8 New Footprint=DJ610A-4.8
+Added Component: Designator=X11(DJ610A-4.8)
+Added Component: Designator=X12(DJ610A-4.8)
+Added Pin To Net: NetName=NetK2_4 Pin=K2-4
+Added Pin To Net: NetName=NetK2_4 Pin=X11-1
+Added Pin To Net: NetName=NetK2_4 Pin=X11-1
+Added Net: Name=NetK2_4
+Added Pin To Net: NetName=NetK3_4 Pin=K3-4
+Added Pin To Net: NetName=NetK3_4 Pin=X12-1
+Added Pin To Net: NetName=NetK3_4 Pin=X12-1
+Added Net: Name=NetK3_4
+Added Pin To Net: NetName=NetK1_1 Pin=K1-6
+Added Pin To Net: NetName=NetK2_1 Pin=K2-6
+Added Pin To Net: NetName=NetK3_1 Pin=K3-6
+Added Member To Class: ClassName=FAT93 Member=Component X11 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X12 Socket
+Added Room: Name=FAT93

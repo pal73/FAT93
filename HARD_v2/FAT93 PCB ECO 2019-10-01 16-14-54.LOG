@@ -1,0 +1,17 @@
+Added Component: Designator=X8(DJ614-2.8)
+Added Component: Designator=X9(DJ614-2.8)
+Added Component: Designator=X10(DJ614-2.8)
+Added Pin To Net: NetName=NetK1_5 Pin=K1-5
+Added Pin To Net: NetName=NetK1_5 Pin=X8-1
+Added Net: Name=NetK1_5
+Added Pin To Net: NetName=NetK2_5 Pin=K2-5
+Added Pin To Net: NetName=NetK2_5 Pin=X9-1
+Added Net: Name=NetK2_5
+Added Pin To Net: NetName=NetK3_5 Pin=K3-5
+Added Pin To Net: NetName=NetK3_5 Pin=X10-1
+Added Net: Name=NetK3_5
+Added Pin To Net: NetName=NetK1_4 Pin=K2-4
+Added Pin To Net: NetName=NetK1_4 Pin=K3-4
+Added Member To Class: ClassName=FAT93 Member=Component X8 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X9 Socket
+Added Member To Class: ClassName=FAT93 Member=Component X10 Socket
