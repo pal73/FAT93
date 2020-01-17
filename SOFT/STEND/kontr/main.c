@@ -23,7 +23,7 @@
 @eeprom char 			powerAlarm					@0x401C;	//Статус аварийности сети
 @eeprom enumOutMode		outMode					@0x401D;	//Термостат включен-выключен
 @eeprom signed short	HUMAN_SET_EE 				@0x401E;	//подпись человека (0x1234)
-@eeprom unsigned char 	TABLE_TIME_EE[7][5]			@0x4020;	//таблица временных меток для семи дней недели, временная метка 
+@eeprom long 	isp_main_cnt								@0x4020;	//таблица временных меток для семи дней недели, временная метка 
 //выражается в десятках минут
 
 @eeprom signed char	  	NECC_TEMPER_AIR_EE 			@0x4044;	//температура поддержания воздуха
@@ -178,7 +178,7 @@ bool bDEB;
 
 //-----------------------------------------------
 //Испытатель
-@near long isp_main_cnt;
+//@near long isp_main_cnt;
 @near char isp_cnt;
 
 //-----------------------------------------------
@@ -478,7 +478,7 @@ time_day_of_week=(buff_for_time[3]&0x07);
 //-----------------------------------------------
 void sheduler_hndl(void)
 {
-char i;
+/*char i;
 
 day_sheduler_time=(unsigned char)(((((unsigned)time_hour)*60)+((unsigned)time_min))/10);
 
@@ -506,43 +506,27 @@ else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][3])&&(day_sheduler
 else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][4])&&(day_sheduler_time<144))
 	{
 	temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-1][4];
-	}	
+	}	*/
 }
 
 //-----------------------------------------------
-void power_off_hndl(void)
+void isp_hndl(void)
 {
-if(powerStat==psON)
+isp_cnt++;
+if(isp_cnt>=10)
 	{
-	main_power_off_hndl_cnt=0;
-	return;
+	isp_cnt=0;
+	isp_main_cnt++;
 	}
-if(main_power_off_hndl_cnt<POWER_OFF_HNDL_PERIOD_IN_SEC)
-	{
-	main_power_off_hndl_cnt++;
-	}
-if(main_power_off_hndl_cnt==POWER_OFF_HNDL_PERIOD_IN_SEC)
-	{
-	printf("AT + CBC \r");
-	cbcSystemRequ++;
-	if(cbcSystemRequ>=4)
-		{
-		GPIOD->ODR|=0b00111100;
-		halt();
-		}
-	main_power_off_hndl_cnt=0;
-	bCBC_SELF=1;
-	}
-if(bCBC_SELF==2)
-	{
-	bCBC_SELF=0;
 	
-	cbcSystemRequ=0;
-	if(cbcVoltage<3500)
-		{
-		modemDrvPowerDownStepCnt=1;	
-		}
-	}
+if((isp_cnt>=1)&&(isp_cnt<6))out_stat[0]=osON;	
+else out_stat[0]=osOFF;
+
+if((isp_cnt>=2)&&(isp_cnt<7))out_stat[1]=osON;	
+else out_stat[1]=osOFF;
+
+if((isp_cnt>=3)&&(isp_cnt<8))out_stat[2]=osON;	
+else out_stat[2]=osOFF;
 }
 
 //-----------------------------------------------
@@ -810,8 +794,8 @@ else if(ind==iSetTable)
 
 	if(sub_ind1==0) 
 		{
-		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)/60,2, 2, 0, 1, 0);
-		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)%60,0, 2, 0, 0, 0);
+		//int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)/60,2, 2, 0, 1, 0);
+		//int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)%60,0, 2, 0, 0, 0);
 		ind_outG[2]&=0b11111110;
 		}
 	else 
@@ -829,8 +813,8 @@ else if(ind==iSetTable_)
 
 	if(sub_ind1==0) 
 		{
-		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)/60,2, 2, 0, 1, 1);
-		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)%60,0, 2, 0, 0, 1);
+		//int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)/60,2, 2, 0, 1, 1);
+		//int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)%60,0, 2, 0, 0, 1);
 		if(!bFL2)	ind_outG[2]&=0b11111110;
 		else 		ind_outG[2]|=0b00000001;
 		}
@@ -1753,21 +1737,21 @@ else if(ind==iSetTable_)
 		
 		if((but==butU)||(but==butU_))
 			{
-			tempUC=TABLE_TIME_EE[num_of_day][num_of_set];
+			//tempUC=TABLE_TIME_EE[num_of_day][num_of_set];
 			tempUC++;
 			if(tempUC>TABLE_TIME_EE_MAX[num_of_set])tempUC=TABLE_TIME_EE_MAX[num_of_set];
 			if(tempUC<TABLE_TIME_EE_MIN[num_of_set])tempUC=TABLE_TIME_EE_MIN[num_of_set];
-			if(TABLE_TIME_EE[num_of_day][num_of_set]!=tempUC)TABLE_TIME_EE[num_of_day][num_of_set]=tempUC;
+			//if(TABLE_TIME_EE[num_of_day][num_of_set]!=tempUC)TABLE_TIME_EE[num_of_day][num_of_set]=tempUC;
 			speed=1;
 			HUMAN_SET_EE=1;
 			}
 		if((but==butD)||(but==butD_))
 			{
-			tempUC=TABLE_TIME_EE[num_of_day][num_of_set];
+			//tempUC=TABLE_TIME_EE[num_of_day][num_of_set];
 			if(tempUC)tempUC--;
 			if(tempUC>TABLE_TIME_EE_MAX[num_of_set])tempUC=TABLE_TIME_EE_MAX[num_of_set];
 			if(tempUC<TABLE_TIME_EE_MIN[num_of_set])tempUC=TABLE_TIME_EE_MIN[num_of_set];
-			if(TABLE_TIME_EE[num_of_day][num_of_set]!=tempUC)TABLE_TIME_EE[num_of_day][num_of_set]=tempUC;
+			//if(TABLE_TIME_EE[num_of_day][num_of_set]!=tempUC)TABLE_TIME_EE[num_of_day][num_of_set]=tempUC;
 			speed=1;
 			HUMAN_SET_EE=1;
 			}				
@@ -1911,7 +1895,7 @@ else if(ind==iDefSet)
 	{
 	if(but==butMU_)
 		{
-		TABLE_TIME_EE[0][0]=0;
+	/*	TABLE_TIME_EE[0][0]=0;
 		TABLE_TEMPER_EE[0][0]=20;	
 		TABLE_TIME_EE[0][1]=36;
 		TABLE_TEMPER_EE[0][1]=20;	
@@ -1986,7 +1970,7 @@ else if(ind==iDefSet)
 		TABLE_TIME_EE[6][3]=108;
 		TABLE_TEMPER_EE[6][3]=20;	
 		TABLE_TIME_EE[6][4]=126;
-		TABLE_TEMPER_EE[6][4]=20;
+		TABLE_TEMPER_EE[6][4]=20;*/
 		
 		MODE_EE=1;
 		NECC_TEMPER_WATER_EE=50;
@@ -2185,8 +2169,8 @@ while (1)
 		{
 		b1Hz=0;
 		
-		isp_drv();
-		isp_main_cnt++;
+		isp_hndl();
+		//isp_main_cnt++;
 		
 		if(mainCnt<1000)
 			{
@@ -2197,13 +2181,13 @@ while (1)
 		ds18b20_temper_drv();
 		ret_ind_hndl();
 		random_gen();
-		power_necc_hndl();
-		power_hndl();
+		//power_necc_hndl();
+		//power_hndl();
 		sheduler_hndl();
 		error_warn_hndl();
 		airSensorLineErrorDrv();
 		waterTemperAlarmHndl();
-		power_off_hndl();
+//		power_off_hndl();
 		
 		//printf("%s \r", MAIN_NUMBER);
 		//printf("OK%dCRC%d\n",13,14);

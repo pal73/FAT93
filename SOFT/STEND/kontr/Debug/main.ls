@@ -156,50 +156,50 @@
 2970                     	switch	.data
 2971  000c               _version_show_cnt:
 2972  000c 0a            	dc.b	10
-3014                     ; 185 void power_in_drv(void)
-3014                     ; 186 {
+3014                     ; 186 void power_in_drv(void)
+3014                     ; 187 {
 3016                     	switch	.text
 3017  0000               _power_in_drv:
-3021                     ; 188 GPIOA->DDR&=~(1<<6);		
+3021                     ; 189 GPIOA->DDR&=~(1<<6);		
 3023  0000 721d5002      	bres	20482,#6
-3024                     ; 189 GPIOA->CR1&=~(1<<6);		
+3024                     ; 190 GPIOA->CR1&=~(1<<6);		
 3026  0004 721d5003      	bres	20483,#6
-3027                     ; 190 GPIOA->CR2&=~(1<<6);
+3027                     ; 191 GPIOA->CR2&=~(1<<6);
 3029  0008 721d5004      	bres	20484,#6
-3030                     ; 191 GPIOA->ODR&=~(1<<6);
+3030                     ; 192 GPIOA->ODR&=~(1<<6);
 3032  000c 721d5000      	bres	20480,#6
-3033                     ; 193 if(!((GPIOA->IDR)&(1<<6)))
+3033                     ; 194 if(!((GPIOA->IDR)&(1<<6)))
 3035  0010 c65001        	ld	a,20481
 3036  0013 a540          	bcp	a,#64
 3037  0015 2703          	jreq	L6
 3038  0017 cc00cd        	jp	L1002
 3039  001a               L6:
-3040                     ; 195 	if(power_in_drv_off_cnt<10)
+3040                     ; 196 	if(power_in_drv_off_cnt<10)
 3042  001a 9c            	rvf
 3043  001b ce0008        	ldw	x,_power_in_drv_off_cnt
 3044  001e a3000a        	cpw	x,#10
 3045  0021 2e0b          	jrsge	L3002
-3046                     ; 197 		power_in_drv_off_cnt++;	
+3046                     ; 198 		power_in_drv_off_cnt++;	
 3048  0023 ce0008        	ldw	x,_power_in_drv_off_cnt
 3049  0026 1c0001        	addw	x,#1
 3050  0029 cf0008        	ldw	_power_in_drv_off_cnt,x
 3052  002c 2002          	jra	L5002
 3053  002e               L3002:
-3054                     ; 201 		powerStat=psOFF;
+3054                     ; 202 		powerStat=psOFF;
 3056  002e 3f29          	clr	_powerStat
 3057  0030               L5002:
-3058                     ; 204 	if(power_in_drv_alarm_cnt<60)
+3058                     ; 205 	if(power_in_drv_alarm_cnt<60)
 3060  0030 9c            	rvf
 3061  0031 ce000a        	ldw	x,_power_in_drv_alarm_cnt
 3062  0034 a3003c        	cpw	x,#60
 3063  0037 2f03          	jrslt	L01
 3064  0039 cc0168        	jp	L5202
 3065  003c               L01:
-3066                     ; 206 		power_in_drv_alarm_cnt++;	
+3066                     ; 207 		power_in_drv_alarm_cnt++;	
 3068  003c ce000a        	ldw	x,_power_in_drv_alarm_cnt
 3069  003f 1c0001        	addw	x,#1
 3070  0042 cf000a        	ldw	_power_in_drv_alarm_cnt,x
-3071                     ; 207 		if((power_in_drv_alarm_cnt>=60)&&(powerAlarm!=paALARM))
+3071                     ; 208 		if((power_in_drv_alarm_cnt>=60)&&(powerAlarm!=paALARM))
 3073  0045 9c            	rvf
 3074  0046 ce000a        	ldw	x,_power_in_drv_alarm_cnt
 3075  0049 a3003c        	cpw	x,#60
@@ -211,21 +211,21 @@
 3082  0056 2603          	jrne	L41
 3083  0058 cc0168        	jp	L5202
 3084  005b               L41:
-3085                     ; 209 			powerAlarm=paALARM;
+3085                     ; 210 			powerAlarm=paALARM;
 3087  005b a601          	ld	a,#1
 3088  005d ae401c        	ldw	x,#_powerAlarm
 3089  0060 cd0000        	call	c_eewrc
-3091                     ; 211 			strcpy(tempRussianText,"Электричество отключено"); 
-3093  0063 ae0114        	ldw	x,#L3102
+3091                     ; 212 			strcpy(tempRussianText,"Электричество отключено"); 
+3093  0063 ae0109        	ldw	x,#L3102
 3094  0066 89            	pushw	x
 3095  0067 ae0000        	ldw	x,#_tempRussianText
 3096  006a cd0000        	call	_strcpy
 3098  006d 85            	popw	x
-3099                     ; 213 			if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+3099                     ; 214 			if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
 3101  006e c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3102  0071 a501          	bcp	a,#1
 3103  0073 270f          	jreq	L5102
-3104                     ; 215 				modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+3104                     ; 216 				modem_send_sms('p',MAIN_NUMBER,tempRussianText);
 3106  0075 ae0000        	ldw	x,#_tempRussianText
 3107  0078 89            	pushw	x
 3108  0079 ae4002        	ldw	x,#_MAIN_NUMBER
@@ -234,11 +234,11 @@
 3111  007f cd0000        	call	_modem_send_sms
 3113  0082 5b04          	addw	sp,#4
 3114  0084               L5102:
-3115                     ; 217 			if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+3115                     ; 218 			if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
 3117  0084 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3118  0087 a502          	bcp	a,#2
 3119  0089 270f          	jreq	L7102
-3120                     ; 219 				modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+3120                     ; 220 				modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
 3122  008b ae0000        	ldw	x,#_tempRussianText
 3123  008e 89            	pushw	x
 3124  008f ae400c        	ldw	x,#_AUTH_NUMBER_1
@@ -247,11 +247,11 @@
 3127  0095 cd0000        	call	_modem_send_sms
 3129  0098 5b04          	addw	sp,#4
 3130  009a               L7102:
-3131                     ; 221 			if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+3131                     ; 222 			if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
 3133  009a c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3134  009d a504          	bcp	a,#4
 3135  009f 270f          	jreq	L1202
-3136                     ; 223 				modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+3136                     ; 224 				modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
 3138  00a1 ae0000        	ldw	x,#_tempRussianText
 3139  00a4 89            	pushw	x
 3140  00a5 ae406b        	ldw	x,#_AUTH_NUMBER_2
@@ -260,13 +260,13 @@
 3143  00ab cd0000        	call	_modem_send_sms
 3145  00ae 5b04          	addw	sp,#4
 3146  00b0               L1202:
-3147                     ; 225 			if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+3147                     ; 226 			if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
 3149  00b0 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3150  00b3 a508          	bcp	a,#8
 3151  00b5 2603          	jrne	L61
 3152  00b7 cc0168        	jp	L5202
 3153  00ba               L61:
-3154                     ; 227 				modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+3154                     ; 228 				modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
 3156  00ba ae0000        	ldw	x,#_tempRussianText
 3157  00bd 89            	pushw	x
 3158  00be ae4075        	ldw	x,#_AUTH_NUMBER_3
@@ -276,47 +276,47 @@
 3163  00c7 5b04          	addw	sp,#4
 3164  00c9 ac680168      	jpf	L5202
 3165  00cd               L1002:
-3166                     ; 235 	if(power_in_drv_off_cnt)
+3166                     ; 236 	if(power_in_drv_off_cnt)
 3168  00cd ce0008        	ldw	x,_power_in_drv_off_cnt
 3169  00d0 270f          	jreq	L7202
-3170                     ; 237 		power_in_drv_off_cnt--;
+3170                     ; 238 		power_in_drv_off_cnt--;
 3172  00d2 ce0008        	ldw	x,_power_in_drv_off_cnt
 3173  00d5 1d0001        	subw	x,#1
 3174  00d8 cf0008        	ldw	_power_in_drv_off_cnt,x
-3175                     ; 238 		version_show_cnt=10;			
+3175                     ; 239 		version_show_cnt=10;			
 3177  00db 350a000c      	mov	_version_show_cnt,#10
 3179  00df 2004          	jra	L1302
 3180  00e1               L7202:
-3181                     ; 242 		powerStat=psON;
+3181                     ; 243 		powerStat=psON;
 3183  00e1 35010029      	mov	_powerStat,#1
 3184  00e5               L1302:
-3185                     ; 245 	if(power_in_drv_alarm_cnt)
+3185                     ; 246 	if(power_in_drv_alarm_cnt)
 3187  00e5 ce000a        	ldw	x,_power_in_drv_alarm_cnt
 3188  00e8 277e          	jreq	L5202
-3189                     ; 247 		power_in_drv_alarm_cnt--;	
+3189                     ; 248 		power_in_drv_alarm_cnt--;	
 3191  00ea ce000a        	ldw	x,_power_in_drv_alarm_cnt
 3192  00ed 1d0001        	subw	x,#1
 3193  00f0 cf000a        	ldw	_power_in_drv_alarm_cnt,x
-3194                     ; 248 		if((power_in_drv_alarm_cnt==0)&&(powerAlarm!=paNORM))
+3194                     ; 249 		if((power_in_drv_alarm_cnt==0)&&(powerAlarm!=paNORM))
 3196  00f3 ce000a        	ldw	x,_power_in_drv_alarm_cnt
 3197  00f6 2670          	jrne	L5202
 3199  00f8 725d401c      	tnz	_powerAlarm
 3200  00fc 276a          	jreq	L5202
-3201                     ; 250 			powerAlarm=paNORM;
+3201                     ; 251 			powerAlarm=paNORM;
 3203  00fe 4f            	clr	a
 3204  00ff ae401c        	ldw	x,#_powerAlarm
 3205  0102 cd0000        	call	c_eewrc
-3207                     ; 252 			strcpy(tempRussianText,"Электричество включено"); 
-3209  0105 ae00fd        	ldw	x,#L7302
+3207                     ; 253 			strcpy(tempRussianText,"Электричество включено"); 
+3209  0105 ae00f2        	ldw	x,#L7302
 3210  0108 89            	pushw	x
 3211  0109 ae0000        	ldw	x,#_tempRussianText
 3212  010c cd0000        	call	_strcpy
 3214  010f 85            	popw	x
-3215                     ; 254 			if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+3215                     ; 255 			if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
 3217  0110 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3218  0113 a501          	bcp	a,#1
 3219  0115 270f          	jreq	L1402
-3220                     ; 256 				modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+3220                     ; 257 				modem_send_sms('p',MAIN_NUMBER,tempRussianText);
 3222  0117 ae0000        	ldw	x,#_tempRussianText
 3223  011a 89            	pushw	x
 3224  011b ae4002        	ldw	x,#_MAIN_NUMBER
@@ -325,11 +325,11 @@
 3227  0121 cd0000        	call	_modem_send_sms
 3229  0124 5b04          	addw	sp,#4
 3230  0126               L1402:
-3231                     ; 258 			if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+3231                     ; 259 			if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
 3233  0126 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3234  0129 a502          	bcp	a,#2
 3235  012b 270f          	jreq	L3402
-3236                     ; 260 				modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+3236                     ; 261 				modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
 3238  012d ae0000        	ldw	x,#_tempRussianText
 3239  0130 89            	pushw	x
 3240  0131 ae400c        	ldw	x,#_AUTH_NUMBER_1
@@ -338,11 +338,11 @@
 3243  0137 cd0000        	call	_modem_send_sms
 3245  013a 5b04          	addw	sp,#4
 3246  013c               L3402:
-3247                     ; 262 			if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+3247                     ; 263 			if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
 3249  013c c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3250  013f a504          	bcp	a,#4
 3251  0141 270f          	jreq	L5402
-3252                     ; 264 				modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+3252                     ; 265 				modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
 3254  0143 ae0000        	ldw	x,#_tempRussianText
 3255  0146 89            	pushw	x
 3256  0147 ae406b        	ldw	x,#_AUTH_NUMBER_2
@@ -351,11 +351,11 @@
 3259  014d cd0000        	call	_modem_send_sms
 3261  0150 5b04          	addw	sp,#4
 3262  0152               L5402:
-3263                     ; 266 			if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+3263                     ; 267 			if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
 3265  0152 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3266  0155 a508          	bcp	a,#8
 3267  0157 270f          	jreq	L5202
-3268                     ; 268 				modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+3268                     ; 269 				modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
 3270  0159 ae0000        	ldw	x,#_tempRussianText
 3271  015c 89            	pushw	x
 3272  015d ae4075        	ldw	x,#_AUTH_NUMBER_3
@@ -364,33 +364,33 @@
 3275  0163 cd0000        	call	_modem_send_sms
 3277  0166 5b04          	addw	sp,#4
 3278  0168               L5202:
-3279                     ; 274 }
+3279                     ; 275 }
 3282  0168 81            	ret
-3306                     ; 278 short power_in_test(void)
-3306                     ; 279 {
+3306                     ; 279 short power_in_test(void)
+3306                     ; 280 {
 3307                     	switch	.text
 3308  0169               _power_in_test:
-3312                     ; 281 GPIOA->DDR&=~(1<<6);		
+3312                     ; 282 GPIOA->DDR&=~(1<<6);		
 3314  0169 721d5002      	bres	20482,#6
-3315                     ; 282 GPIOA->CR1&=~(1<<6);		
+3315                     ; 283 GPIOA->CR1&=~(1<<6);		
 3317  016d 721d5003      	bres	20483,#6
-3318                     ; 283 GPIOA->CR2&=~(1<<6);
+3318                     ; 284 GPIOA->CR2&=~(1<<6);
 3320  0171 721d5004      	bres	20484,#6
-3321                     ; 284 GPIOA->ODR&=~(1<<6);
+3321                     ; 285 GPIOA->ODR&=~(1<<6);
 3323  0175 721d5000      	bres	20480,#6
-3324                     ; 286 power_in_drv_off_cnt=500;
+3324                     ; 287 power_in_drv_off_cnt=500;
 3326  0179 ae01f4        	ldw	x,#500
 3327  017c cf0008        	ldw	_power_in_drv_off_cnt,x
 3328  017f               L1602:
-3329                     ; 290 	if(!((GPIOA->IDR)&(1<<6)))
+3329                     ; 291 	if(!((GPIOA->IDR)&(1<<6)))
 3331  017f c65001        	ld	a,20481
 3332  0182 a540          	bcp	a,#64
 3333  0184 2614          	jrne	L5602
-3334                     ; 292 		power_in_drv_off_cnt++;	
+3334                     ; 293 		power_in_drv_off_cnt++;	
 3336  0186 ce0008        	ldw	x,_power_in_drv_off_cnt
 3337  0189 1c0001        	addw	x,#1
 3338  018c cf0008        	ldw	_power_in_drv_off_cnt,x
-3339                     ; 293 		if(power_in_drv_off_cnt>1000) return 0;
+3339                     ; 294 		if(power_in_drv_off_cnt>1000) return 0;
 3341  018f 9c            	rvf
 3342  0190 ce0008        	ldw	x,_power_in_drv_off_cnt
 3343  0193 a303e9        	cpw	x,#1001
@@ -398,42 +398,42 @@
 3347  0198 5f            	clrw	x
 3350  0199 81            	ret
 3351  019a               L5602:
-3352                     ; 297 		power_in_drv_off_cnt--;	
+3352                     ; 298 		power_in_drv_off_cnt--;	
 3354  019a ce0008        	ldw	x,_power_in_drv_off_cnt
 3355  019d 1d0001        	subw	x,#1
 3356  01a0 cf0008        	ldw	_power_in_drv_off_cnt,x
-3357                     ; 298 		if(power_in_drv_off_cnt==0) return 1;		
+3357                     ; 299 		if(power_in_drv_off_cnt==0) return 1;		
 3359  01a3 ce0008        	ldw	x,_power_in_drv_off_cnt
 3360  01a6 26d7          	jrne	L1602
 3363  01a8 ae0001        	ldw	x,#1
 3366  01ab 81            	ret
-3396                     ; 303 void error_warn_hndl(void)
-3396                     ; 304 {
+3396                     ; 304 void error_warn_hndl(void)
+3396                     ; 305 {
 3397                     	switch	.text
 3398  01ac               _error_warn_hndl:
-3402                     ; 305 if(mainCnt<3)return;	
+3402                     ; 306 if(mainCnt<3)return;	
 3404  01ac 9c            	rvf
 3405  01ad be82          	ldw	x,_mainCnt
 3406  01af a30003        	cpw	x,#3
 3407  01b2 2e01          	jrsge	L5012
 3411  01b4 81            	ret
 3412  01b5               L5012:
-3413                     ; 306 if(MODE_EE==1)
+3413                     ; 307 if(MODE_EE==1)
 3415  01b5 c64046        	ld	a,_MODE_EE
 3416  01b8 a101          	cp	a,#1
 3417  01ba 2611          	jrne	L7012
-3418                     ; 308 	if(waterSensorErrorStat!=dsesNORM)bWARN=1;
+3418                     ; 309 	if(waterSensorErrorStat!=dsesNORM)bWARN=1;
 3420  01bc c60000        	ld	a,_waterSensorErrorStat
 3421  01bf a155          	cp	a,#85
 3422  01c1 2706          	jreq	L1112
 3425  01c3 35010007      	mov	_bWARN,#1
 3427  01c7 2023          	jra	L5112
 3428  01c9               L1112:
-3429                     ; 309 	else bWARN=0;
+3429                     ; 310 	else bWARN=0;
 3431  01c9 3f07          	clr	_bWARN
 3432  01cb 201f          	jra	L5112
 3433  01cd               L7012:
-3434                     ; 311 else if((MODE_EE==2)||(MODE_EE==3))
+3434                     ; 312 else if((MODE_EE==2)||(MODE_EE==3))
 3436  01cd c64046        	ld	a,_MODE_EE
 3437  01d0 a102          	cp	a,#2
 3438  01d2 2707          	jreq	L1212
@@ -441,7 +441,7 @@
 3441  01d7 a103          	cp	a,#3
 3442  01d9 2611          	jrne	L5112
 3443  01db               L1212:
-3444                     ; 313 	if((airSensorErrorStat!=taesNORM)||(waterSensorErrorStat!=dsesNORM))bWARN=1;
+3444                     ; 314 	if((airSensorErrorStat!=taesNORM)||(waterSensorErrorStat!=dsesNORM))bWARN=1;
 3446  01db b623          	ld	a,_airSensorErrorStat
 3447  01dd a155          	cp	a,#85
 3448  01df 2607          	jrne	L5212
@@ -451,7 +451,7 @@
 3453  01e8               L5212:
 3456  01e8 35010007      	mov	_bWARN,#1
 3458  01ec               L5112:
-3459                     ; 317 if((waterSensorErrorStat==dsesNORM)&&((waterTemperAlarm==wtaCOOL/*temperOfWater<=3*/)||(waterTemperAlarm==wtaHEAT/*temperOfWater>=90*/)))bERR=1;	
+3459                     ; 318 if((waterSensorErrorStat==dsesNORM)&&((waterTemperAlarm==wtaCOOL/*temperOfWater<=3*/)||(waterTemperAlarm==wtaHEAT/*temperOfWater>=90*/)))bERR=1;	
 3461  01ec c60000        	ld	a,_waterSensorErrorStat
 3462  01ef a155          	cp	a,#85
 3463  01f1 2618          	jrne	L1312
@@ -463,72 +463,72 @@
 3471  01fd 260c          	jrne	L1312
 3472  01ff 2004          	jra	L3312
 3473  0201               L3212:
-3474                     ; 314 	else bWARN=0;
+3474                     ; 315 	else bWARN=0;
 3476  0201 3f07          	clr	_bWARN
 3477  0203 20e7          	jra	L5112
 3478  0205               L3312:
-3479                     ; 317 if((waterSensorErrorStat==dsesNORM)&&((waterTemperAlarm==wtaCOOL/*temperOfWater<=3*/)||(waterTemperAlarm==wtaHEAT/*temperOfWater>=90*/)))bERR=1;	
+3479                     ; 318 if((waterSensorErrorStat==dsesNORM)&&((waterTemperAlarm==wtaCOOL/*temperOfWater<=3*/)||(waterTemperAlarm==wtaHEAT/*temperOfWater>=90*/)))bERR=1;	
 3481  0205 35010008      	mov	_bERR,#1
 3483  0209 2002          	jra	L5312
 3484  020b               L1312:
-3485                     ; 318 else bERR=0;
+3485                     ; 319 else bERR=0;
 3487  020b 3f08          	clr	_bERR
 3488  020d               L5312:
-3489                     ; 319 }
+3489                     ; 320 }
 3492  020d 81            	ret
-3528                     ; 322 void airSensorLineErrorDrv(void)
-3528                     ; 323 {
+3528                     ; 323 void airSensorLineErrorDrv(void)
+3528                     ; 324 {
 3529                     	switch	.text
 3530  020e               _airSensorLineErrorDrv:
-3534                     ; 324 if(GPIOD->IDR&(1<<6)) 
+3534                     ; 325 if(GPIOD->IDR&(1<<6)) 
 3536  020e c65010        	ld	a,20496
 3537  0211 a540          	bcp	a,#64
 3538  0213 2714          	jreq	L7412
-3539                     ; 326 	if(cntAirSensorLineErrorLo<10)
+3539                     ; 327 	if(cntAirSensorLineErrorLo<10)
 3541  0215 b606          	ld	a,_cntAirSensorLineErrorLo
 3542  0217 a10a          	cp	a,#10
 3543  0219 2420          	jruge	L5512
-3544                     ; 328 		cntAirSensorLineErrorLo++;
+3544                     ; 329 		cntAirSensorLineErrorLo++;
 3546  021b 3c06          	inc	_cntAirSensorLineErrorLo
-3547                     ; 329 		if(cntAirSensorLineErrorLo>=10)
+3547                     ; 330 		if(cntAirSensorLineErrorLo>=10)
 3549  021d b606          	ld	a,_cntAirSensorLineErrorLo
 3550  021f a10a          	cp	a,#10
 3551  0221 2518          	jrult	L5512
-3552                     ; 331 			airSensorErrorStat=taesLLO;	
+3552                     ; 332 			airSensorErrorStat=taesLLO;	
 3554  0223 35020023      	mov	_airSensorErrorStat,#2
 3555  0227 2012          	jra	L5512
 3556  0229               L7412:
-3557                     ; 337 	if(cntAirSensorLineErrorHi<10)
+3557                     ; 338 	if(cntAirSensorLineErrorHi<10)
 3559  0229 b605          	ld	a,_cntAirSensorLineErrorHi
 3560  022b a10a          	cp	a,#10
 3561  022d 240c          	jruge	L5512
-3562                     ; 339 		cntAirSensorLineErrorHi++;
+3562                     ; 340 		cntAirSensorLineErrorHi++;
 3564  022f 3c05          	inc	_cntAirSensorLineErrorHi
-3565                     ; 340 		if(cntAirSensorLineErrorHi>=10)
+3565                     ; 341 		if(cntAirSensorLineErrorHi>=10)
 3567  0231 b605          	ld	a,_cntAirSensorLineErrorHi
 3568  0233 a10a          	cp	a,#10
 3569  0235 2504          	jrult	L5512
-3570                     ; 342 			airSensorErrorStat=taesLHI;	
+3570                     ; 343 			airSensorErrorStat=taesLHI;	
 3572  0237 35030023      	mov	_airSensorErrorStat,#3
 3573  023b               L5512:
-3574                     ; 347 if((airSensorErrorStat!=taesNORM)&&(airSensorErrorStatOld==taesNORM))
+3574                     ; 348 if((airSensorErrorStat!=taesNORM)&&(airSensorErrorStatOld==taesNORM))
 3576  023b b623          	ld	a,_airSensorErrorStat
 3577  023d a155          	cp	a,#85
 3578  023f 2769          	jreq	L3612
 3580  0241 b624          	ld	a,_airSensorErrorStatOld
 3581  0243 a155          	cp	a,#85
 3582  0245 2663          	jrne	L3612
-3583                     ; 349 	strcpy(tempRussianText,"Неисправность датчика температуры воздуха"); 
-3585  0247 ae00d3        	ldw	x,#L5612
+3583                     ; 350 	strcpy(tempRussianText,"Неисправность датчика температуры воздуха"); 
+3585  0247 ae00c8        	ldw	x,#L5612
 3586  024a 89            	pushw	x
 3587  024b ae0000        	ldw	x,#_tempRussianText
 3588  024e cd0000        	call	_strcpy
 3590  0251 85            	popw	x
-3591                     ; 352 	if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+3591                     ; 353 	if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
 3593  0252 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3594  0255 a501          	bcp	a,#1
 3595  0257 270f          	jreq	L7612
-3596                     ; 354 		modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+3596                     ; 355 		modem_send_sms('p',MAIN_NUMBER,tempRussianText);
 3598  0259 ae0000        	ldw	x,#_tempRussianText
 3599  025c 89            	pushw	x
 3600  025d ae4002        	ldw	x,#_MAIN_NUMBER
@@ -537,11 +537,11 @@
 3603  0263 cd0000        	call	_modem_send_sms
 3605  0266 5b04          	addw	sp,#4
 3606  0268               L7612:
-3607                     ; 356 	if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+3607                     ; 357 	if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
 3609  0268 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3610  026b a502          	bcp	a,#2
 3611  026d 270f          	jreq	L1712
-3612                     ; 358 		modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+3612                     ; 359 		modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
 3614  026f ae0000        	ldw	x,#_tempRussianText
 3615  0272 89            	pushw	x
 3616  0273 ae400c        	ldw	x,#_AUTH_NUMBER_1
@@ -550,11 +550,11 @@
 3619  0279 cd0000        	call	_modem_send_sms
 3621  027c 5b04          	addw	sp,#4
 3622  027e               L1712:
-3623                     ; 360 	if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+3623                     ; 361 	if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
 3625  027e c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3626  0281 a504          	bcp	a,#4
 3627  0283 270f          	jreq	L3712
-3628                     ; 362 		modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+3628                     ; 363 		modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
 3630  0285 ae0000        	ldw	x,#_tempRussianText
 3631  0288 89            	pushw	x
 3632  0289 ae406b        	ldw	x,#_AUTH_NUMBER_2
@@ -563,11 +563,11 @@
 3635  028f cd0000        	call	_modem_send_sms
 3637  0292 5b04          	addw	sp,#4
 3638  0294               L3712:
-3639                     ; 364 	if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+3639                     ; 365 	if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
 3641  0294 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3642  0297 a508          	bcp	a,#8
 3643  0299 270f          	jreq	L3612
-3644                     ; 366 		modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+3644                     ; 367 		modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
 3646  029b ae0000        	ldw	x,#_tempRussianText
 3647  029e 89            	pushw	x
 3648  029f ae4075        	ldw	x,#_AUTH_NUMBER_3
@@ -576,15 +576,15 @@
 3651  02a5 cd0000        	call	_modem_send_sms
 3653  02a8 5b04          	addw	sp,#4
 3654  02aa               L3612:
-3655                     ; 370 airSensorErrorStatOld=airSensorErrorStat;
+3655                     ; 371 airSensorErrorStatOld=airSensorErrorStat;
 3657  02aa 452324        	mov	_airSensorErrorStatOld,_airSensorErrorStat
-3658                     ; 371 }
+3658                     ; 372 }
 3661  02ad 81            	ret
-3699                     ; 374 void waterTemperAlarmHndl(void)
-3699                     ; 375 {
+3699                     ; 375 void waterTemperAlarmHndl(void)
+3699                     ; 376 {
 3700                     	switch	.text
 3701  02ae               _waterTemperAlarmHndl:
-3705                     ; 376 if((waterSensorErrorStat==dsesNORM)&&((temperOfWater<3)||(temperOfWater>90))&&(mainCnt>60))
+3705                     ; 377 if((waterSensorErrorStat==dsesNORM)&&((temperOfWater<3)||(temperOfWater>90))&&(mainCnt>60))
 3707  02ae c60000        	ld	a,_waterSensorErrorStat
 3708  02b1 a155          	cp	a,#85
 3709  02b3 2624          	jrne	L7022
@@ -601,15 +601,15 @@
 3723  02c4 be82          	ldw	x,_mainCnt
 3724  02c6 a3003d        	cpw	x,#61
 3725  02c9 2f0e          	jrslt	L7022
-3726                     ; 378 	if(waterTemperAlarmCnt<15)waterTemperAlarmCnt++;//=wtaCOOL;	
+3726                     ; 379 	if(waterTemperAlarmCnt<15)waterTemperAlarmCnt++;//=wtaCOOL;	
 3728  02cb 9c            	rvf
-3729  02cc c60034        	ld	a,_waterTemperAlarmCnt
+3729  02cc c60031        	ld	a,_waterTemperAlarmCnt
 3730  02cf a10f          	cp	a,#15
 3731  02d1 2e25          	jrsge	L5122
-3734  02d3 725c0034      	inc	_waterTemperAlarmCnt
+3734  02d3 725c0031      	inc	_waterTemperAlarmCnt
 3735  02d7 201f          	jra	L5122
 3736  02d9               L7022:
-3737                     ; 384 else if((waterSensorErrorStat==dsesNORM)&&(temperOfWater>=10)&&(temperOfWater<=80))
+3737                     ; 385 else if((waterSensorErrorStat==dsesNORM)&&(temperOfWater>=10)&&(temperOfWater<=80))
 3739  02d9 c60000        	ld	a,_waterSensorErrorStat
 3740  02dc a155          	cp	a,#85
 3741  02de 2618          	jrne	L5122
@@ -621,17 +621,17 @@
 3749  02e8 b61f          	ld	a,_temperOfWater
 3750  02ea a151          	cp	a,#81
 3751  02ec 2e0a          	jrsge	L5122
-3752                     ; 386 	if(waterTemperAlarmCnt)waterTemperAlarmCnt--;//waterTemperAlarm=wtaNORM;	
-3754  02ee 725d0034      	tnz	_waterTemperAlarmCnt
+3752                     ; 387 	if(waterTemperAlarmCnt)waterTemperAlarmCnt--;//waterTemperAlarm=wtaNORM;	
+3754  02ee 725d0031      	tnz	_waterTemperAlarmCnt
 3755  02f2 2704          	jreq	L5122
-3758  02f4 725a0034      	dec	_waterTemperAlarmCnt
+3758  02f4 725a0031      	dec	_waterTemperAlarmCnt
 3759  02f8               L5122:
-3760                     ; 389 if(waterTemperAlarmCnt>14)
+3760                     ; 390 if(waterTemperAlarmCnt>14)
 3762  02f8 9c            	rvf
-3763  02f9 c60034        	ld	a,_waterTemperAlarmCnt
+3763  02f9 c60031        	ld	a,_waterTemperAlarmCnt
 3764  02fc a10f          	cp	a,#15
 3765  02fe 2f1a          	jrslt	L3222
-3766                     ; 391 	if(temperOfWater<3)waterTemperAlarm=wtaCOOL;
+3766                     ; 392 	if(temperOfWater<3)waterTemperAlarm=wtaCOOL;
 3768  0300 9c            	rvf
 3769  0301 b61f          	ld	a,_temperOfWater
 3770  0303 a103          	cp	a,#3
@@ -639,7 +639,7 @@
 3774  0307 35010027      	mov	_waterTemperAlarm,#1
 3776  030b 2017          	jra	L3322
 3777  030d               L5222:
-3778                     ; 392 	else if(temperOfWater>90)waterTemperAlarm=wtaHEAT;
+3778                     ; 393 	else if(temperOfWater>90)waterTemperAlarm=wtaHEAT;
 3780  030d 9c            	rvf
 3781  030e b61f          	ld	a,_temperOfWater
 3782  0310 a15b          	cp	a,#91
@@ -647,45 +647,45 @@
 3786  0314 35020027      	mov	_waterTemperAlarm,#2
 3787  0318 200a          	jra	L3322
 3788  031a               L3222:
-3789                     ; 394 else if(waterTemperAlarmCnt<1)
+3789                     ; 395 else if(waterTemperAlarmCnt<1)
 3791  031a 9c            	rvf
-3792  031b c60034        	ld	a,_waterTemperAlarmCnt
+3792  031b c60031        	ld	a,_waterTemperAlarmCnt
 3793  031e a101          	cp	a,#1
 3794  0320 2e02          	jrsge	L3322
-3795                     ; 396 	waterTemperAlarm=wtaNORM;	
+3795                     ; 397 	waterTemperAlarm=wtaNORM;	
 3797  0322 3f27          	clr	_waterTemperAlarm
 3798  0324               L3322:
-3799                     ; 399 if((waterTemperAlarm!=wtaNORM)&&(waterTemperAlarmOld==wtaNORM))
+3799                     ; 400 if((waterTemperAlarm!=wtaNORM)&&(waterTemperAlarmOld==wtaNORM))
 3801  0324 3d27          	tnz	_waterTemperAlarm
 3802  0326 2603cc03ab    	jreq	L7322
 3804  032b 3d28          	tnz	_waterTemperAlarmOld
 3805  032d 267c          	jrne	L7322
-3806                     ; 401 	if(waterTemperAlarm==wtaCOOL) strcpy(tempRussianText,"Температура воды в системе ниже 3 гр.Ц."); 
+3806                     ; 402 	if(waterTemperAlarm==wtaCOOL) strcpy(tempRussianText,"Температура воды в системе ниже 3 гр.Ц."); 
 3808  032f b627          	ld	a,_waterTemperAlarm
 3809  0331 a101          	cp	a,#1
 3810  0333 260d          	jrne	L1422
-3813  0335 ae00ab        	ldw	x,#L3422
+3813  0335 ae00a0        	ldw	x,#L3422
 3814  0338 89            	pushw	x
 3815  0339 ae0000        	ldw	x,#_tempRussianText
 3816  033c cd0000        	call	_strcpy
 3818  033f 85            	popw	x
 3820  0340 2011          	jra	L5422
 3821  0342               L1422:
-3822                     ; 402 	else if(waterTemperAlarm==wtaHEAT) strcpy(tempRussianText,"Температура воды в системе выше 90 гр.Ц."); 
+3822                     ; 403 	else if(waterTemperAlarm==wtaHEAT) strcpy(tempRussianText,"Температура воды в системе выше 90 гр.Ц."); 
 3824  0342 b627          	ld	a,_waterTemperAlarm
 3825  0344 a102          	cp	a,#2
 3826  0346 260b          	jrne	L5422
-3829  0348 ae0082        	ldw	x,#L1522
+3829  0348 ae0077        	ldw	x,#L1522
 3830  034b 89            	pushw	x
 3831  034c ae0000        	ldw	x,#_tempRussianText
 3832  034f cd0000        	call	_strcpy
 3834  0352 85            	popw	x
 3835  0353               L5422:
-3836                     ; 405 	if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
+3836                     ; 406 	if(AUTH_NUMBER_FLAGS&0x01) //если установлен главный номер
 3838  0353 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3839  0356 a501          	bcp	a,#1
 3840  0358 270f          	jreq	L3522
-3841                     ; 407 		modem_send_sms('p',MAIN_NUMBER,tempRussianText);
+3841                     ; 408 		modem_send_sms('p',MAIN_NUMBER,tempRussianText);
 3843  035a ae0000        	ldw	x,#_tempRussianText
 3844  035d 89            	pushw	x
 3845  035e ae4002        	ldw	x,#_MAIN_NUMBER
@@ -694,11 +694,11 @@
 3848  0364 cd0000        	call	_modem_send_sms
 3850  0367 5b04          	addw	sp,#4
 3851  0369               L3522:
-3852                     ; 410 	if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
+3852                     ; 411 	if(AUTH_NUMBER_FLAGS&0x02) //если установлен главный номер
 3854  0369 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3855  036c a502          	bcp	a,#2
 3856  036e 270f          	jreq	L5522
-3857                     ; 412 		modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
+3857                     ; 413 		modem_send_sms('p',AUTH_NUMBER_1,tempRussianText);
 3859  0370 ae0000        	ldw	x,#_tempRussianText
 3860  0373 89            	pushw	x
 3861  0374 ae400c        	ldw	x,#_AUTH_NUMBER_1
@@ -707,11 +707,11 @@
 3864  037a cd0000        	call	_modem_send_sms
 3866  037d 5b04          	addw	sp,#4
 3867  037f               L5522:
-3868                     ; 414 	if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
+3868                     ; 415 	if(AUTH_NUMBER_FLAGS&0x04) //если установлен главный номер
 3870  037f c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3871  0382 a504          	bcp	a,#4
 3872  0384 270f          	jreq	L7522
-3873                     ; 416 		modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
+3873                     ; 417 		modem_send_sms('p',AUTH_NUMBER_2,tempRussianText);
 3875  0386 ae0000        	ldw	x,#_tempRussianText
 3876  0389 89            	pushw	x
 3877  038a ae406b        	ldw	x,#_AUTH_NUMBER_2
@@ -720,11 +720,11 @@
 3880  0390 cd0000        	call	_modem_send_sms
 3882  0393 5b04          	addw	sp,#4
 3883  0395               L7522:
-3884                     ; 418 	if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
+3884                     ; 419 	if(AUTH_NUMBER_FLAGS&0x08) //если установлен главный номер
 3886  0395 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
 3887  0398 a508          	bcp	a,#8
 3888  039a 270f          	jreq	L7322
-3889                     ; 420 		modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
+3889                     ; 421 		modem_send_sms('p',AUTH_NUMBER_3,tempRussianText);
 3891  039c ae0000        	ldw	x,#_tempRussianText
 3892  039f 89            	pushw	x
 3893  03a0 ae4075        	ldw	x,#_AUTH_NUMBER_3
@@ -733,24 +733,24 @@
 3896  03a6 cd0000        	call	_modem_send_sms
 3898  03a9 5b04          	addw	sp,#4
 3899  03ab               L7322:
-3900                     ; 424 waterTemperAlarmOld=waterTemperAlarm;
+3900                     ; 425 waterTemperAlarmOld=waterTemperAlarm;
 3902  03ab 452728        	mov	_waterTemperAlarmOld,_waterTemperAlarm
-3903                     ; 425 }
+3903                     ; 426 }
 3906  03ae 81            	ret
-3933                     ; 428 void beep_drv(void)
-3933                     ; 429 {
+3933                     ; 429 void beep_drv(void)
+3933                     ; 430 {
 3934                     	switch	.text
 3935  03af               _beep_drv:
-3939                     ; 430 GPIOG->DDR|=0b00000010;
+3939                     ; 431 GPIOG->DDR|=0b00000010;
 3941  03af 72125020      	bset	20512,#1
-3942                     ; 431 GPIOG->CR1|=0b00000010;
+3942                     ; 432 GPIOG->CR1|=0b00000010;
 3944  03b3 72125021      	bset	20513,#1
-3945                     ; 432 GPIOG->CR2&=0b11111101;
+3945                     ; 433 GPIOG->CR2&=0b11111101;
 3947  03b7 72135022      	bres	20514,#1
-3948                     ; 436 if(bERR)
+3948                     ; 437 if(bERR)
 3950  03bb 3d08          	tnz	_bERR
 3951  03bd 271e          	jreq	L3722
-3952                     ; 438 	if(++beep_drv_cnt>=15)beep_drv_cnt=0;
+3952                     ; 439 	if(++beep_drv_cnt>=15)beep_drv_cnt=0;
 3954  03bf 9c            	rvf
 3955  03c0 3c09          	inc	_beep_drv_cnt
 3956  03c2 b609          	ld	a,_beep_drv_cnt
@@ -758,23 +758,23 @@
 3958  03c6 2f02          	jrslt	L5722
 3961  03c8 3f09          	clr	_beep_drv_cnt
 3962  03ca               L5722:
-3963                     ; 439 	if(beep_drv_cnt<5)
+3963                     ; 440 	if(beep_drv_cnt<5)
 3965  03ca 9c            	rvf
 3966  03cb b609          	ld	a,_beep_drv_cnt
 3967  03cd a105          	cp	a,#5
 3968  03cf 2e06          	jrsge	L7722
-3969                     ; 441 		GPIOG->ODR|=0b00000010;
+3969                     ; 442 		GPIOG->ODR|=0b00000010;
 3971  03d1 7212501e      	bset	20510,#1
 3973  03d5 2058          	jra	L3032
 3974  03d7               L7722:
-3975                     ; 443 	else GPIOG->ODR&=0b11111101;
+3975                     ; 444 	else GPIOG->ODR&=0b11111101;
 3977  03d7 7213501e      	bres	20510,#1
 3978  03db 2052          	jra	L3032
 3979  03dd               L3722:
-3980                     ; 445 else if(bWARN)
+3980                     ; 446 else if(bWARN)
 3982  03dd 3d07          	tnz	_bWARN
 3983  03df 273a          	jreq	L5032
-3984                     ; 447 	if(++beep_drv_cnt>=100)beep_drv_cnt=0;
+3984                     ; 448 	if(++beep_drv_cnt>=100)beep_drv_cnt=0;
 3986  03e1 9c            	rvf
 3987  03e2 3c09          	inc	_beep_drv_cnt
 3988  03e4 b609          	ld	a,_beep_drv_cnt
@@ -782,7 +782,7 @@
 3990  03e8 2f02          	jrslt	L7032
 3993  03ea 3f09          	clr	_beep_drv_cnt
 3994  03ec               L7032:
-3995                     ; 448 	if((beep_drv_cnt<5)||((beep_drv_cnt>=15)&&(beep_drv_cnt<20))||((beep_drv_cnt>=30)&&(beep_drv_cnt<35)))
+3995                     ; 449 	if((beep_drv_cnt<5)||((beep_drv_cnt>=15)&&(beep_drv_cnt<20))||((beep_drv_cnt>=30)&&(beep_drv_cnt<35)))
 3997  03ec 9c            	rvf
 3998  03ed b609          	ld	a,_beep_drv_cnt
 3999  03ef a105          	cp	a,#5
@@ -805,38 +805,38 @@
 4020  040b a123          	cp	a,#35
 4021  040d 2e06          	jrsge	L1132
 4022  040f               L3132:
-4023                     ; 450 		GPIOG->ODR|=0b00000010;
+4023                     ; 451 		GPIOG->ODR|=0b00000010;
 4025  040f 7212501e      	bset	20510,#1
 4027  0413 201a          	jra	L3032
 4028  0415               L1132:
-4029                     ; 452 	else GPIOG->ODR&=0b11111101;
+4029                     ; 453 	else GPIOG->ODR&=0b11111101;
 4031  0415 7213501e      	bres	20510,#1
 4032  0419 2014          	jra	L3032
 4033  041b               L5032:
-4034                     ; 454 else if(beepTestCnt)
-4036  041b 725d0008      	tnz	_beepTestCnt
+4034                     ; 455 else if(beepTestCnt)
+4036  041b 725d0005      	tnz	_beepTestCnt
 4037  041f 270a          	jreq	L5232
-4038                     ; 456 	beepTestCnt--;
-4040  0421 725a0008      	dec	_beepTestCnt
-4041                     ; 457 	GPIOG->ODR|=0b00000010;
+4038                     ; 457 	beepTestCnt--;
+4040  0421 725a0005      	dec	_beepTestCnt
+4041                     ; 458 	GPIOG->ODR|=0b00000010;
 4043  0425 7212501e      	bset	20510,#1
 4045  0429 2004          	jra	L3032
 4046  042b               L5232:
-4047                     ; 459 else GPIOG->ODR&=0b11111101;
+4047                     ; 460 else GPIOG->ODR&=0b11111101;
 4049  042b 7213501e      	bres	20510,#1
 4050  042f               L3032:
-4051                     ; 460 }
+4051                     ; 461 }
 4054  042f 81            	ret
-4086                     ; 463 void time_drv(void)
-4086                     ; 464 {
+4086                     ; 464 void time_drv(void)
+4086                     ; 465 {
 4087                     	switch	.text
 4088  0430               _time_drv:
 4090  0430 88            	push	a
 4091       00000001      OFST:	set	1
-4094                     ; 465 _ds1307_read_time(buff_for_time);
+4094                     ; 466 _ds1307_read_time(buff_for_time);
 4096  0431 ae0012        	ldw	x,#_buff_for_time
 4097  0434 cd0000        	call	__ds1307_read_time
-4099                     ; 467 time_sec=(((buff_for_time[0]&0x70)>>4)*10)+(buff_for_time[0]&0x0f);
+4099                     ; 468 time_sec=(((buff_for_time[0]&0x70)>>4)*10)+(buff_for_time[0]&0x0f);
 4101  0437 b612          	ld	a,_buff_for_time
 4102  0439 a40f          	and	a,#15
 4103  043b 6b01          	ld	(OFST+0,sp),a
@@ -850,7 +850,7 @@
 4111  0448 9f            	ld	a,xl
 4112  0449 1b01          	add	a,(OFST+0,sp)
 4113  044b b711          	ld	_time_sec,a
-4114                     ; 468 time_min=(((buff_for_time[1]&0x70)>>4)*10)+(buff_for_time[1]&0x0f);
+4114                     ; 469 time_min=(((buff_for_time[1]&0x70)>>4)*10)+(buff_for_time[1]&0x0f);
 4116  044d b613          	ld	a,_buff_for_time+1
 4117  044f a40f          	and	a,#15
 4118  0451 6b01          	ld	(OFST+0,sp),a
@@ -864,7 +864,7 @@
 4126  045e 9f            	ld	a,xl
 4127  045f 1b01          	add	a,(OFST+0,sp)
 4128  0461 b710          	ld	_time_min,a
-4129                     ; 469 time_hour=(((buff_for_time[2]&0x30)>>4)*10)+(buff_for_time[2]&0x0f);
+4129                     ; 470 time_hour=(((buff_for_time[2]&0x30)>>4)*10)+(buff_for_time[2]&0x0f);
 4131  0463 b614          	ld	a,_buff_for_time+2
 4132  0465 a40f          	and	a,#15
 4133  0467 6b01          	ld	(OFST+0,sp),a
@@ -878,7 +878,7 @@
 4141  0474 9f            	ld	a,xl
 4142  0475 1b01          	add	a,(OFST+0,sp)
 4143  0477 b70f          	ld	_time_hour,a
-4144                     ; 470 time_date=(((buff_for_time[4]&0x30)>>4)*10)+(buff_for_time[4]&0x0f);
+4144                     ; 471 time_date=(((buff_for_time[4]&0x30)>>4)*10)+(buff_for_time[4]&0x0f);
 4146  0479 b616          	ld	a,_buff_for_time+4
 4147  047b a40f          	and	a,#15
 4148  047d 6b01          	ld	(OFST+0,sp),a
@@ -892,7 +892,7 @@
 4156  048a 9f            	ld	a,xl
 4157  048b 1b01          	add	a,(OFST+0,sp)
 4158  048d b703          	ld	_time_date,a
-4159                     ; 471 time_month=(((buff_for_time[5]&0x10)>>4)*10)+(buff_for_time[5]&0x0f);
+4159                     ; 472 time_month=(((buff_for_time[5]&0x10)>>4)*10)+(buff_for_time[5]&0x0f);
 4161  048f b617          	ld	a,_buff_for_time+5
 4162  0491 a40f          	and	a,#15
 4163  0493 6b01          	ld	(OFST+0,sp),a
@@ -906,7 +906,7 @@
 4171  04a0 9f            	ld	a,xl
 4172  04a1 1b01          	add	a,(OFST+0,sp)
 4173  04a3 b70d          	ld	_time_month,a
-4174                     ; 472 time_year=(((buff_for_time[6]&0xf0)>>4)*10)+(buff_for_time[6]&0x0f);
+4174                     ; 473 time_year=(((buff_for_time[6]&0xf0)>>4)*10)+(buff_for_time[6]&0x0f);
 4176  04a5 b618          	ld	a,_buff_for_time+6
 4177  04a7 a40f          	and	a,#15
 4178  04a9 6b01          	ld	(OFST+0,sp),a
@@ -920,6407 +920,5707 @@
 4186  04b6 9f            	ld	a,xl
 4187  04b7 1b01          	add	a,(OFST+0,sp)
 4188  04b9 b70c          	ld	_time_year,a
-4189                     ; 473 time_day_of_week=(buff_for_time[3]&0x07);
+4189                     ; 474 time_day_of_week=(buff_for_time[3]&0x07);
 4191  04bb b615          	ld	a,_buff_for_time+3
 4192  04bd a407          	and	a,#7
 4193  04bf b70e          	ld	_time_day_of_week,a
-4194                     ; 474 }
+4194                     ; 475 }
 4197  04c1 84            	pop	a
 4198  04c2 81            	ret
-4228                     ; 478 void sheduler_hndl(void)
-4228                     ; 479 {
-4229                     	switch	.text
-4230  04c3               _sheduler_hndl:
-4232  04c3 89            	pushw	x
-4233       00000002      OFST:	set	2
-4236                     ; 482 day_sheduler_time=(unsigned char)(((((unsigned)time_hour)*60)+((unsigned)time_min))/10);
-4238  04c4 b610          	ld	a,_time_min
-4239  04c6 5f            	clrw	x
-4240  04c7 97            	ld	xl,a
-4241  04c8 1f01          	ldw	(OFST-1,sp),x
-4242  04ca b60f          	ld	a,_time_hour
-4243  04cc 5f            	clrw	x
-4244  04cd 97            	ld	xl,a
-4245  04ce 90ae003c      	ldw	y,#60
-4246  04d2 cd0000        	call	c_imul
-4248  04d5 72fb01        	addw	x,(OFST-1,sp)
-4249  04d8 90ae000a      	ldw	y,#10
-4250  04dc 65            	divw	x,y
-4251  04dd 9f            	ld	a,xl
-4252  04de b702          	ld	_day_sheduler_time,a
-4253                     ; 484 if((day_sheduler_time>=0)&&(day_sheduler_time<TABLE_TIME_EE[time_day_of_week-1][0]))
-4255  04e0 b60e          	ld	a,_time_day_of_week
-4256  04e2 97            	ld	xl,a
-4257  04e3 a605          	ld	a,#5
-4258  04e5 42            	mul	x,a
-4259  04e6 1d0005        	subw	x,#5
-4260  04e9 d64020        	ld	a,(_TABLE_TIME_EE,x)
-4261  04ec b102          	cp	a,_day_sheduler_time
-4262  04ee 2321          	jrule	L1532
-4263                     ; 486 	if(time_day_of_week==1)	temperRegToSheduler=TABLE_TEMPER_EE[6][4];
-4265  04f0 b60e          	ld	a,_time_day_of_week
-4266  04f2 a101          	cp	a,#1
-4267  04f4 2609          	jrne	L3532
-4270  04f6 55406a0004    	mov	_temperRegToSheduler,_TABLE_TEMPER_EE+34
-4272  04fb acf805f8      	jpf	L7532
-4273  04ff               L3532:
-4274                     ; 487 	else 					temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-2][4];
-4276  04ff b60e          	ld	a,_time_day_of_week
-4277  0501 97            	ld	xl,a
-4278  0502 a605          	ld	a,#5
-4279  0504 42            	mul	x,a
-4280  0505 1d000a        	subw	x,#10
-4281  0508 d6404c        	ld	a,(_TABLE_TEMPER_EE+4,x)
-4282  050b b704          	ld	_temperRegToSheduler,a
-4283  050d acf805f8      	jpf	L7532
-4284  0511               L1532:
-4285                     ; 489 else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][0])&&(day_sheduler_time<TABLE_TIME_EE[time_day_of_week-1][1]))
-4287  0511 b60e          	ld	a,_time_day_of_week
-4288  0513 97            	ld	xl,a
-4289  0514 a605          	ld	a,#5
-4290  0516 42            	mul	x,a
-4291  0517 1d0005        	subw	x,#5
-4292  051a d64020        	ld	a,(_TABLE_TIME_EE,x)
-4293  051d b102          	cp	a,_day_sheduler_time
-4294  051f 2222          	jrugt	L1632
-4296  0521 b60e          	ld	a,_time_day_of_week
-4297  0523 97            	ld	xl,a
-4298  0524 a605          	ld	a,#5
-4299  0526 42            	mul	x,a
-4300  0527 1d0005        	subw	x,#5
-4301  052a d64021        	ld	a,(_TABLE_TIME_EE+1,x)
-4302  052d b102          	cp	a,_day_sheduler_time
-4303  052f 2312          	jrule	L1632
-4304                     ; 491 	temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-1][0];
-4306  0531 b60e          	ld	a,_time_day_of_week
-4307  0533 97            	ld	xl,a
-4308  0534 a605          	ld	a,#5
-4309  0536 42            	mul	x,a
-4310  0537 1d0005        	subw	x,#5
-4311  053a d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-4312  053d b704          	ld	_temperRegToSheduler,a
-4314  053f acf805f8      	jpf	L7532
-4315  0543               L1632:
-4316                     ; 493 else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][1])&&(day_sheduler_time<TABLE_TIME_EE[time_day_of_week-1][2]))
-4318  0543 b60e          	ld	a,_time_day_of_week
-4319  0545 97            	ld	xl,a
-4320  0546 a605          	ld	a,#5
-4321  0548 42            	mul	x,a
-4322  0549 1d0005        	subw	x,#5
-4323  054c d64021        	ld	a,(_TABLE_TIME_EE+1,x)
-4324  054f b102          	cp	a,_day_sheduler_time
-4325  0551 2221          	jrugt	L5632
-4327  0553 b60e          	ld	a,_time_day_of_week
-4328  0555 97            	ld	xl,a
-4329  0556 a605          	ld	a,#5
-4330  0558 42            	mul	x,a
-4331  0559 1d0005        	subw	x,#5
-4332  055c d64022        	ld	a,(_TABLE_TIME_EE+2,x)
-4333  055f b102          	cp	a,_day_sheduler_time
-4334  0561 2311          	jrule	L5632
-4335                     ; 495 	temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-1][1];
-4337  0563 b60e          	ld	a,_time_day_of_week
-4338  0565 97            	ld	xl,a
-4339  0566 a605          	ld	a,#5
-4340  0568 42            	mul	x,a
-4341  0569 1d0005        	subw	x,#5
-4342  056c d64049        	ld	a,(_TABLE_TEMPER_EE+1,x)
-4343  056f b704          	ld	_temperRegToSheduler,a
-4345  0571 cc05f8        	jra	L7532
-4346  0574               L5632:
-4347                     ; 497 else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][2])&&(day_sheduler_time<TABLE_TIME_EE[time_day_of_week-1][3]))
-4349  0574 b60e          	ld	a,_time_day_of_week
-4350  0576 97            	ld	xl,a
-4351  0577 a605          	ld	a,#5
-4352  0579 42            	mul	x,a
-4353  057a 1d0005        	subw	x,#5
-4354  057d d64022        	ld	a,(_TABLE_TIME_EE+2,x)
-4355  0580 b102          	cp	a,_day_sheduler_time
-4356  0582 2220          	jrugt	L1732
-4358  0584 b60e          	ld	a,_time_day_of_week
-4359  0586 97            	ld	xl,a
-4360  0587 a605          	ld	a,#5
-4361  0589 42            	mul	x,a
-4362  058a 1d0005        	subw	x,#5
-4363  058d d64023        	ld	a,(_TABLE_TIME_EE+3,x)
-4364  0590 b102          	cp	a,_day_sheduler_time
-4365  0592 2310          	jrule	L1732
-4366                     ; 499 	temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-1][2];
-4368  0594 b60e          	ld	a,_time_day_of_week
-4369  0596 97            	ld	xl,a
-4370  0597 a605          	ld	a,#5
-4371  0599 42            	mul	x,a
-4372  059a 1d0005        	subw	x,#5
-4373  059d d6404a        	ld	a,(_TABLE_TEMPER_EE+2,x)
-4374  05a0 b704          	ld	_temperRegToSheduler,a
-4376  05a2 2054          	jra	L7532
-4377  05a4               L1732:
-4378                     ; 501 else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][3])&&(day_sheduler_time<TABLE_TIME_EE[time_day_of_week-1][4]))
-4380  05a4 b60e          	ld	a,_time_day_of_week
-4381  05a6 97            	ld	xl,a
-4382  05a7 a605          	ld	a,#5
-4383  05a9 42            	mul	x,a
-4384  05aa 1d0005        	subw	x,#5
-4385  05ad d64023        	ld	a,(_TABLE_TIME_EE+3,x)
-4386  05b0 b102          	cp	a,_day_sheduler_time
-4387  05b2 2220          	jrugt	L5732
-4389  05b4 b60e          	ld	a,_time_day_of_week
-4390  05b6 97            	ld	xl,a
-4391  05b7 a605          	ld	a,#5
-4392  05b9 42            	mul	x,a
-4393  05ba 1d0005        	subw	x,#5
-4394  05bd d64024        	ld	a,(_TABLE_TIME_EE+4,x)
-4395  05c0 b102          	cp	a,_day_sheduler_time
-4396  05c2 2310          	jrule	L5732
-4397                     ; 503 	temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-1][3];
-4399  05c4 b60e          	ld	a,_time_day_of_week
-4400  05c6 97            	ld	xl,a
-4401  05c7 a605          	ld	a,#5
-4402  05c9 42            	mul	x,a
-4403  05ca 1d0005        	subw	x,#5
-4404  05cd d6404b        	ld	a,(_TABLE_TEMPER_EE+3,x)
-4405  05d0 b704          	ld	_temperRegToSheduler,a
-4407  05d2 2024          	jra	L7532
-4408  05d4               L5732:
-4409                     ; 505 else if((day_sheduler_time>=TABLE_TIME_EE[time_day_of_week-1][4])&&(day_sheduler_time<144))
-4411  05d4 b60e          	ld	a,_time_day_of_week
-4412  05d6 97            	ld	xl,a
-4413  05d7 a605          	ld	a,#5
-4414  05d9 42            	mul	x,a
-4415  05da 1d0005        	subw	x,#5
-4416  05dd d64024        	ld	a,(_TABLE_TIME_EE+4,x)
-4417  05e0 b102          	cp	a,_day_sheduler_time
-4418  05e2 2214          	jrugt	L7532
-4420  05e4 b602          	ld	a,_day_sheduler_time
-4421  05e6 a190          	cp	a,#144
-4422  05e8 240e          	jruge	L7532
-4423                     ; 507 	temperRegToSheduler=TABLE_TEMPER_EE[time_day_of_week-1][4];
-4425  05ea b60e          	ld	a,_time_day_of_week
-4426  05ec 97            	ld	xl,a
-4427  05ed a605          	ld	a,#5
-4428  05ef 42            	mul	x,a
-4429  05f0 1d0005        	subw	x,#5
-4430  05f3 d6404c        	ld	a,(_TABLE_TEMPER_EE+4,x)
-4431  05f6 b704          	ld	_temperRegToSheduler,a
-4432  05f8               L7532:
-4433                     ; 509 }
-4436  05f8 85            	popw	x
-4437  05f9 81            	ret
-4468                     ; 512 void power_off_hndl(void)
-4468                     ; 513 {
-4469                     	switch	.text
-4470  05fa               _power_off_hndl:
-4474                     ; 514 if(powerStat==psON)
-4476  05fa b629          	ld	a,_powerStat
-4477  05fc a101          	cp	a,#1
-4478  05fe 2605          	jrne	L3142
-4479                     ; 516 	main_power_off_hndl_cnt=0;
-4481  0600 5f            	clrw	x
-4482  0601 cf002b        	ldw	_main_power_off_hndl_cnt,x
-4483                     ; 517 	return;
-4486  0604 81            	ret
-4487  0605               L3142:
-4488                     ; 519 if(main_power_off_hndl_cnt<POWER_OFF_HNDL_PERIOD_IN_SEC)
-4490  0605 9c            	rvf
-4491  0606 ce002b        	ldw	x,_main_power_off_hndl_cnt
-4492  0609 a3003c        	cpw	x,#60
-4493  060c 2e09          	jrsge	L5142
-4494                     ; 521 	main_power_off_hndl_cnt++;
-4496  060e ce002b        	ldw	x,_main_power_off_hndl_cnt
-4497  0611 1c0001        	addw	x,#1
-4498  0614 cf002b        	ldw	_main_power_off_hndl_cnt,x
-4499  0617               L5142:
-4500                     ; 523 if(main_power_off_hndl_cnt==POWER_OFF_HNDL_PERIOD_IN_SEC)
-4502  0617 ce002b        	ldw	x,_main_power_off_hndl_cnt
-4503  061a a3003c        	cpw	x,#60
-4504  061d 2622          	jrne	L7142
-4505                     ; 525 	printf("AT + CBC \r");
-4507  061f ae0077        	ldw	x,#L1242
-4508  0622 cd0000        	call	_printf
-4510                     ; 526 	cbcSystemRequ++;
-4512  0625 725c002a      	inc	_cbcSystemRequ
-4513                     ; 527 	if(cbcSystemRequ>=4)
-4515  0629 c6002a        	ld	a,_cbcSystemRequ
-4516  062c a104          	cp	a,#4
-4517  062e 2509          	jrult	L3242
-4518                     ; 529 		GPIOD->ODR|=0b00111100;
-4520  0630 c6500f        	ld	a,20495
-4521  0633 aa3c          	or	a,#60
-4522  0635 c7500f        	ld	20495,a
-4523                     ; 530 		halt();
-4526  0638 8e            halt
-4529  0639               L3242:
-4530                     ; 532 	main_power_off_hndl_cnt=0;
-4532  0639 5f            	clrw	x
-4533  063a cf002b        	ldw	_main_power_off_hndl_cnt,x
-4534                     ; 533 	bCBC_SELF=1;
-4536  063d 35010009      	mov	_bCBC_SELF,#1
-4537  0641               L7142:
-4538                     ; 535 if(bCBC_SELF==2)
-4540  0641 c60009        	ld	a,_bCBC_SELF
-4541  0644 a102          	cp	a,#2
-4542  0646 2616          	jrne	L5242
-4543                     ; 537 	bCBC_SELF=0;
-4545  0648 725f0009      	clr	_bCBC_SELF
-4546                     ; 539 	cbcSystemRequ=0;
-4548  064c 725f002a      	clr	_cbcSystemRequ
-4549                     ; 540 	if(cbcVoltage<3500)
-4551  0650 9c            	rvf
-4552  0651 ce000a        	ldw	x,_cbcVoltage
-4553  0654 a30dac        	cpw	x,#3500
-4554  0657 2e05          	jrsge	L5242
-4555                     ; 542 		modemDrvPowerDownStepCnt=1;	
-4557  0659 ae0001        	ldw	x,#1
-4558  065c bf00          	ldw	_modemDrvPowerDownStepCnt,x
-4559  065e               L5242:
-4560                     ; 545 }
-4563  065e 81            	ret
-4608                     ; 548 void power_hndl(void)
-4608                     ; 549 {
-4609                     	switch	.text
-4610  065f               _power_hndl:
-4612  065f 88            	push	a
-4613       00000001      OFST:	set	1
-4616                     ; 550 disableInterrupts();	
-4619  0660 9b            sim
-4621                     ; 551 if((powerNecc)&&(powerNeccOld==0))
-4624  0661 3d25          	tnz	_powerNecc
-4625  0663 2707          	jreq	L7442
-4627  0665 3d26          	tnz	_powerNeccOld
-4628  0667 2603          	jrne	L7442
-4629                     ; 553 	fiksRandom=currRandom;
-4631  0669 458584        	mov	_fiksRandom,_currRandom
-4632  066c               L7442:
-4633                     ; 556 if(!powerNecc)
-4635  066c 3d25          	tnz	_powerNecc
-4636  066e 2608          	jrne	L1542
-4637                     ; 558 	out_stat[0]=osOFF;
-4639  0670 3f20          	clr	_out_stat
-4640                     ; 559 	out_stat[1]=osOFF;
-4642  0672 3f21          	clr	_out_stat+1
-4643                     ; 560 	out_stat[2]=osOFF;
-4645  0674 3f22          	clr	_out_stat+2
-4647  0676 2063          	jra	L3542
-4648  0678               L1542:
-4649                     ; 565 	for(i=0;i<3;i++)
-4651  0678 0f01          	clr	(OFST+0,sp)
-4652  067a               L5542:
-4653                     ; 567 		if((i<powerNecc)&&(i<MAX_POWER_EE))		out_stat[warmOrder[fiksRandom][i]]=osON;
-4655  067a 9c            	rvf
-4656  067b 7b01          	ld	a,(OFST+0,sp)
-4657  067d 5f            	clrw	x
-4658  067e 97            	ld	xl,a
-4659  067f 905f          	clrw	y
-4660  0681 b625          	ld	a,_powerNecc
-4661  0683 2a02          	jrpl	L24
-4662  0685 9053          	cplw	y
-4663  0687               L24:
-4664  0687 9097          	ld	yl,a
-4665  0689 90bf00        	ldw	c_y,y
-4666  068c b300          	cpw	x,c_y
-4667  068e 2e2f          	jrsge	L3642
-4669  0690 9c            	rvf
-4670  0691 7b01          	ld	a,(OFST+0,sp)
-4671  0693 5f            	clrw	x
-4672  0694 97            	ld	xl,a
-4673  0695 905f          	clrw	y
-4674  0697 c64047        	ld	a,_MAX_POWER_EE
-4675  069a 2a02          	jrpl	L44
-4676  069c 9053          	cplw	y
-4677  069e               L44:
-4678  069e 9097          	ld	yl,a
-4679  06a0 90bf00        	ldw	c_y,y
-4680  06a3 b300          	cpw	x,c_y
-4681  06a5 2e18          	jrsge	L3642
-4684  06a7 b684          	ld	a,_fiksRandom
-4685  06a9 97            	ld	xl,a
-4686  06aa a603          	ld	a,#3
-4687  06ac 42            	mul	x,a
-4688  06ad 01            	rrwa	x,a
-4689  06ae 1b01          	add	a,(OFST+0,sp)
-4690  06b0 2401          	jrnc	L64
-4691  06b2 5c            	incw	x
-4692  06b3               L64:
-4693  06b3 02            	rlwa	x,a
-4694  06b4 d60000        	ld	a,(_warmOrder,x)
-4695  06b7 5f            	clrw	x
-4696  06b8 97            	ld	xl,a
-4697  06b9 a601          	ld	a,#1
-4698  06bb e720          	ld	(_out_stat,x),a
-4700  06bd 2014          	jra	L5642
-4701  06bf               L3642:
-4702                     ; 568 		else									out_stat[warmOrder[fiksRandom][i]]=osOFF;
-4704  06bf b684          	ld	a,_fiksRandom
-4705  06c1 97            	ld	xl,a
-4706  06c2 a603          	ld	a,#3
-4707  06c4 42            	mul	x,a
-4708  06c5 01            	rrwa	x,a
-4709  06c6 1b01          	add	a,(OFST+0,sp)
-4710  06c8 2401          	jrnc	L05
-4711  06ca 5c            	incw	x
-4712  06cb               L05:
-4713  06cb 02            	rlwa	x,a
-4714  06cc d60000        	ld	a,(_warmOrder,x)
-4715  06cf 5f            	clrw	x
-4716  06d0 97            	ld	xl,a
-4717  06d1 6f20          	clr	(_out_stat,x)
-4718  06d3               L5642:
-4719                     ; 565 	for(i=0;i<3;i++)
-4721  06d3 0c01          	inc	(OFST+0,sp)
-4724  06d5 7b01          	ld	a,(OFST+0,sp)
-4725  06d7 a103          	cp	a,#3
-4726  06d9 259f          	jrult	L5542
-4727  06db               L3542:
-4728                     ; 572 powerNeccOld=powerNecc;
-4730  06db 452526        	mov	_powerNeccOld,_powerNecc
-4731                     ; 574 powerEnabled=0;
-4733  06de 3f0a          	clr	_powerEnabled
-4734                     ; 575 if((out_stat[0]==osON)&&(outMode==omON))powerEnabled++;
-4736  06e0 b620          	ld	a,_out_stat
-4737  06e2 a101          	cp	a,#1
-4738  06e4 2609          	jrne	L7642
-4740  06e6 c6401d        	ld	a,_outMode
-4741  06e9 a101          	cp	a,#1
-4742  06eb 2602          	jrne	L7642
-4745  06ed 3c0a          	inc	_powerEnabled
-4746  06ef               L7642:
-4747                     ; 576 if((out_stat[1]==osON)&&(outMode==omON))powerEnabled++;
-4749  06ef b621          	ld	a,_out_stat+1
-4750  06f1 a101          	cp	a,#1
-4751  06f3 2609          	jrne	L1742
-4753  06f5 c6401d        	ld	a,_outMode
-4754  06f8 a101          	cp	a,#1
-4755  06fa 2602          	jrne	L1742
-4758  06fc 3c0a          	inc	_powerEnabled
-4759  06fe               L1742:
-4760                     ; 577 if((out_stat[2]==osON)&&(outMode==omON))powerEnabled++;
-4762  06fe b622          	ld	a,_out_stat+2
-4763  0700 a101          	cp	a,#1
-4764  0702 2609          	jrne	L3742
-4766  0704 c6401d        	ld	a,_outMode
-4767  0707 a101          	cp	a,#1
-4768  0709 2602          	jrne	L3742
-4771  070b 3c0a          	inc	_powerEnabled
-4772  070d               L3742:
-4773                     ; 579 enableInterrupts();
-4776  070d 9a            rim
-4778                     ; 580 }
-4782  070e 84            	pop	a
-4783  070f 81            	ret
-4813                     ; 583 void power_necc_hndl(void)
-4813                     ; 584 {
-4814                     	switch	.text
-4815  0710               _power_necc_hndl:
-4819                     ; 586 if((aktualTemper>=targetTemper)||(temperOfWater>=90)||(mainCnt<3)||(powerStat==psOFF))
-4821  0710 9c            	rvf
-4822  0711 b61d          	ld	a,_aktualTemper
-4823  0713 b11c          	cp	a,_targetTemper
-4824  0715 2e13          	jrsge	L7052
-4826  0717 9c            	rvf
-4827  0718 b61f          	ld	a,_temperOfWater
-4828  071a a15a          	cp	a,#90
-4829  071c 2e0c          	jrsge	L7052
-4831  071e 9c            	rvf
-4832  071f be82          	ldw	x,_mainCnt
-4833  0721 a30003        	cpw	x,#3
-4834  0724 2f04          	jrslt	L7052
-4836  0726 3d29          	tnz	_powerStat
-4837  0728 2603          	jrne	L5052
-4838  072a               L7052:
-4839                     ; 588 	powerNecc=0;	
-4841  072a 3f25          	clr	_powerNecc
-4843  072c               L5152:
-4844                     ; 599 }
-4847  072c 81            	ret
-4848  072d               L5052:
-4849                     ; 590 else if(aktualTemper<targetTemper)
-4851  072d 9c            	rvf
-4852  072e b61d          	ld	a,_aktualTemper
-4853  0730 b11c          	cp	a,_targetTemper
-4854  0732 2ef8          	jrsge	L5152
-4855                     ; 592 	powerNeccDelta=targetTemper-aktualTemper;
-4857  0734 b61c          	ld	a,_targetTemper
-4858  0736 b01d          	sub	a,_aktualTemper
-4859  0738 b70b          	ld	_powerNeccDelta,a
-4860                     ; 593 	powerNecc=0;
-4862  073a 3f25          	clr	_powerNecc
-4863                     ; 594 	if(powerNeccDelta>=2) powerNecc=1;
-4865  073c 9c            	rvf
-4866  073d b60b          	ld	a,_powerNeccDelta
-4867  073f a102          	cp	a,#2
-4868  0741 2f04          	jrslt	L1252
-4871  0743 35010025      	mov	_powerNecc,#1
-4872  0747               L1252:
-4873                     ; 595 	if(powerNeccDelta>=3) powerNecc=2;
-4875  0747 9c            	rvf
-4876  0748 b60b          	ld	a,_powerNeccDelta
-4877  074a a103          	cp	a,#3
-4878  074c 2f04          	jrslt	L3252
-4881  074e 35020025      	mov	_powerNecc,#2
-4882  0752               L3252:
-4883                     ; 596 	if(powerNeccDelta>=4) powerNecc=3;
-4885  0752 9c            	rvf
-4886  0753 b60b          	ld	a,_powerNeccDelta
-4887  0755 a104          	cp	a,#4
-4888  0757 2fd3          	jrslt	L5152
-4891  0759 35030025      	mov	_powerNecc,#3
-4892  075d 20cd          	jra	L5152
-4936                     ; 602 void matemath(void)
-4936                     ; 603 {
-4937                     	switch	.text
-4938  075f               _matemath:
-4940  075f 89            	pushw	x
-4941       00000002      OFST:	set	2
-4944                     ; 605 if((wire1_in[1]&0xf0)==0)
-4946  0760 c60001        	ld	a,_wire1_in+1
-4947  0763 a5f0          	bcp	a,#240
-4948  0765 2624          	jrne	L5452
-4949                     ; 607 	temperOfWaterTemp=((wire1_in[0]&0xf0)>>4)+((wire1_in[1]&0x0f)<<4);
-4951  0767 c60001        	ld	a,_wire1_in+1
-4952  076a a40f          	and	a,#15
-4953  076c 97            	ld	xl,a
-4954  076d a610          	ld	a,#16
-4955  076f 42            	mul	x,a
-4956  0770 9f            	ld	a,xl
-4957  0771 6b01          	ld	(OFST-1,sp),a
-4958  0773 c60000        	ld	a,_wire1_in
-4959  0776 a4f0          	and	a,#240
-4960  0778 4e            	swap	a
-4961  0779 a40f          	and	a,#15
-4962  077b 1b01          	add	a,(OFST-1,sp)
-4963  077d 6b02          	ld	(OFST+0,sp),a
-4964                     ; 608 	temperOfWater=(signed short)temperOfWaterTemp;
-4966  077f 7b02          	ld	a,(OFST+0,sp)
-4967  0781 b71f          	ld	_temperOfWater,a
-4968                     ; 609 	if(bDEB)temperOfWater=1;
-4970  0783 3d00          	tnz	_bDEB
-4971  0785 2704          	jreq	L5452
-4974  0787 3501001f      	mov	_temperOfWater,#1
-4975  078b               L5452:
-4976                     ; 611 if(MODE_EE==1)
-4978  078b c64046        	ld	a,_MODE_EE
-4979  078e a101          	cp	a,#1
-4980  0790 260a          	jrne	L1552
-4981                     ; 613 	aktualTemper=temperOfWater;
-4983  0792 451f1d        	mov	_aktualTemper,_temperOfWater
-4984                     ; 614 	targetTemper=NECC_TEMPER_WATER_EE;
-4986  0795 554045001c    	mov	_targetTemper,_NECC_TEMPER_WATER_EE
-4988  079a 201e          	jra	L3552
-4989  079c               L1552:
-4990                     ; 616 else if(MODE_EE==2)
-4992  079c c64046        	ld	a,_MODE_EE
-4993  079f a102          	cp	a,#2
-4994  07a1 260a          	jrne	L5552
-4995                     ; 618 	aktualTemper=temperOfAir;
-4997  07a3 451e1d        	mov	_aktualTemper,_temperOfAir
-4998                     ; 619 	targetTemper=NECC_TEMPER_AIR_EE;
-5000  07a6 554044001c    	mov	_targetTemper,_NECC_TEMPER_AIR_EE
-5002  07ab 200d          	jra	L3552
-5003  07ad               L5552:
-5004                     ; 621 else if(MODE_EE==3)
-5006  07ad c64046        	ld	a,_MODE_EE
-5007  07b0 a103          	cp	a,#3
-5008  07b2 2606          	jrne	L3552
-5009                     ; 623 	aktualTemper=temperOfAir;
-5011  07b4 451e1d        	mov	_aktualTemper,_temperOfAir
-5012                     ; 624 	targetTemper=temperRegToSheduler;
-5014  07b7 45041c        	mov	_targetTemper,_temperRegToSheduler
-5015  07ba               L3552:
-5016                     ; 626 }
-5019  07ba 85            	popw	x
-5020  07bb 81            	ret
-5110                     	switch	.const
-5111  0046               L06:
-5112  0046 00002710      	dc.l	10000
-5113                     ; 629 void ind_hndl(void)
-5113                     ; 630 {
-5114                     	switch	.text
-5115  07bc               _ind_hndl:
-5117  07bc 89            	pushw	x
-5118       00000002      OFST:	set	2
-5121                     ; 643 else */if(ind==iMn)
-5123  07bd 3d61          	tnz	_a_ind
-5124  07bf 2703          	jreq	L663
-5125  07c1 cc08d6        	jp	L3752
-5126  07c4               L663:
-5127                     ; 646 	int2indII_slkuf(isp_main_cnt%10000,0, 4, 0, 0, 0);
-5129  07c4 4b00          	push	#0
-5130  07c6 4b00          	push	#0
-5131  07c8 4b00          	push	#0
-5132  07ca 4b04          	push	#4
-5133  07cc 4b00          	push	#0
-5134  07ce ae0000        	ldw	x,#_isp_main_cnt
-5135  07d1 cd0000        	call	c_ltor
-5137  07d4 ae0046        	ldw	x,#L06
-5138  07d7 cd0000        	call	c_lmod
-5140  07da be02          	ldw	x,c_lreg+2
-5141  07dc cd0000        	call	_int2indII_slkuf
-5143  07df 5b05          	addw	sp,#5
-5144                     ; 647 	int2indI_slkuf(isp_main_cnt/10000,1, 3, 0, 0, 0);
-5146  07e1 4b00          	push	#0
-5147  07e3 4b00          	push	#0
-5148  07e5 4b00          	push	#0
-5149  07e7 4b03          	push	#3
-5150  07e9 4b01          	push	#1
-5151  07eb ae0000        	ldw	x,#_isp_main_cnt
-5152  07ee cd0000        	call	c_ltor
-5154  07f1 ae0046        	ldw	x,#L06
-5155  07f4 cd0000        	call	c_ldiv
-5157  07f7 be02          	ldw	x,c_lreg+2
-5158  07f9 cd0000        	call	_int2indI_slkuf
-5160  07fc 5b05          	addw	sp,#5
-5161                     ; 658 	led_mask_off(0x00);
-5163  07fe 4f            	clr	a
-5164  07ff cd0000        	call	_led_mask_off
-5166                     ; 659 	if(outMode==omON)
-5168  0802 c6401d        	ld	a,_outMode
-5169  0805 a101          	cp	a,#1
-5170  0807 262d          	jrne	L5752
-5171                     ; 661 		if(MODE_EE==1)led_on(1);
-5173  0809 c64046        	ld	a,_MODE_EE
-5174  080c a101          	cp	a,#1
-5175  080e 2607          	jrne	L7752
-5178  0810 a601          	ld	a,#1
-5179  0812 cd0000        	call	_led_on
-5182  0815 201f          	jra	L5752
-5183  0817               L7752:
-5184                     ; 662 		else if(MODE_EE==2) led_on(2);
-5186  0817 c64046        	ld	a,_MODE_EE
-5187  081a a102          	cp	a,#2
-5188  081c 2607          	jrne	L3062
-5191  081e a602          	ld	a,#2
-5192  0820 cd0000        	call	_led_on
-5195  0823 2011          	jra	L5752
-5196  0825               L3062:
-5197                     ; 663 		else if(MODE_EE==3)
-5199  0825 c64046        	ld	a,_MODE_EE
-5200  0828 a103          	cp	a,#3
-5201  082a 260a          	jrne	L5752
-5202                     ; 665 			led_on(2);
-5204  082c a602          	ld	a,#2
-5205  082e cd0000        	call	_led_on
-5207                     ; 666 			led_on(3);
-5209  0831 a603          	ld	a,#3
-5210  0833 cd0000        	call	_led_on
-5212  0836               L5752:
-5213                     ; 669 	if(!optr_kontr_cnt)
-5215  0836 725d0035      	tnz	_optr_kontr_cnt
-5216  083a 2638          	jrne	L1162
-5217                     ; 671 		if((outMode==omON)&&(out_stat[0]==osON))led_on(4);
-5219  083c c6401d        	ld	a,_outMode
-5220  083f a101          	cp	a,#1
-5221  0841 260b          	jrne	L3162
-5223  0843 b620          	ld	a,_out_stat
-5224  0845 a101          	cp	a,#1
-5225  0847 2605          	jrne	L3162
-5228  0849 a604          	ld	a,#4
-5229  084b cd0000        	call	_led_on
-5231  084e               L3162:
-5232                     ; 672 		if((outMode==omON)&&(out_stat[1]==osON))led_on(5);
-5234  084e c6401d        	ld	a,_outMode
-5235  0851 a101          	cp	a,#1
-5236  0853 260b          	jrne	L5162
-5238  0855 b621          	ld	a,_out_stat+1
-5239  0857 a101          	cp	a,#1
-5240  0859 2605          	jrne	L5162
-5243  085b a605          	ld	a,#5
-5244  085d cd0000        	call	_led_on
-5246  0860               L5162:
-5247                     ; 673 		if((outMode==omON)&&(out_stat[2]==osON))led_on(6);
-5249  0860 c6401d        	ld	a,_outMode
-5250  0863 a101          	cp	a,#1
-5251  0865 2643          	jrne	L1262
-5253  0867 b622          	ld	a,_out_stat+2
-5254  0869 a101          	cp	a,#1
-5255  086b 263d          	jrne	L1262
-5258  086d a606          	ld	a,#6
-5259  086f cd0000        	call	_led_on
-5261  0872 2036          	jra	L1262
-5262  0874               L1162:
-5263                     ; 677 		if(((optr_kontr_cnt)&&(optr_stat&0x01)))led_on(4);
-5265  0874 725d0035      	tnz	_optr_kontr_cnt
-5266  0878 270c          	jreq	L3262
-5268  087a c60036        	ld	a,_optr_stat
-5269  087d a501          	bcp	a,#1
-5270  087f 2705          	jreq	L3262
-5273  0881 a604          	ld	a,#4
-5274  0883 cd0000        	call	_led_on
-5276  0886               L3262:
-5277                     ; 678 		if(((optr_kontr_cnt)&&(optr_stat&0x02)))led_on(5);
-5279  0886 725d0035      	tnz	_optr_kontr_cnt
-5280  088a 270c          	jreq	L5262
-5282  088c c60036        	ld	a,_optr_stat
-5283  088f a502          	bcp	a,#2
-5284  0891 2705          	jreq	L5262
-5287  0893 a605          	ld	a,#5
-5288  0895 cd0000        	call	_led_on
-5290  0898               L5262:
-5291                     ; 679 		if(((optr_kontr_cnt)&&(optr_stat&0x04)))led_on(6);
-5293  0898 725d0035      	tnz	_optr_kontr_cnt
-5294  089c 270c          	jreq	L1262
-5296  089e c60036        	ld	a,_optr_stat
-5297  08a1 a504          	bcp	a,#4
-5298  08a3 2705          	jreq	L1262
-5301  08a5 a606          	ld	a,#6
-5302  08a7 cd0000        	call	_led_on
-5304  08aa               L1262:
-5305                     ; 682 	if(bERR)led_on(7);
-5307  08aa 3d08          	tnz	_bERR
-5308  08ac 2707          	jreq	L1362
-5311  08ae a607          	ld	a,#7
-5312  08b0 cd0000        	call	_led_on
-5315  08b3 2009          	jra	L3362
-5316  08b5               L1362:
-5317                     ; 683 	else if(bWARN)led_flash(7);
-5319  08b5 3d07          	tnz	_bWARN
-5320  08b7 2705          	jreq	L3362
-5323  08b9 a607          	ld	a,#7
-5324  08bb cd0000        	call	_led_flash
-5326  08be               L3362:
-5327                     ; 688 	if(modemState==MS_LINKED_INITIALIZED)	led_on(8);
-5329  08be b600          	ld	a,_modemState
-5330  08c0 a105          	cp	a,#5
-5331  08c2 2609          	jrne	L7362
-5334  08c4 a608          	ld	a,#8
-5335  08c6 cd0000        	call	_led_on
-5338  08c9 ac321932      	jpf	L3462
-5339  08cd               L7362:
-5340                     ; 689 	else 									led_off(8);
-5342  08cd a608          	ld	a,#8
-5343  08cf cd0000        	call	_led_off
-5345  08d2 ac321932      	jpf	L3462
-5346  08d6               L3752:
-5347                     ; 692 else if(ind==iDate_W)
-5349  08d6 b661          	ld	a,_a_ind
-5350  08d8 a104          	cp	a,#4
-5351  08da 2661          	jrne	L5462
-5352                     ; 694 	if(sub_ind==0)
-5354  08dc 3d62          	tnz	_a_ind+1
-5355  08de 262a          	jrne	L7462
-5356                     ; 697 		int2indI_slkuf(time_date,1, 2, 0, 1, 0);
-5358  08e0 4b00          	push	#0
-5359  08e2 4b01          	push	#1
-5360  08e4 4b00          	push	#0
-5361  08e6 4b02          	push	#2
-5362  08e8 4b01          	push	#1
-5363  08ea b603          	ld	a,_time_date
-5364  08ec 5f            	clrw	x
-5365  08ed 97            	ld	xl,a
-5366  08ee cd0000        	call	_int2indI_slkuf
-5368  08f1 5b05          	addw	sp,#5
-5369                     ; 698 		int2indII_slkuf(time_month,0, 2, 0, 1, 0);
-5371  08f3 4b00          	push	#0
-5372  08f5 4b01          	push	#1
-5373  08f7 4b00          	push	#0
-5374  08f9 4b02          	push	#2
-5375  08fb 4b00          	push	#0
-5376  08fd b60d          	ld	a,_time_month
-5377  08ff 5f            	clrw	x
-5378  0900 97            	ld	xl,a
-5379  0901 cd0000        	call	_int2indII_slkuf
-5381  0904 5b05          	addw	sp,#5
-5383  0906 ac321932      	jpf	L3462
-5384  090a               L7462:
-5385                     ; 701 	else if(sub_ind==1)
-5387  090a b662          	ld	a,_a_ind+1
-5388  090c a101          	cp	a,#1
-5389  090e 2703          	jreq	L073
-5390  0910 cc1932        	jp	L3462
-5391  0913               L073:
-5392                     ; 704 		int2indI_slkuf(time_year,1, 2, 0, 1, 0);
-5394  0913 4b00          	push	#0
-5395  0915 4b01          	push	#1
-5396  0917 4b00          	push	#0
-5397  0919 4b02          	push	#2
-5398  091b 4b01          	push	#1
-5399  091d b60c          	ld	a,_time_year
-5400  091f 5f            	clrw	x
-5401  0920 97            	ld	xl,a
-5402  0921 cd0000        	call	_int2indI_slkuf
-5404  0924 5b05          	addw	sp,#5
-5405                     ; 705 		int2indII_slkuf(time_day_of_week,0, 2, 0, 1, 0);		
-5407  0926 4b00          	push	#0
-5408  0928 4b01          	push	#1
-5409  092a 4b00          	push	#0
-5410  092c 4b02          	push	#2
-5411  092e 4b00          	push	#0
-5412  0930 b60e          	ld	a,_time_day_of_week
-5413  0932 5f            	clrw	x
-5414  0933 97            	ld	xl,a
-5415  0934 cd0000        	call	_int2indII_slkuf
-5417  0937 5b05          	addw	sp,#5
-5418  0939 ac321932      	jpf	L3462
-5419  093d               L5462:
-5420                     ; 709 else if(ind==iSet)
-5422  093d b661          	ld	a,_a_ind
-5423  093f a101          	cp	a,#1
-5424  0941 2703          	jreq	L273
-5425  0943 cc0a94        	jp	L7562
-5426  0946               L273:
-5427                     ; 711 	int2indI_slkuf(sub_ind+1,1, 2, 0, 1, 1);
-5429  0946 4b01          	push	#1
-5430  0948 4b01          	push	#1
-5431  094a 4b00          	push	#0
-5432  094c 4b02          	push	#2
-5433  094e 4b01          	push	#1
-5434  0950 5f            	clrw	x
-5435  0951 b662          	ld	a,_a_ind+1
-5436  0953 2a01          	jrpl	L26
-5437  0955 53            	cplw	x
-5438  0956               L26:
-5439  0956 97            	ld	xl,a
-5440  0957 5c            	incw	x
-5441  0958 cd0000        	call	_int2indI_slkuf
-5443  095b 5b05          	addw	sp,#5
-5444                     ; 712 	ind_outB[3]=0b10010001;	
-5446  095d 35910078      	mov	_ind_outB+3,#145
-5447                     ; 714 	if(sub_ind==0)
-5449  0961 3d62          	tnz	_a_ind+1
-5450  0963 261b          	jrne	L1662
-5451                     ; 716 		int2indII_slkuf(MODE_EE,0, 2, 0, 1, 0);
-5453  0965 4b00          	push	#0
-5454  0967 4b01          	push	#1
-5455  0969 4b00          	push	#0
-5456  096b 4b02          	push	#2
-5457  096d 4b00          	push	#0
-5458  096f 5f            	clrw	x
-5459  0970 c64046        	ld	a,_MODE_EE
-5460  0973 2a01          	jrpl	L46
-5461  0975 53            	cplw	x
-5462  0976               L46:
-5463  0976 97            	ld	xl,a
-5464  0977 cd0000        	call	_int2indII_slkuf
-5466  097a 5b05          	addw	sp,#5
-5468  097c ac321932      	jpf	L3462
-5469  0980               L1662:
-5470                     ; 718 	else if(sub_ind==1)
-5472  0980 b662          	ld	a,_a_ind+1
-5473  0982 a101          	cp	a,#1
-5474  0984 261b          	jrne	L5662
-5475                     ; 720 		int2indII_slkuf(NECC_TEMPER_WATER_EE,0, 2, 0, 1, 0);
-5477  0986 4b00          	push	#0
-5478  0988 4b01          	push	#1
-5479  098a 4b00          	push	#0
-5480  098c 4b02          	push	#2
-5481  098e 4b00          	push	#0
-5482  0990 5f            	clrw	x
-5483  0991 c64045        	ld	a,_NECC_TEMPER_WATER_EE
-5484  0994 2a01          	jrpl	L66
-5485  0996 53            	cplw	x
-5486  0997               L66:
-5487  0997 97            	ld	xl,a
-5488  0998 cd0000        	call	_int2indII_slkuf
-5490  099b 5b05          	addw	sp,#5
-5492  099d ac321932      	jpf	L3462
-5493  09a1               L5662:
-5494                     ; 722 	else if(sub_ind==2)
-5496  09a1 b662          	ld	a,_a_ind+1
-5497  09a3 a102          	cp	a,#2
-5498  09a5 261b          	jrne	L1762
-5499                     ; 724 		int2indII_slkuf(NECC_TEMPER_AIR_EE,0, 2, 0, 1, 0);
-5501  09a7 4b00          	push	#0
-5502  09a9 4b01          	push	#1
-5503  09ab 4b00          	push	#0
-5504  09ad 4b02          	push	#2
-5505  09af 4b00          	push	#0
-5506  09b1 5f            	clrw	x
-5507  09b2 c64044        	ld	a,_NECC_TEMPER_AIR_EE
-5508  09b5 2a01          	jrpl	L07
-5509  09b7 53            	cplw	x
-5510  09b8               L07:
-5511  09b8 97            	ld	xl,a
-5512  09b9 cd0000        	call	_int2indII_slkuf
-5514  09bc 5b05          	addw	sp,#5
-5516  09be ac321932      	jpf	L3462
-5517  09c2               L1762:
-5518                     ; 726 	else if(sub_ind==3)
-5520  09c2 b662          	ld	a,_a_ind+1
-5521  09c4 a103          	cp	a,#3
-5522  09c6 261b          	jrne	L5762
-5523                     ; 728 		int2indII_slkuf(MAX_POWER_EE,0, 2, 0, 1, 0);
-5525  09c8 4b00          	push	#0
-5526  09ca 4b01          	push	#1
-5527  09cc 4b00          	push	#0
-5528  09ce 4b02          	push	#2
-5529  09d0 4b00          	push	#0
-5530  09d2 5f            	clrw	x
-5531  09d3 c64047        	ld	a,_MAX_POWER_EE
-5532  09d6 2a01          	jrpl	L27
-5533  09d8 53            	cplw	x
-5534  09d9               L27:
-5535  09d9 97            	ld	xl,a
-5536  09da cd0000        	call	_int2indII_slkuf
-5538  09dd 5b05          	addw	sp,#5
-5540  09df ac321932      	jpf	L3462
-5541  09e3               L5762:
-5542                     ; 730 	else if(sub_ind==4)
-5544  09e3 b662          	ld	a,_a_ind+1
-5545  09e5 a104          	cp	a,#4
-5546  09e7 2617          	jrne	L1072
-5547                     ; 732 		int2indII_slkuf(time_year,0, 2, 0, 1, 0);
-5549  09e9 4b00          	push	#0
-5550  09eb 4b01          	push	#1
-5551  09ed 4b00          	push	#0
-5552  09ef 4b02          	push	#2
-5553  09f1 4b00          	push	#0
-5554  09f3 b60c          	ld	a,_time_year
-5555  09f5 5f            	clrw	x
-5556  09f6 97            	ld	xl,a
-5557  09f7 cd0000        	call	_int2indII_slkuf
-5559  09fa 5b05          	addw	sp,#5
-5561  09fc ac321932      	jpf	L3462
-5562  0a00               L1072:
-5563                     ; 734 	else if(sub_ind==5)
-5565  0a00 b662          	ld	a,_a_ind+1
-5566  0a02 a105          	cp	a,#5
-5567  0a04 2617          	jrne	L5072
-5568                     ; 736 		int2indII_slkuf(time_month,0, 2, 0, 1, 0);
-5570  0a06 4b00          	push	#0
-5571  0a08 4b01          	push	#1
-5572  0a0a 4b00          	push	#0
-5573  0a0c 4b02          	push	#2
-5574  0a0e 4b00          	push	#0
-5575  0a10 b60d          	ld	a,_time_month
-5576  0a12 5f            	clrw	x
-5577  0a13 97            	ld	xl,a
-5578  0a14 cd0000        	call	_int2indII_slkuf
-5580  0a17 5b05          	addw	sp,#5
-5582  0a19 ac321932      	jpf	L3462
-5583  0a1d               L5072:
-5584                     ; 738 	else if(sub_ind==6)
-5586  0a1d b662          	ld	a,_a_ind+1
-5587  0a1f a106          	cp	a,#6
-5588  0a21 2617          	jrne	L1172
-5589                     ; 740 		int2indII_slkuf(time_date,0, 2, 0, 1, 0);
-5591  0a23 4b00          	push	#0
-5592  0a25 4b01          	push	#1
-5593  0a27 4b00          	push	#0
-5594  0a29 4b02          	push	#2
-5595  0a2b 4b00          	push	#0
-5596  0a2d b603          	ld	a,_time_date
-5597  0a2f 5f            	clrw	x
-5598  0a30 97            	ld	xl,a
-5599  0a31 cd0000        	call	_int2indII_slkuf
-5601  0a34 5b05          	addw	sp,#5
-5603  0a36 ac321932      	jpf	L3462
-5604  0a3a               L1172:
-5605                     ; 743 	else if(sub_ind==7)
-5607  0a3a b662          	ld	a,_a_ind+1
-5608  0a3c a107          	cp	a,#7
-5609  0a3e 2617          	jrne	L5172
-5610                     ; 745 		int2indII_slkuf(time_hour,0, 2, 0, 1, 0);
-5612  0a40 4b00          	push	#0
-5613  0a42 4b01          	push	#1
-5614  0a44 4b00          	push	#0
-5615  0a46 4b02          	push	#2
-5616  0a48 4b00          	push	#0
-5617  0a4a b60f          	ld	a,_time_hour
-5618  0a4c 5f            	clrw	x
-5619  0a4d 97            	ld	xl,a
-5620  0a4e cd0000        	call	_int2indII_slkuf
-5622  0a51 5b05          	addw	sp,#5
-5624  0a53 ac321932      	jpf	L3462
-5625  0a57               L5172:
-5626                     ; 747 	else if(sub_ind==8)
-5628  0a57 b662          	ld	a,_a_ind+1
-5629  0a59 a108          	cp	a,#8
-5630  0a5b 2617          	jrne	L1272
-5631                     ; 749 		int2indII_slkuf(time_min,0, 2, 0, 1, 0);
-5633  0a5d 4b00          	push	#0
-5634  0a5f 4b01          	push	#1
-5635  0a61 4b00          	push	#0
-5636  0a63 4b02          	push	#2
-5637  0a65 4b00          	push	#0
-5638  0a67 b610          	ld	a,_time_min
-5639  0a69 5f            	clrw	x
-5640  0a6a 97            	ld	xl,a
-5641  0a6b cd0000        	call	_int2indII_slkuf
-5643  0a6e 5b05          	addw	sp,#5
-5645  0a70 ac321932      	jpf	L3462
-5646  0a74               L1272:
-5647                     ; 751 	else if(sub_ind==9)
-5649  0a74 b662          	ld	a,_a_ind+1
-5650  0a76 a109          	cp	a,#9
-5651  0a78 2703          	jreq	L473
-5652  0a7a cc1932        	jp	L3462
-5653  0a7d               L473:
-5654                     ; 753 		int2indII_slkuf(time_day_of_week,0, 2, 0, 1, 0);
-5656  0a7d 4b00          	push	#0
-5657  0a7f 4b01          	push	#1
-5658  0a81 4b00          	push	#0
-5659  0a83 4b02          	push	#2
-5660  0a85 4b00          	push	#0
-5661  0a87 b60e          	ld	a,_time_day_of_week
-5662  0a89 5f            	clrw	x
-5663  0a8a 97            	ld	xl,a
-5664  0a8b cd0000        	call	_int2indII_slkuf
-5666  0a8e 5b05          	addw	sp,#5
-5667  0a90 ac321932      	jpf	L3462
-5668  0a94               L7562:
-5669                     ; 757 else if(ind==iSet_)
-5671  0a94 b661          	ld	a,_a_ind
-5672  0a96 a102          	cp	a,#2
-5673  0a98 2703          	jreq	L673
-5674  0a9a cc0beb        	jp	L1372
-5675  0a9d               L673:
-5676                     ; 759 	int2indI_slkuf(sub_ind+1,1, 2, 0, 1, 0);
-5678  0a9d 4b00          	push	#0
-5679  0a9f 4b01          	push	#1
-5680  0aa1 4b00          	push	#0
-5681  0aa3 4b02          	push	#2
-5682  0aa5 4b01          	push	#1
-5683  0aa7 5f            	clrw	x
-5684  0aa8 b662          	ld	a,_a_ind+1
-5685  0aaa 2a01          	jrpl	L47
-5686  0aac 53            	cplw	x
-5687  0aad               L47:
-5688  0aad 97            	ld	xl,a
-5689  0aae 5c            	incw	x
-5690  0aaf cd0000        	call	_int2indI_slkuf
-5692  0ab2 5b05          	addw	sp,#5
-5693                     ; 760 	ind_outB[3]=0b10010001;	
-5695  0ab4 35910078      	mov	_ind_outB+3,#145
-5696                     ; 762 	if(sub_ind==0)
-5698  0ab8 3d62          	tnz	_a_ind+1
-5699  0aba 261b          	jrne	L3372
-5700                     ; 764 		int2indII_slkuf(MODE_EE,0, 2, 0, 1, 1);
-5702  0abc 4b01          	push	#1
-5703  0abe 4b01          	push	#1
-5704  0ac0 4b00          	push	#0
-5705  0ac2 4b02          	push	#2
-5706  0ac4 4b00          	push	#0
-5707  0ac6 5f            	clrw	x
-5708  0ac7 c64046        	ld	a,_MODE_EE
-5709  0aca 2a01          	jrpl	L67
-5710  0acc 53            	cplw	x
-5711  0acd               L67:
-5712  0acd 97            	ld	xl,a
-5713  0ace cd0000        	call	_int2indII_slkuf
-5715  0ad1 5b05          	addw	sp,#5
-5717  0ad3 ac321932      	jpf	L3462
-5718  0ad7               L3372:
-5719                     ; 766 	else if(sub_ind==1)
-5721  0ad7 b662          	ld	a,_a_ind+1
-5722  0ad9 a101          	cp	a,#1
-5723  0adb 261b          	jrne	L7372
-5724                     ; 768 		int2indII_slkuf(NECC_TEMPER_WATER_EE,0, 2, 0, 1, 1);
-5726  0add 4b01          	push	#1
-5727  0adf 4b01          	push	#1
-5728  0ae1 4b00          	push	#0
-5729  0ae3 4b02          	push	#2
-5730  0ae5 4b00          	push	#0
-5731  0ae7 5f            	clrw	x
-5732  0ae8 c64045        	ld	a,_NECC_TEMPER_WATER_EE
-5733  0aeb 2a01          	jrpl	L001
-5734  0aed 53            	cplw	x
-5735  0aee               L001:
-5736  0aee 97            	ld	xl,a
-5737  0aef cd0000        	call	_int2indII_slkuf
-5739  0af2 5b05          	addw	sp,#5
-5741  0af4 ac321932      	jpf	L3462
-5742  0af8               L7372:
-5743                     ; 770 	else if(sub_ind==2)
-5745  0af8 b662          	ld	a,_a_ind+1
-5746  0afa a102          	cp	a,#2
-5747  0afc 261b          	jrne	L3472
-5748                     ; 772 		int2indII_slkuf(NECC_TEMPER_AIR_EE,0, 2, 0, 1, 1);
-5750  0afe 4b01          	push	#1
-5751  0b00 4b01          	push	#1
-5752  0b02 4b00          	push	#0
-5753  0b04 4b02          	push	#2
-5754  0b06 4b00          	push	#0
-5755  0b08 5f            	clrw	x
-5756  0b09 c64044        	ld	a,_NECC_TEMPER_AIR_EE
-5757  0b0c 2a01          	jrpl	L201
-5758  0b0e 53            	cplw	x
-5759  0b0f               L201:
-5760  0b0f 97            	ld	xl,a
-5761  0b10 cd0000        	call	_int2indII_slkuf
-5763  0b13 5b05          	addw	sp,#5
-5765  0b15 ac321932      	jpf	L3462
-5766  0b19               L3472:
-5767                     ; 774 	else if(sub_ind==3)
-5769  0b19 b662          	ld	a,_a_ind+1
-5770  0b1b a103          	cp	a,#3
-5771  0b1d 261b          	jrne	L7472
-5772                     ; 776 		int2indII_slkuf(MAX_POWER_EE,0, 2, 0, 1, 1);
-5774  0b1f 4b01          	push	#1
-5775  0b21 4b01          	push	#1
-5776  0b23 4b00          	push	#0
-5777  0b25 4b02          	push	#2
-5778  0b27 4b00          	push	#0
-5779  0b29 5f            	clrw	x
-5780  0b2a c64047        	ld	a,_MAX_POWER_EE
-5781  0b2d 2a01          	jrpl	L401
-5782  0b2f 53            	cplw	x
-5783  0b30               L401:
-5784  0b30 97            	ld	xl,a
-5785  0b31 cd0000        	call	_int2indII_slkuf
-5787  0b34 5b05          	addw	sp,#5
-5789  0b36 ac321932      	jpf	L3462
-5790  0b3a               L7472:
-5791                     ; 778 	else if(sub_ind==4)
-5793  0b3a b662          	ld	a,_a_ind+1
-5794  0b3c a104          	cp	a,#4
-5795  0b3e 2617          	jrne	L3572
-5796                     ; 780 		int2indII_slkuf(time_year,0, 2, 0, 1, 1);
-5798  0b40 4b01          	push	#1
-5799  0b42 4b01          	push	#1
-5800  0b44 4b00          	push	#0
-5801  0b46 4b02          	push	#2
-5802  0b48 4b00          	push	#0
-5803  0b4a b60c          	ld	a,_time_year
-5804  0b4c 5f            	clrw	x
-5805  0b4d 97            	ld	xl,a
-5806  0b4e cd0000        	call	_int2indII_slkuf
-5808  0b51 5b05          	addw	sp,#5
-5810  0b53 ac321932      	jpf	L3462
-5811  0b57               L3572:
-5812                     ; 782 	else if(sub_ind==5)
-5814  0b57 b662          	ld	a,_a_ind+1
-5815  0b59 a105          	cp	a,#5
-5816  0b5b 2617          	jrne	L7572
-5817                     ; 784 		int2indII_slkuf(time_month,0, 2, 0, 1, 1);
-5819  0b5d 4b01          	push	#1
-5820  0b5f 4b01          	push	#1
-5821  0b61 4b00          	push	#0
-5822  0b63 4b02          	push	#2
-5823  0b65 4b00          	push	#0
-5824  0b67 b60d          	ld	a,_time_month
-5825  0b69 5f            	clrw	x
-5826  0b6a 97            	ld	xl,a
-5827  0b6b cd0000        	call	_int2indII_slkuf
-5829  0b6e 5b05          	addw	sp,#5
-5831  0b70 ac321932      	jpf	L3462
-5832  0b74               L7572:
-5833                     ; 786 	else if(sub_ind==6)
-5835  0b74 b662          	ld	a,_a_ind+1
-5836  0b76 a106          	cp	a,#6
-5837  0b78 2617          	jrne	L3672
-5838                     ; 788 		int2indII_slkuf(time_date,0, 2, 0, 1, 1);
-5840  0b7a 4b01          	push	#1
-5841  0b7c 4b01          	push	#1
-5842  0b7e 4b00          	push	#0
-5843  0b80 4b02          	push	#2
-5844  0b82 4b00          	push	#0
-5845  0b84 b603          	ld	a,_time_date
-5846  0b86 5f            	clrw	x
-5847  0b87 97            	ld	xl,a
-5848  0b88 cd0000        	call	_int2indII_slkuf
-5850  0b8b 5b05          	addw	sp,#5
-5852  0b8d ac321932      	jpf	L3462
-5853  0b91               L3672:
-5854                     ; 791 	else if(sub_ind==7)
-5856  0b91 b662          	ld	a,_a_ind+1
-5857  0b93 a107          	cp	a,#7
-5858  0b95 2617          	jrne	L7672
-5859                     ; 793 		int2indII_slkuf(time_hour,0, 2, 0, 1, 1);
-5861  0b97 4b01          	push	#1
-5862  0b99 4b01          	push	#1
-5863  0b9b 4b00          	push	#0
-5864  0b9d 4b02          	push	#2
-5865  0b9f 4b00          	push	#0
-5866  0ba1 b60f          	ld	a,_time_hour
-5867  0ba3 5f            	clrw	x
-5868  0ba4 97            	ld	xl,a
-5869  0ba5 cd0000        	call	_int2indII_slkuf
-5871  0ba8 5b05          	addw	sp,#5
-5873  0baa ac321932      	jpf	L3462
-5874  0bae               L7672:
-5875                     ; 795 	else if(sub_ind==8)
-5877  0bae b662          	ld	a,_a_ind+1
-5878  0bb0 a108          	cp	a,#8
-5879  0bb2 2617          	jrne	L3772
-5880                     ; 797 		int2indII_slkuf(time_min,0, 2, 0, 1, 1);
-5882  0bb4 4b01          	push	#1
-5883  0bb6 4b01          	push	#1
-5884  0bb8 4b00          	push	#0
-5885  0bba 4b02          	push	#2
-5886  0bbc 4b00          	push	#0
-5887  0bbe b610          	ld	a,_time_min
-5888  0bc0 5f            	clrw	x
-5889  0bc1 97            	ld	xl,a
-5890  0bc2 cd0000        	call	_int2indII_slkuf
-5892  0bc5 5b05          	addw	sp,#5
-5894  0bc7 ac321932      	jpf	L3462
-5895  0bcb               L3772:
-5896                     ; 799 	else if(sub_ind==9)
-5898  0bcb b662          	ld	a,_a_ind+1
-5899  0bcd a109          	cp	a,#9
-5900  0bcf 2703          	jreq	L004
-5901  0bd1 cc1932        	jp	L3462
-5902  0bd4               L004:
-5903                     ; 801 		int2indII_slkuf(time_day_of_week,0, 2, 0, 1, 1);
-5905  0bd4 4b01          	push	#1
-5906  0bd6 4b01          	push	#1
-5907  0bd8 4b00          	push	#0
-5908  0bda 4b02          	push	#2
-5909  0bdc 4b00          	push	#0
-5910  0bde b60e          	ld	a,_time_day_of_week
-5911  0be0 5f            	clrw	x
-5912  0be1 97            	ld	xl,a
-5913  0be2 cd0000        	call	_int2indII_slkuf
-5915  0be5 5b05          	addw	sp,#5
-5916  0be7 ac321932      	jpf	L3462
-5917  0beb               L1372:
-5918                     ; 805 else if(ind==iSetTable)
-5920  0beb b661          	ld	a,_a_ind
-5921  0bed a105          	cp	a,#5
-5922  0bef 2703          	jreq	L204
-5923  0bf1 cc0cff        	jp	L3003
-5924  0bf4               L204:
-5925                     ; 807 	ind_outB[3]=0b11001110;
-5927  0bf4 35ce0078      	mov	_ind_outB+3,#206
-5928                     ; 808 	int2indI_slkuf(((sub_ind/5)+1)*10 + ((sub_ind)%5)+1,1, 2, 1, 0, 1);
-5930  0bf8 4b01          	push	#1
-5931  0bfa 4b00          	push	#0
-5932  0bfc 4b01          	push	#1
-5933  0bfe 4b02          	push	#2
-5934  0c00 4b01          	push	#1
-5935  0c02 5f            	clrw	x
-5936  0c03 b662          	ld	a,_a_ind+1
-5937  0c05 2a01          	jrpl	L601
-5938  0c07 53            	cplw	x
-5939  0c08               L601:
-5940  0c08 97            	ld	xl,a
-5941  0c09 a605          	ld	a,#5
-5942  0c0b cd0000        	call	c_smodx
-5944  0c0e 1f06          	ldw	(OFST+4,sp),x
-5945  0c10 5f            	clrw	x
-5946  0c11 b662          	ld	a,_a_ind+1
-5947  0c13 2a01          	jrpl	L011
-5948  0c15 53            	cplw	x
-5949  0c16               L011:
-5950  0c16 97            	ld	xl,a
-5951  0c17 a605          	ld	a,#5
-5952  0c19 cd0000        	call	c_sdivx
-5954  0c1c 90ae000a      	ldw	y,#10
-5955  0c20 cd0000        	call	c_imul
-5957  0c23 72fb06        	addw	x,(OFST+4,sp)
-5958  0c26 1c000b        	addw	x,#11
-5959  0c29 cd0000        	call	_int2indI_slkuf
-5961  0c2c 5b05          	addw	sp,#5
-5962                     ; 810 	if(sub_ind1==0) 
-5964  0c2e 3d63          	tnz	_a_ind+2
-5965  0c30 2703cc0cbb    	jrne	L5003
-5966                     ; 812 		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)/60,2, 2, 0, 1, 0);
-5968  0c35 4b00          	push	#0
-5969  0c37 4b01          	push	#1
-5970  0c39 4b00          	push	#0
-5971  0c3b 4b02          	push	#2
-5972  0c3d 4b02          	push	#2
-5973  0c3f 5f            	clrw	x
-5974  0c40 b662          	ld	a,_a_ind+1
-5975  0c42 2a01          	jrpl	L211
-5976  0c44 53            	cplw	x
-5977  0c45               L211:
-5978  0c45 97            	ld	xl,a
-5979  0c46 a605          	ld	a,#5
-5980  0c48 cd0000        	call	c_smodx
-5982  0c4b 1f06          	ldw	(OFST+4,sp),x
-5983  0c4d 5f            	clrw	x
-5984  0c4e b662          	ld	a,_a_ind+1
-5985  0c50 2a01          	jrpl	L411
-5986  0c52 53            	cplw	x
-5987  0c53               L411:
-5988  0c53 97            	ld	xl,a
-5989  0c54 a605          	ld	a,#5
-5990  0c56 cd0000        	call	c_sdivx
-5992  0c59 90ae0005      	ldw	y,#5
-5993  0c5d cd0000        	call	c_imul
-5995  0c60 72fb06        	addw	x,(OFST+4,sp)
-5996  0c63 d64020        	ld	a,(_TABLE_TIME_EE,x)
-5997  0c66 97            	ld	xl,a
-5998  0c67 a60a          	ld	a,#10
-5999  0c69 42            	mul	x,a
-6000  0c6a a63c          	ld	a,#60
-6001  0c6c cd0000        	call	c_sdivx
-6003  0c6f cd0000        	call	_int2indII_slkuf
-6005  0c72 5b05          	addw	sp,#5
-6006                     ; 813 		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)%60,0, 2, 0, 0, 0);
-6008  0c74 4b00          	push	#0
-6009  0c76 4b00          	push	#0
-6010  0c78 4b00          	push	#0
-6011  0c7a 4b02          	push	#2
-6012  0c7c 4b00          	push	#0
-6013  0c7e 5f            	clrw	x
-6014  0c7f b662          	ld	a,_a_ind+1
-6015  0c81 2a01          	jrpl	L611
-6016  0c83 53            	cplw	x
-6017  0c84               L611:
-6018  0c84 97            	ld	xl,a
-6019  0c85 a605          	ld	a,#5
-6020  0c87 cd0000        	call	c_smodx
-6022  0c8a 1f06          	ldw	(OFST+4,sp),x
-6023  0c8c 5f            	clrw	x
-6024  0c8d b662          	ld	a,_a_ind+1
-6025  0c8f 2a01          	jrpl	L021
-6026  0c91 53            	cplw	x
-6027  0c92               L021:
-6028  0c92 97            	ld	xl,a
-6029  0c93 a605          	ld	a,#5
-6030  0c95 cd0000        	call	c_sdivx
-6032  0c98 90ae0005      	ldw	y,#5
-6033  0c9c cd0000        	call	c_imul
-6035  0c9f 72fb06        	addw	x,(OFST+4,sp)
-6036  0ca2 d64020        	ld	a,(_TABLE_TIME_EE,x)
-6037  0ca5 97            	ld	xl,a
-6038  0ca6 a60a          	ld	a,#10
-6039  0ca8 42            	mul	x,a
-6040  0ca9 a63c          	ld	a,#60
-6041  0cab cd0000        	call	c_smodx
-6043  0cae cd0000        	call	_int2indII_slkuf
-6045  0cb1 5b05          	addw	sp,#5
-6046                     ; 814 		ind_outG[2]&=0b11111110;
-6048  0cb3 72110018      	bres	_ind_outG+2,#0
-6050  0cb7 ac321932      	jpf	L3462
-6051  0cbb               L5003:
-6052                     ; 818 		int2indII_slkuf(TABLE_TEMPER_EE[sub_ind/5][sub_ind%5],1, 2, 0, 1, 0);
-6054  0cbb 4b00          	push	#0
-6055  0cbd 4b01          	push	#1
-6056  0cbf 4b00          	push	#0
-6057  0cc1 4b02          	push	#2
-6058  0cc3 4b01          	push	#1
-6059  0cc5 5f            	clrw	x
-6060  0cc6 b662          	ld	a,_a_ind+1
-6061  0cc8 2a01          	jrpl	L221
-6062  0cca 53            	cplw	x
-6063  0ccb               L221:
-6064  0ccb 97            	ld	xl,a
-6065  0ccc a605          	ld	a,#5
-6066  0cce cd0000        	call	c_smodx
-6068  0cd1 1f06          	ldw	(OFST+4,sp),x
-6069  0cd3 5f            	clrw	x
-6070  0cd4 b662          	ld	a,_a_ind+1
-6071  0cd6 2a01          	jrpl	L421
-6072  0cd8 53            	cplw	x
-6073  0cd9               L421:
-6074  0cd9 97            	ld	xl,a
-6075  0cda a605          	ld	a,#5
-6076  0cdc cd0000        	call	c_sdivx
-6078  0cdf 90ae0005      	ldw	y,#5
-6079  0ce3 cd0000        	call	c_imul
-6081  0ce6 72fb06        	addw	x,(OFST+4,sp)
-6082  0ce9 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-6083  0cec 5f            	clrw	x
-6084  0ced 4d            	tnz	a
-6085  0cee 2a01          	jrpl	L621
-6086  0cf0 53            	cplw	x
-6087  0cf1               L621:
-6088  0cf1 97            	ld	xl,a
-6089  0cf2 cd0000        	call	_int2indII_slkuf
-6091  0cf5 5b05          	addw	sp,#5
-6092                     ; 819 		ind_outC[0]=0b00111000;
-6094  0cf7 3538000a      	mov	_ind_outC,#56
-6095  0cfb ac321932      	jpf	L3462
-6096  0cff               L3003:
-6097                     ; 824 else if(ind==iSetTable_)
-6099  0cff b661          	ld	a,_a_ind
-6100  0d01 a106          	cp	a,#6
-6101  0d03 2703          	jreq	L404
-6102  0d05 cc0e1f        	jp	L3103
-6103  0d08               L404:
-6104                     ; 826 	ind_outB[3]=0b11001110;
-6106  0d08 35ce0078      	mov	_ind_outB+3,#206
-6107                     ; 827 	int2indI_slkuf(((sub_ind/5)+1)*10 + ((sub_ind)%5)+1,1, 2, 1, 0, 0);
-6109  0d0c 4b00          	push	#0
-6110  0d0e 4b00          	push	#0
-6111  0d10 4b01          	push	#1
-6112  0d12 4b02          	push	#2
-6113  0d14 4b01          	push	#1
-6114  0d16 5f            	clrw	x
-6115  0d17 b662          	ld	a,_a_ind+1
-6116  0d19 2a01          	jrpl	L031
-6117  0d1b 53            	cplw	x
-6118  0d1c               L031:
-6119  0d1c 97            	ld	xl,a
-6120  0d1d a605          	ld	a,#5
-6121  0d1f cd0000        	call	c_smodx
-6123  0d22 1f06          	ldw	(OFST+4,sp),x
-6124  0d24 5f            	clrw	x
-6125  0d25 b662          	ld	a,_a_ind+1
-6126  0d27 2a01          	jrpl	L231
-6127  0d29 53            	cplw	x
-6128  0d2a               L231:
-6129  0d2a 97            	ld	xl,a
-6130  0d2b a605          	ld	a,#5
-6131  0d2d cd0000        	call	c_sdivx
-6133  0d30 90ae000a      	ldw	y,#10
-6134  0d34 cd0000        	call	c_imul
-6136  0d37 72fb06        	addw	x,(OFST+4,sp)
-6137  0d3a 1c000b        	addw	x,#11
-6138  0d3d cd0000        	call	_int2indI_slkuf
-6140  0d40 5b05          	addw	sp,#5
-6141                     ; 829 	if(sub_ind1==0) 
-6143  0d42 3d63          	tnz	_a_ind+2
-6144  0d44 2703          	jreq	L604
-6145  0d46 cc0ddb        	jp	L5103
-6146  0d49               L604:
-6147                     ; 831 		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)/60,2, 2, 0, 1, 1);
-6149  0d49 4b01          	push	#1
-6150  0d4b 4b01          	push	#1
-6151  0d4d 4b00          	push	#0
-6152  0d4f 4b02          	push	#2
-6153  0d51 4b02          	push	#2
-6154  0d53 5f            	clrw	x
-6155  0d54 b662          	ld	a,_a_ind+1
-6156  0d56 2a01          	jrpl	L431
-6157  0d58 53            	cplw	x
-6158  0d59               L431:
-6159  0d59 97            	ld	xl,a
-6160  0d5a a605          	ld	a,#5
-6161  0d5c cd0000        	call	c_smodx
-6163  0d5f 1f06          	ldw	(OFST+4,sp),x
-6164  0d61 5f            	clrw	x
-6165  0d62 b662          	ld	a,_a_ind+1
-6166  0d64 2a01          	jrpl	L631
-6167  0d66 53            	cplw	x
-6168  0d67               L631:
-6169  0d67 97            	ld	xl,a
-6170  0d68 a605          	ld	a,#5
-6171  0d6a cd0000        	call	c_sdivx
-6173  0d6d 90ae0005      	ldw	y,#5
-6174  0d71 cd0000        	call	c_imul
-6176  0d74 72fb06        	addw	x,(OFST+4,sp)
-6177  0d77 d64020        	ld	a,(_TABLE_TIME_EE,x)
-6178  0d7a 97            	ld	xl,a
-6179  0d7b a60a          	ld	a,#10
-6180  0d7d 42            	mul	x,a
-6181  0d7e a63c          	ld	a,#60
-6182  0d80 cd0000        	call	c_sdivx
-6184  0d83 cd0000        	call	_int2indII_slkuf
-6186  0d86 5b05          	addw	sp,#5
-6187                     ; 832 		int2indII_slkuf((TABLE_TIME_EE[sub_ind/5][sub_ind%5]*10)%60,0, 2, 0, 0, 1);
-6189  0d88 4b01          	push	#1
-6190  0d8a 4b00          	push	#0
-6191  0d8c 4b00          	push	#0
-6192  0d8e 4b02          	push	#2
-6193  0d90 4b00          	push	#0
-6194  0d92 5f            	clrw	x
-6195  0d93 b662          	ld	a,_a_ind+1
-6196  0d95 2a01          	jrpl	L041
-6197  0d97 53            	cplw	x
-6198  0d98               L041:
-6199  0d98 97            	ld	xl,a
-6200  0d99 a605          	ld	a,#5
-6201  0d9b cd0000        	call	c_smodx
-6203  0d9e 1f06          	ldw	(OFST+4,sp),x
-6204  0da0 5f            	clrw	x
-6205  0da1 b662          	ld	a,_a_ind+1
-6206  0da3 2a01          	jrpl	L241
-6207  0da5 53            	cplw	x
-6208  0da6               L241:
-6209  0da6 97            	ld	xl,a
-6210  0da7 a605          	ld	a,#5
-6211  0da9 cd0000        	call	c_sdivx
-6213  0dac 90ae0005      	ldw	y,#5
-6214  0db0 cd0000        	call	c_imul
-6216  0db3 72fb06        	addw	x,(OFST+4,sp)
-6217  0db6 d64020        	ld	a,(_TABLE_TIME_EE,x)
-6218  0db9 97            	ld	xl,a
-6219  0dba a60a          	ld	a,#10
-6220  0dbc 42            	mul	x,a
-6221  0dbd a63c          	ld	a,#60
-6222  0dbf cd0000        	call	c_smodx
-6224  0dc2 cd0000        	call	_int2indII_slkuf
-6226  0dc5 5b05          	addw	sp,#5
-6227                     ; 833 		if(!bFL2)	ind_outG[2]&=0b11111110;
-6229  0dc7 3d27          	tnz	_bFL2
-6230  0dc9 2608          	jrne	L7103
-6233  0dcb 72110018      	bres	_ind_outG+2,#0
-6235  0dcf ac321932      	jpf	L3462
-6236  0dd3               L7103:
-6237                     ; 834 		else 		ind_outG[2]|=0b00000001;
-6239  0dd3 72100018      	bset	_ind_outG+2,#0
-6240  0dd7 ac321932      	jpf	L3462
-6241  0ddb               L5103:
-6242                     ; 838 		int2indII_slkuf(TABLE_TEMPER_EE[sub_ind/5][sub_ind%5],1, 2, 0, 1, 1);
-6244  0ddb 4b01          	push	#1
-6245  0ddd 4b01          	push	#1
-6246  0ddf 4b00          	push	#0
-6247  0de1 4b02          	push	#2
-6248  0de3 4b01          	push	#1
-6249  0de5 5f            	clrw	x
-6250  0de6 b662          	ld	a,_a_ind+1
-6251  0de8 2a01          	jrpl	L441
-6252  0dea 53            	cplw	x
-6253  0deb               L441:
-6254  0deb 97            	ld	xl,a
-6255  0dec a605          	ld	a,#5
-6256  0dee cd0000        	call	c_smodx
-6258  0df1 1f06          	ldw	(OFST+4,sp),x
-6259  0df3 5f            	clrw	x
-6260  0df4 b662          	ld	a,_a_ind+1
-6261  0df6 2a01          	jrpl	L641
-6262  0df8 53            	cplw	x
-6263  0df9               L641:
-6264  0df9 97            	ld	xl,a
-6265  0dfa a605          	ld	a,#5
-6266  0dfc cd0000        	call	c_sdivx
-6268  0dff 90ae0005      	ldw	y,#5
-6269  0e03 cd0000        	call	c_imul
-6271  0e06 72fb06        	addw	x,(OFST+4,sp)
-6272  0e09 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-6273  0e0c 5f            	clrw	x
-6274  0e0d 4d            	tnz	a
-6275  0e0e 2a01          	jrpl	L051
-6276  0e10 53            	cplw	x
-6277  0e11               L051:
-6278  0e11 97            	ld	xl,a
-6279  0e12 cd0000        	call	_int2indII_slkuf
-6281  0e15 5b05          	addw	sp,#5
-6282                     ; 839 		ind_outC[0]=0b00111000;
-6284  0e17 3538000a      	mov	_ind_outC,#56
-6285  0e1b ac321932      	jpf	L3462
-6286  0e1f               L3103:
-6287                     ; 844 else if(ind==iDeb)
-6289  0e1f b661          	ld	a,_a_ind
-6290  0e21 a107          	cp	a,#7
-6291  0e23 2703          	jreq	L014
-6292  0e25 cc134a        	jp	L7203
-6293  0e28               L014:
-6294                     ; 846 	led_mask_off(0x00);
-6296  0e28 4f            	clr	a
-6297  0e29 cd0000        	call	_led_mask_off
-6299                     ; 847 	led_on(sub_ind+1);
-6301  0e2c b662          	ld	a,_a_ind+1
-6302  0e2e 4c            	inc	a
-6303  0e2f cd0000        	call	_led_on
-6305                     ; 849 	if(sub_ind==0)
-6307  0e32 3d62          	tnz	_a_ind+1
-6308  0e34 2630          	jrne	L1303
-6309                     ; 851 		int2indI_slkuf(targetTemper,1, 2, 0, 0, 0);
-6311  0e36 4b00          	push	#0
-6312  0e38 4b00          	push	#0
-6313  0e3a 4b00          	push	#0
-6314  0e3c 4b02          	push	#2
-6315  0e3e 4b01          	push	#1
-6316  0e40 5f            	clrw	x
-6317  0e41 b61c          	ld	a,_targetTemper
-6318  0e43 2a01          	jrpl	L251
-6319  0e45 53            	cplw	x
-6320  0e46               L251:
-6321  0e46 97            	ld	xl,a
-6322  0e47 cd0000        	call	_int2indI_slkuf
-6324  0e4a 5b05          	addw	sp,#5
-6325                     ; 852 		int2indII_slkuf(aktualTemper,0, 2, 0, 0, 0);
-6327  0e4c 4b00          	push	#0
-6328  0e4e 4b00          	push	#0
-6329  0e50 4b00          	push	#0
-6330  0e52 4b02          	push	#2
-6331  0e54 4b00          	push	#0
-6332  0e56 5f            	clrw	x
-6333  0e57 b61d          	ld	a,_aktualTemper
-6334  0e59 2a01          	jrpl	L451
-6335  0e5b 53            	cplw	x
-6336  0e5c               L451:
-6337  0e5c 97            	ld	xl,a
-6338  0e5d cd0000        	call	_int2indII_slkuf
-6340  0e60 5b05          	addw	sp,#5
-6342  0e62 ac321932      	jpf	L3462
-6343  0e66               L1303:
-6344                     ; 855 	else if(sub_ind==1)
-6346  0e66 b662          	ld	a,_a_ind+1
-6347  0e68 a101          	cp	a,#1
-6348  0e6a 2630          	jrne	L5303
-6349                     ; 857 		int2indI_slkuf(temperOfWater,1, 2, 0, 0, 0);
-6351  0e6c 4b00          	push	#0
-6352  0e6e 4b00          	push	#0
-6353  0e70 4b00          	push	#0
-6354  0e72 4b02          	push	#2
-6355  0e74 4b01          	push	#1
-6356  0e76 5f            	clrw	x
-6357  0e77 b61f          	ld	a,_temperOfWater
-6358  0e79 2a01          	jrpl	L651
-6359  0e7b 53            	cplw	x
-6360  0e7c               L651:
-6361  0e7c 97            	ld	xl,a
-6362  0e7d cd0000        	call	_int2indI_slkuf
-6364  0e80 5b05          	addw	sp,#5
-6365                     ; 858 		int2indII_slkuf(temperOfAir,0, 2, 0, 0, 0);
-6367  0e82 4b00          	push	#0
-6368  0e84 4b00          	push	#0
-6369  0e86 4b00          	push	#0
-6370  0e88 4b02          	push	#2
-6371  0e8a 4b00          	push	#0
-6372  0e8c 5f            	clrw	x
-6373  0e8d b61e          	ld	a,_temperOfAir
-6374  0e8f 2a01          	jrpl	L061
-6375  0e91 53            	cplw	x
-6376  0e92               L061:
-6377  0e92 97            	ld	xl,a
-6378  0e93 cd0000        	call	_int2indII_slkuf
-6380  0e96 5b05          	addw	sp,#5
-6382  0e98 ac321932      	jpf	L3462
-6383  0e9c               L5303:
-6384                     ; 861 	else if(sub_ind==2)
-6386  0e9c b662          	ld	a,_a_ind+1
-6387  0e9e a102          	cp	a,#2
-6388  0ea0 2647          	jrne	L1403
-6389                     ; 863 		int2indI_slkuf(MAX_POWER_EE,1, 2, 0, 0, 0);
-6391  0ea2 4b00          	push	#0
-6392  0ea4 4b00          	push	#0
-6393  0ea6 4b00          	push	#0
-6394  0ea8 4b02          	push	#2
-6395  0eaa 4b01          	push	#1
-6396  0eac 5f            	clrw	x
-6397  0ead c64047        	ld	a,_MAX_POWER_EE
-6398  0eb0 2a01          	jrpl	L261
-6399  0eb2 53            	cplw	x
-6400  0eb3               L261:
-6401  0eb3 97            	ld	xl,a
-6402  0eb4 cd0000        	call	_int2indI_slkuf
-6404  0eb7 5b05          	addw	sp,#5
-6405                     ; 864 		int2indII_slkuf(powerNeccDelta,2, 2, 0, 0, 0);
-6407  0eb9 4b00          	push	#0
-6408  0ebb 4b00          	push	#0
-6409  0ebd 4b00          	push	#0
-6410  0ebf 4b02          	push	#2
-6411  0ec1 4b02          	push	#2
-6412  0ec3 5f            	clrw	x
-6413  0ec4 b60b          	ld	a,_powerNeccDelta
-6414  0ec6 2a01          	jrpl	L461
-6415  0ec8 53            	cplw	x
-6416  0ec9               L461:
-6417  0ec9 97            	ld	xl,a
-6418  0eca cd0000        	call	_int2indII_slkuf
-6420  0ecd 5b05          	addw	sp,#5
-6421                     ; 865 		int2indII_slkuf(powerNecc,0, 2, 0, 0, 0);
-6423  0ecf 4b00          	push	#0
-6424  0ed1 4b00          	push	#0
-6425  0ed3 4b00          	push	#0
-6426  0ed5 4b02          	push	#2
-6427  0ed7 4b00          	push	#0
-6428  0ed9 5f            	clrw	x
-6429  0eda b625          	ld	a,_powerNecc
-6430  0edc 2a01          	jrpl	L661
-6431  0ede 53            	cplw	x
-6432  0edf               L661:
-6433  0edf 97            	ld	xl,a
-6434  0ee0 cd0000        	call	_int2indII_slkuf
-6436  0ee3 5b05          	addw	sp,#5
-6438  0ee5 ac321932      	jpf	L3462
-6439  0ee9               L1403:
-6440                     ; 867 	else if(sub_ind==3)
-6442  0ee9 b662          	ld	a,_a_ind+1
-6443  0eeb a103          	cp	a,#3
-6444  0eed 267c          	jrne	L5403
-6445                     ; 869 		int2indI_slkuf(aktualTemper,2, 2, 0, 0, 0);	
-6447  0eef 4b00          	push	#0
-6448  0ef1 4b00          	push	#0
-6449  0ef3 4b00          	push	#0
-6450  0ef5 4b02          	push	#2
-6451  0ef7 4b02          	push	#2
-6452  0ef9 5f            	clrw	x
-6453  0efa b61d          	ld	a,_aktualTemper
-6454  0efc 2a01          	jrpl	L071
-6455  0efe 53            	cplw	x
-6456  0eff               L071:
-6457  0eff 97            	ld	xl,a
-6458  0f00 cd0000        	call	_int2indI_slkuf
-6460  0f03 5b05          	addw	sp,#5
-6461                     ; 870 		int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
-6463  0f05 4b00          	push	#0
-6464  0f07 4b00          	push	#0
-6465  0f09 4b00          	push	#0
-6466  0f0b 4b01          	push	#1
-6467  0f0d 4b01          	push	#1
-6468  0f0f 5f            	clrw	x
-6469  0f10 b625          	ld	a,_powerNecc
-6470  0f12 2a01          	jrpl	L271
-6471  0f14 53            	cplw	x
-6472  0f15               L271:
-6473  0f15 97            	ld	xl,a
-6474  0f16 cd0000        	call	_int2indI_slkuf
-6476  0f19 5b05          	addw	sp,#5
-6477                     ; 871 		int2indII_slkuf(out_stat[0],3, 1, 0, 0, 0);
-6479  0f1b 4b00          	push	#0
-6480  0f1d 4b00          	push	#0
-6481  0f1f 4b00          	push	#0
-6482  0f21 4b01          	push	#1
-6483  0f23 4b03          	push	#3
-6484  0f25 b620          	ld	a,_out_stat
-6485  0f27 5f            	clrw	x
-6486  0f28 97            	ld	xl,a
-6487  0f29 cd0000        	call	_int2indII_slkuf
-6489  0f2c 5b05          	addw	sp,#5
-6490                     ; 872 		int2indII_slkuf(out_stat[1],2, 1, 0, 0, 0);
-6492  0f2e 4b00          	push	#0
-6493  0f30 4b00          	push	#0
-6494  0f32 4b00          	push	#0
-6495  0f34 4b01          	push	#1
-6496  0f36 4b02          	push	#2
-6497  0f38 b621          	ld	a,_out_stat+1
-6498  0f3a 5f            	clrw	x
-6499  0f3b 97            	ld	xl,a
-6500  0f3c cd0000        	call	_int2indII_slkuf
-6502  0f3f 5b05          	addw	sp,#5
-6503                     ; 873 		int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
-6505  0f41 4b00          	push	#0
-6506  0f43 4b00          	push	#0
-6507  0f45 4b00          	push	#0
-6508  0f47 4b01          	push	#1
-6509  0f49 4b01          	push	#1
-6510  0f4b b622          	ld	a,_out_stat+2
-6511  0f4d 5f            	clrw	x
-6512  0f4e 97            	ld	xl,a
-6513  0f4f cd0000        	call	_int2indII_slkuf
-6515  0f52 5b05          	addw	sp,#5
-6516                     ; 874 		int2indII_slkuf(fiksRandom,0, 1, 0, 0, 0);
-6518  0f54 4b00          	push	#0
-6519  0f56 4b00          	push	#0
-6520  0f58 4b00          	push	#0
-6521  0f5a 4b01          	push	#1
-6522  0f5c 4b00          	push	#0
-6523  0f5e b684          	ld	a,_fiksRandom
-6524  0f60 5f            	clrw	x
-6525  0f61 97            	ld	xl,a
-6526  0f62 cd0000        	call	_int2indII_slkuf
-6528  0f65 5b05          	addw	sp,#5
-6530  0f67 ac321932      	jpf	L3462
-6531  0f6b               L5403:
-6532                     ; 876 	else if(sub_ind==4)
-6534  0f6b b662          	ld	a,_a_ind+1
-6535  0f6d a104          	cp	a,#4
-6536  0f6f 2640          	jrne	L1503
-6537                     ; 878 		int2indI_slkuf(temperRegToSheduler,1, 2, 0, 0, 0);	
-6539  0f71 4b00          	push	#0
-6540  0f73 4b00          	push	#0
-6541  0f75 4b00          	push	#0
-6542  0f77 4b02          	push	#2
-6543  0f79 4b01          	push	#1
-6544  0f7b 5f            	clrw	x
-6545  0f7c b604          	ld	a,_temperRegToSheduler
-6546  0f7e 2a01          	jrpl	L471
-6547  0f80 53            	cplw	x
-6548  0f81               L471:
-6549  0f81 97            	ld	xl,a
-6550  0f82 cd0000        	call	_int2indI_slkuf
-6552  0f85 5b05          	addw	sp,#5
-6553                     ; 880 		int2indII_slkuf(time_day_of_week,3, 1, 0, 0, 0);
-6555  0f87 4b00          	push	#0
-6556  0f89 4b00          	push	#0
-6557  0f8b 4b00          	push	#0
-6558  0f8d 4b01          	push	#1
-6559  0f8f 4b03          	push	#3
-6560  0f91 b60e          	ld	a,_time_day_of_week
-6561  0f93 5f            	clrw	x
-6562  0f94 97            	ld	xl,a
-6563  0f95 cd0000        	call	_int2indII_slkuf
-6565  0f98 5b05          	addw	sp,#5
-6566                     ; 883 		int2indII_slkuf(day_sheduler_time,0, 3, 0, 0, 0);
-6568  0f9a 4b00          	push	#0
-6569  0f9c 4b00          	push	#0
-6570  0f9e 4b00          	push	#0
-6571  0fa0 4b03          	push	#3
-6572  0fa2 4b00          	push	#0
-6573  0fa4 b602          	ld	a,_day_sheduler_time
-6574  0fa6 5f            	clrw	x
-6575  0fa7 97            	ld	xl,a
-6576  0fa8 cd0000        	call	_int2indII_slkuf
-6578  0fab 5b05          	addw	sp,#5
-6580  0fad ac321932      	jpf	L3462
-6581  0fb1               L1503:
-6582                     ; 886 	else if(sub_ind==5)
-6584  0fb1 b662          	ld	a,_a_ind+1
-6585  0fb3 a105          	cp	a,#5
-6586  0fb5 2638          	jrne	L5503
-6587                     ; 888 		int2indI_slkuf(modemDrvPDUSMSSendStepCnt,1, 3, 0, 0, 0);	
-6589  0fb7 4b00          	push	#0
-6590  0fb9 4b00          	push	#0
-6591  0fbb 4b00          	push	#0
-6592  0fbd 4b03          	push	#3
-6593  0fbf 4b01          	push	#1
-6594  0fc1 be00          	ldw	x,_modemDrvPDUSMSSendStepCnt
-6595  0fc3 cd0000        	call	_int2indI_slkuf
-6597  0fc6 5b05          	addw	sp,#5
-6598                     ; 890 		int2indII_slkuf(modemDrvWatchDogCnt,0, 3, 0, 0, 0);
-6600  0fc8 4b00          	push	#0
-6601  0fca 4b00          	push	#0
-6602  0fcc 4b00          	push	#0
-6603  0fce 4b03          	push	#3
-6604  0fd0 4b00          	push	#0
-6605  0fd2 be00          	ldw	x,_modemDrvWatchDogCnt
-6606  0fd4 cd0000        	call	_int2indII_slkuf
-6608  0fd7 5b05          	addw	sp,#5
-6609                     ; 893 		int2indII_slkuf(4,3, 1, 0, 0, 1);
-6611  0fd9 4b01          	push	#1
-6612  0fdb 4b00          	push	#0
-6613  0fdd 4b00          	push	#0
-6614  0fdf 4b01          	push	#1
-6615  0fe1 4b03          	push	#3
-6616  0fe3 ae0004        	ldw	x,#4
-6617  0fe6 cd0000        	call	_int2indII_slkuf
-6619  0fe9 5b05          	addw	sp,#5
-6621  0feb ac321932      	jpf	L3462
-6622  0fef               L5503:
-6623                     ; 895 	else if(sub_ind==6)
-6625  0fef b662          	ld	a,_a_ind+1
-6626  0ff1 a106          	cp	a,#6
-6627  0ff3 263b          	jrne	L1603
-6628                     ; 897 		int2indI_slkuf(main_power_off_hndl_cnt,1, 3, 0, 0, 0);	
-6630  0ff5 4b00          	push	#0
-6631  0ff7 4b00          	push	#0
-6632  0ff9 4b00          	push	#0
-6633  0ffb 4b03          	push	#3
-6634  0ffd 4b01          	push	#1
-6635  0fff ce002b        	ldw	x,_main_power_off_hndl_cnt
-6636  1002 cd0000        	call	_int2indI_slkuf
-6638  1005 5b05          	addw	sp,#5
-6639                     ; 899 		int2indII_slkuf(cbcSystemRequ,0, 1, 0, 0, 0);
-6641  1007 4b00          	push	#0
-6642  1009 4b00          	push	#0
-6643  100b 4b00          	push	#0
-6644  100d 4b01          	push	#1
-6645  100f 4b00          	push	#0
-6646  1011 c6002a        	ld	a,_cbcSystemRequ
-6647  1014 5f            	clrw	x
-6648  1015 97            	ld	xl,a
-6649  1016 cd0000        	call	_int2indII_slkuf
-6651  1019 5b05          	addw	sp,#5
-6652                     ; 900 		int2indII_slkuf(modemDrvPowerDownStepCnt,2, 2, 0, 0, 0);
-6654  101b 4b00          	push	#0
-6655  101d 4b00          	push	#0
-6656  101f 4b00          	push	#0
-6657  1021 4b02          	push	#2
-6658  1023 4b02          	push	#2
-6659  1025 be00          	ldw	x,_modemDrvPowerDownStepCnt
-6660  1027 cd0000        	call	_int2indII_slkuf
-6662  102a 5b05          	addw	sp,#5
-6664  102c ac321932      	jpf	L3462
-6665  1030               L1603:
-6666                     ; 905 	else if(sub_ind==7)
-6668  1030 b662          	ld	a,_a_ind+1
-6669  1032 a107          	cp	a,#7
-6670  1034 2628          	jrne	L5603
-6671                     ; 907 		int2indI_slkuf(tx_counter1,1, 3, 0, 0, 0);	
-6673  1036 4b00          	push	#0
-6674  1038 4b00          	push	#0
-6675  103a 4b00          	push	#0
-6676  103c 4b03          	push	#3
-6677  103e 4b01          	push	#1
-6678  1040 ce0000        	ldw	x,_tx_counter1
-6679  1043 cd0000        	call	_int2indI_slkuf
-6681  1046 5b05          	addw	sp,#5
-6682                     ; 909 		int2indII_slkuf(tx_wr_index1,0, 3, 0, 0, 0);
-6684  1048 4b00          	push	#0
-6685  104a 4b00          	push	#0
-6686  104c 4b00          	push	#0
-6687  104e 4b03          	push	#3
-6688  1050 4b00          	push	#0
-6689  1052 ce0000        	ldw	x,_tx_wr_index1
-6690  1055 cd0000        	call	_int2indII_slkuf
-6692  1058 5b05          	addw	sp,#5
-6694  105a ac321932      	jpf	L3462
-6695  105e               L5603:
-6696                     ; 914 	else if(sub_ind==8)
-6698  105e b662          	ld	a,_a_ind+1
-6699  1060 a108          	cp	a,#8
-6700  1062 2703          	jreq	L214
-6701  1064 cc1220        	jp	L1703
-6702  1067               L214:
-6703                     ; 920 		if(++ind_check_cnt1>=5)
-6705  1067 9c            	rvf
-6706  1068 ce0004        	ldw	x,_ind_check_cnt1
-6707  106b 1c0001        	addw	x,#1
-6708  106e cf0004        	ldw	_ind_check_cnt1,x
-6709  1071 a30005        	cpw	x,#5
-6710  1074 2f17          	jrslt	L3703
-6711                     ; 922 			ind_check_cnt1=0;
-6713  1076 5f            	clrw	x
-6714  1077 cf0004        	ldw	_ind_check_cnt1,x
-6715                     ; 923 			if(++ind_check_cnt>=64)ind_check_cnt=0;
-6717  107a 9c            	rvf
-6718  107b ce0006        	ldw	x,_ind_check_cnt
-6719  107e 1c0001        	addw	x,#1
-6720  1081 cf0006        	ldw	_ind_check_cnt,x
-6721  1084 a30040        	cpw	x,#64
-6722  1087 2f04          	jrslt	L3703
-6725  1089 5f            	clrw	x
-6726  108a cf0006        	ldw	_ind_check_cnt,x
-6727  108d               L3703:
-6728                     ; 925 		ind_outB[0]=0xff;
-6730  108d 35ff0075      	mov	_ind_outB,#255
-6731                     ; 926 		ind_outB[1]=0xff;
-6733  1091 35ff0076      	mov	_ind_outB+1,#255
-6734                     ; 927 		ind_outB[2]=0xff;
-6736  1095 35ff0077      	mov	_ind_outB+2,#255
-6737                     ; 928 		ind_outB[3]=0xff;
-6739  1099 35ff0078      	mov	_ind_outB+3,#255
-6740                     ; 929 		ind_outC[0]=0xff;
-6742  109d 35ff000a      	mov	_ind_outC,#255
-6743                     ; 930 		ind_outC[1]=0xff;
-6745  10a1 35ff000b      	mov	_ind_outC+1,#255
-6746                     ; 931 		ind_outC[2]=0xff;
-6748  10a5 35ff000c      	mov	_ind_outC+2,#255
-6749                     ; 932 		ind_outC[3]=0xff;
-6751  10a9 35ff000d      	mov	_ind_outC+3,#255
-6752                     ; 933 		ind_outG[0]=0xff;
-6754  10ad 35ff0016      	mov	_ind_outG,#255
-6755                     ; 934 		ind_outG[1]=0xff;
-6757  10b1 35ff0017      	mov	_ind_outG+1,#255
-6758                     ; 935 		ind_outG[2]=0xff;
-6760  10b5 35ff0018      	mov	_ind_outG+2,#255
-6761                     ; 936 		ind_outG[3]=0xff;
-6763  10b9 35ff0019      	mov	_ind_outG+3,#255
-6764                     ; 938 		if(ind_check_cnt<=7)
-6766  10bd 9c            	rvf
-6767  10be ce0006        	ldw	x,_ind_check_cnt
-6768  10c1 a30008        	cpw	x,#8
-6769  10c4 2e1a          	jrsge	L7703
-6770                     ; 940 			ind_outB[3]&=(~(1<<ind_check_cnt));	
-6772  10c6 5f            	clrw	x
-6773  10c7 c60007        	ld	a,_ind_check_cnt+1
-6774  10ca 2a01          	jrpl	L671
-6775  10cc 53            	cplw	x
-6776  10cd               L671:
-6777  10cd 97            	ld	xl,a
-6778  10ce a601          	ld	a,#1
-6779  10d0 5d            	tnzw	x
-6780  10d1 2704          	jreq	L002
-6781  10d3               L202:
-6782  10d3 48            	sll	a
-6783  10d4 5a            	decw	x
-6784  10d5 26fc          	jrne	L202
-6785  10d7               L002:
-6786  10d7 43            	cpl	a
-6787  10d8 b478          	and	a,_ind_outB+3
-6788  10da b778          	ld	_ind_outB+3,a
-6790  10dc ac321932      	jpf	L3462
-6791  10e0               L7703:
-6792                     ; 942 		else if(ind_check_cnt<=15)
-6794  10e0 9c            	rvf
-6795  10e1 ce0006        	ldw	x,_ind_check_cnt
-6796  10e4 a30010        	cpw	x,#16
-6797  10e7 2e1d          	jrsge	L3013
-6798                     ; 944 			ind_outB[2]&=(~(1<<(ind_check_cnt-8)));	
-6800  10e9 c60007        	ld	a,_ind_check_cnt+1
-6801  10ec a008          	sub	a,#8
-6802  10ee 5f            	clrw	x
-6803  10ef 4d            	tnz	a
-6804  10f0 2a01          	jrpl	L402
-6805  10f2 53            	cplw	x
-6806  10f3               L402:
-6807  10f3 97            	ld	xl,a
-6808  10f4 a601          	ld	a,#1
-6809  10f6 5d            	tnzw	x
-6810  10f7 2704          	jreq	L602
-6811  10f9               L012:
-6812  10f9 48            	sll	a
-6813  10fa 5a            	decw	x
-6814  10fb 26fc          	jrne	L012
-6815  10fd               L602:
-6816  10fd 43            	cpl	a
-6817  10fe b477          	and	a,_ind_outB+2
-6818  1100 b777          	ld	_ind_outB+2,a
-6820  1102 ac321932      	jpf	L3462
-6821  1106               L3013:
-6822                     ; 946 		else if(ind_check_cnt<=23)
-6824  1106 9c            	rvf
-6825  1107 ce0006        	ldw	x,_ind_check_cnt
-6826  110a a30018        	cpw	x,#24
-6827  110d 2e1d          	jrsge	L7013
-6828                     ; 948 			ind_outB[1]&=(~(1<<(ind_check_cnt-16)));	
-6830  110f c60007        	ld	a,_ind_check_cnt+1
-6831  1112 a010          	sub	a,#16
-6832  1114 5f            	clrw	x
-6833  1115 4d            	tnz	a
-6834  1116 2a01          	jrpl	L212
-6835  1118 53            	cplw	x
-6836  1119               L212:
-6837  1119 97            	ld	xl,a
-6838  111a a601          	ld	a,#1
-6839  111c 5d            	tnzw	x
-6840  111d 2704          	jreq	L412
-6841  111f               L612:
-6842  111f 48            	sll	a
-6843  1120 5a            	decw	x
-6844  1121 26fc          	jrne	L612
-6845  1123               L412:
-6846  1123 43            	cpl	a
-6847  1124 b476          	and	a,_ind_outB+1
-6848  1126 b776          	ld	_ind_outB+1,a
-6850  1128 ac321932      	jpf	L3462
-6851  112c               L7013:
-6852                     ; 950 		else if(ind_check_cnt<=30)
-6854  112c 9c            	rvf
-6855  112d ce0006        	ldw	x,_ind_check_cnt
-6856  1130 a3001f        	cpw	x,#31
-6857  1133 2e1d          	jrsge	L3113
-6858                     ; 952 			ind_outC[3]&=(~(1<<(ind_check_cnt-23)));	
-6860  1135 c60007        	ld	a,_ind_check_cnt+1
-6861  1138 a017          	sub	a,#23
-6862  113a 5f            	clrw	x
-6863  113b 4d            	tnz	a
-6864  113c 2a01          	jrpl	L022
-6865  113e 53            	cplw	x
-6866  113f               L022:
-6867  113f 97            	ld	xl,a
-6868  1140 a601          	ld	a,#1
-6869  1142 5d            	tnzw	x
-6870  1143 2704          	jreq	L222
-6871  1145               L422:
-6872  1145 48            	sll	a
-6873  1146 5a            	decw	x
-6874  1147 26fc          	jrne	L422
-6875  1149               L222:
-6876  1149 43            	cpl	a
-6877  114a b40d          	and	a,_ind_outC+3
-6878  114c b70d          	ld	_ind_outC+3,a
-6880  114e ac321932      	jpf	L3462
-6881  1152               L3113:
-6882                     ; 954 		else if(ind_check_cnt==31)
-6884  1152 ce0006        	ldw	x,_ind_check_cnt
-6885  1155 a3001f        	cpw	x,#31
-6886  1158 2608          	jrne	L7113
-6887                     ; 956 			ind_outG[3]&=0xfe;	
-6889  115a 72110019      	bres	_ind_outG+3,#0
-6891  115e ac321932      	jpf	L3462
-6892  1162               L7113:
-6893                     ; 958 		else if(ind_check_cnt<=38)
-6895  1162 9c            	rvf
-6896  1163 ce0006        	ldw	x,_ind_check_cnt
-6897  1166 a30027        	cpw	x,#39
-6898  1169 2e1d          	jrsge	L3213
-6899                     ; 960 			ind_outC[2]&=(~(1<<(ind_check_cnt-31)));	
-6901  116b c60007        	ld	a,_ind_check_cnt+1
-6902  116e a01f          	sub	a,#31
-6903  1170 5f            	clrw	x
-6904  1171 4d            	tnz	a
-6905  1172 2a01          	jrpl	L622
-6906  1174 53            	cplw	x
-6907  1175               L622:
-6908  1175 97            	ld	xl,a
-6909  1176 a601          	ld	a,#1
-6910  1178 5d            	tnzw	x
-6911  1179 2704          	jreq	L032
-6912  117b               L232:
-6913  117b 48            	sll	a
-6914  117c 5a            	decw	x
-6915  117d 26fc          	jrne	L232
-6916  117f               L032:
-6917  117f 43            	cpl	a
-6918  1180 b40c          	and	a,_ind_outC+2
-6919  1182 b70c          	ld	_ind_outC+2,a
-6921  1184 ac321932      	jpf	L3462
-6922  1188               L3213:
-6923                     ; 962 		else if(ind_check_cnt==39)
-6925  1188 ce0006        	ldw	x,_ind_check_cnt
-6926  118b a30027        	cpw	x,#39
-6927  118e 2608          	jrne	L7213
-6928                     ; 964 			ind_outG[2]&=0xfe;	
-6930  1190 72110018      	bres	_ind_outG+2,#0
-6932  1194 ac321932      	jpf	L3462
-6933  1198               L7213:
-6934                     ; 966 		else if(ind_check_cnt<=46)
-6936  1198 9c            	rvf
-6937  1199 ce0006        	ldw	x,_ind_check_cnt
-6938  119c a3002f        	cpw	x,#47
-6939  119f 2e1d          	jrsge	L3313
-6940                     ; 968 			ind_outC[1]&=(~(1<<(ind_check_cnt-39)));	
-6942  11a1 c60007        	ld	a,_ind_check_cnt+1
-6943  11a4 a027          	sub	a,#39
-6944  11a6 5f            	clrw	x
-6945  11a7 4d            	tnz	a
-6946  11a8 2a01          	jrpl	L432
-6947  11aa 53            	cplw	x
-6948  11ab               L432:
-6949  11ab 97            	ld	xl,a
-6950  11ac a601          	ld	a,#1
-6951  11ae 5d            	tnzw	x
-6952  11af 2704          	jreq	L632
-6953  11b1               L042:
-6954  11b1 48            	sll	a
-6955  11b2 5a            	decw	x
-6956  11b3 26fc          	jrne	L042
-6957  11b5               L632:
-6958  11b5 43            	cpl	a
-6959  11b6 b40b          	and	a,_ind_outC+1
-6960  11b8 b70b          	ld	_ind_outC+1,a
-6962  11ba ac321932      	jpf	L3462
-6963  11be               L3313:
-6964                     ; 970 		else if(ind_check_cnt==47)
-6966  11be ce0006        	ldw	x,_ind_check_cnt
-6967  11c1 a3002f        	cpw	x,#47
-6968  11c4 2608          	jrne	L7313
-6969                     ; 972 			ind_outG[1]&=0xfe;	
-6971  11c6 72110017      	bres	_ind_outG+1,#0
-6973  11ca ac321932      	jpf	L3462
-6974  11ce               L7313:
-6975                     ; 974 		else if(ind_check_cnt<=54)
-6977  11ce 9c            	rvf
-6978  11cf ce0006        	ldw	x,_ind_check_cnt
-6979  11d2 a30037        	cpw	x,#55
-6980  11d5 2e1d          	jrsge	L3413
-6981                     ; 976 			ind_outC[0]&=(~(1<<(ind_check_cnt-47)));	
-6983  11d7 c60007        	ld	a,_ind_check_cnt+1
-6984  11da a02f          	sub	a,#47
-6985  11dc 5f            	clrw	x
-6986  11dd 4d            	tnz	a
-6987  11de 2a01          	jrpl	L242
-6988  11e0 53            	cplw	x
-6989  11e1               L242:
-6990  11e1 97            	ld	xl,a
-6991  11e2 a601          	ld	a,#1
-6992  11e4 5d            	tnzw	x
-6993  11e5 2704          	jreq	L442
-6994  11e7               L642:
-6995  11e7 48            	sll	a
-6996  11e8 5a            	decw	x
-6997  11e9 26fc          	jrne	L642
-6998  11eb               L442:
-6999  11eb 43            	cpl	a
-7000  11ec b40a          	and	a,_ind_outC
-7001  11ee b70a          	ld	_ind_outC,a
-7003  11f0 ac321932      	jpf	L3462
-7004  11f4               L3413:
-7005                     ; 978 		else if(ind_check_cnt==55)
-7007  11f4 ce0006        	ldw	x,_ind_check_cnt
-7008  11f7 a30037        	cpw	x,#55
-7009  11fa 2608          	jrne	L7413
-7010                     ; 980 			ind_outG[0]&=0xfe;	
-7012  11fc 72110016      	bres	_ind_outG,#0
-7014  1200 ac321932      	jpf	L3462
-7015  1204               L7413:
-7016                     ; 982 		else if(ind_check_cnt<=64)
-7018  1204 9c            	rvf
-7019  1205 ce0006        	ldw	x,_ind_check_cnt
-7020  1208 a30041        	cpw	x,#65
-7021  120b 2f03          	jrslt	L414
-7022  120d cc1932        	jp	L3462
-7023  1210               L414:
-7024                     ; 984 			led_mask_off(0x00);
-7026  1210 4f            	clr	a
-7027  1211 cd0000        	call	_led_mask_off
-7029                     ; 985 			led_on(ind_check_cnt-55);	
-7031  1214 c60007        	ld	a,_ind_check_cnt+1
-7032  1217 a037          	sub	a,#55
-7033  1219 cd0000        	call	_led_on
-7035  121c ac321932      	jpf	L3462
-7036  1220               L1703:
-7037                     ; 988 	else if(sub_ind==9)
-7039  1220 b662          	ld	a,_a_ind+1
-7040  1222 a109          	cp	a,#9
-7041  1224 2642          	jrne	L7513
-7042                     ; 990 		int2indI_slkuf(waterTemperAlarmCnt,1, 3, 0, 0, 0);
-7044  1226 4b00          	push	#0
-7045  1228 4b00          	push	#0
-7046  122a 4b00          	push	#0
-7047  122c 4b03          	push	#3
-7048  122e 4b01          	push	#1
-7049  1230 5f            	clrw	x
-7050  1231 c60034        	ld	a,_waterTemperAlarmCnt
-7051  1234 2a01          	jrpl	L052
-7052  1236 53            	cplw	x
-7053  1237               L052:
-7054  1237 97            	ld	xl,a
-7055  1238 cd0000        	call	_int2indI_slkuf
-7057  123b 5b05          	addw	sp,#5
-7058                     ; 991 		int2indII_slkuf(mainCnt,0, 2, 0, 0, 0);
-7060  123d 4b00          	push	#0
-7061  123f 4b00          	push	#0
-7062  1241 4b00          	push	#0
-7063  1243 4b02          	push	#2
-7064  1245 4b00          	push	#0
-7065  1247 be82          	ldw	x,_mainCnt
-7066  1249 cd0000        	call	_int2indII_slkuf
-7068  124c 5b05          	addw	sp,#5
-7069                     ; 992 		int2indII_slkuf(temperOfWater,2, 2, 0, 0, 0);
-7071  124e 4b00          	push	#0
-7072  1250 4b00          	push	#0
-7073  1252 4b00          	push	#0
-7074  1254 4b02          	push	#2
-7075  1256 4b02          	push	#2
-7076  1258 5f            	clrw	x
-7077  1259 b61f          	ld	a,_temperOfWater
-7078  125b 2a01          	jrpl	L252
-7079  125d 53            	cplw	x
-7080  125e               L252:
-7081  125e 97            	ld	xl,a
-7082  125f cd0000        	call	_int2indII_slkuf
-7084  1262 5b05          	addw	sp,#5
-7086  1264 ac321932      	jpf	L3462
-7087  1268               L7513:
-7088                     ; 994 	else if(sub_ind==10)
-7090  1268 b662          	ld	a,_a_ind+1
-7091  126a a10a          	cp	a,#10
-7092  126c 2651          	jrne	L3613
-7093                     ; 996 		int2indI_slkuf(waterTemperAlarm,1, 1, 0, 0, 0);
-7095  126e 4b00          	push	#0
-7096  1270 4b00          	push	#0
-7097  1272 4b00          	push	#0
-7098  1274 4b01          	push	#1
-7099  1276 4b01          	push	#1
-7100  1278 b627          	ld	a,_waterTemperAlarm
-7101  127a 5f            	clrw	x
-7102  127b 97            	ld	xl,a
-7103  127c cd0000        	call	_int2indI_slkuf
-7105  127f 5b05          	addw	sp,#5
-7106                     ; 997 		int2indI_slkuf(waterTemperAlarmOld,3, 1, 0, 0, 0);
-7108  1281 4b00          	push	#0
-7109  1283 4b00          	push	#0
-7110  1285 4b00          	push	#0
-7111  1287 4b01          	push	#1
-7112  1289 4b03          	push	#3
-7113  128b b628          	ld	a,_waterTemperAlarmOld
-7114  128d 5f            	clrw	x
-7115  128e 97            	ld	xl,a
-7116  128f cd0000        	call	_int2indI_slkuf
-7118  1292 5b05          	addw	sp,#5
-7119                     ; 998 		int2indII_slkuf(mainCnt,0, 2, 0, 0, 0);
-7121  1294 4b00          	push	#0
-7122  1296 4b00          	push	#0
-7123  1298 4b00          	push	#0
-7124  129a 4b02          	push	#2
-7125  129c 4b00          	push	#0
-7126  129e be82          	ldw	x,_mainCnt
-7127  12a0 cd0000        	call	_int2indII_slkuf
-7129  12a3 5b05          	addw	sp,#5
-7130                     ; 999 		int2indII_slkuf(temperOfWater,2, 2, 0, 0, 0);
-7132  12a5 4b00          	push	#0
-7133  12a7 4b00          	push	#0
-7134  12a9 4b00          	push	#0
-7135  12ab 4b02          	push	#2
-7136  12ad 4b02          	push	#2
-7137  12af 5f            	clrw	x
-7138  12b0 b61f          	ld	a,_temperOfWater
-7139  12b2 2a01          	jrpl	L452
-7140  12b4 53            	cplw	x
-7141  12b5               L452:
-7142  12b5 97            	ld	xl,a
-7143  12b6 cd0000        	call	_int2indII_slkuf
-7145  12b9 5b05          	addw	sp,#5
-7147  12bb ac321932      	jpf	L3462
-7148  12bf               L3613:
-7149                     ; 1001 	else if(sub_ind==11)
-7151  12bf b662          	ld	a,_a_ind+1
-7152  12c1 a10b          	cp	a,#11
-7153  12c3 262c          	jrne	L7613
-7154                     ; 1003 		int2indI_slkuf(optr_stat,1, 3, 0, 0, 0);
-7156  12c5 4b00          	push	#0
-7157  12c7 4b00          	push	#0
-7158  12c9 4b00          	push	#0
-7159  12cb 4b03          	push	#3
-7160  12cd 4b01          	push	#1
-7161  12cf c60036        	ld	a,_optr_stat
-7162  12d2 5f            	clrw	x
-7163  12d3 97            	ld	xl,a
-7164  12d4 cd0000        	call	_int2indI_slkuf
-7166  12d7 5b05          	addw	sp,#5
-7167                     ; 1004 		int2indII_slkuf(optr_kontr_cnt,0, 3, 0, 0, 0);
-7169  12d9 4b00          	push	#0
-7170  12db 4b00          	push	#0
-7171  12dd 4b00          	push	#0
-7172  12df 4b03          	push	#3
-7173  12e1 4b00          	push	#0
-7174  12e3 c60035        	ld	a,_optr_kontr_cnt
-7175  12e6 5f            	clrw	x
-7176  12e7 97            	ld	xl,a
-7177  12e8 cd0000        	call	_int2indII_slkuf
-7179  12eb 5b05          	addw	sp,#5
-7181  12ed ac321932      	jpf	L3462
-7182  12f1               L7613:
-7183                     ; 1006 	else if(sub_ind==12)
-7185  12f1 b662          	ld	a,_a_ind+1
-7186  12f3 a10c          	cp	a,#12
-7187  12f5 2703          	jreq	L614
-7188  12f7 cc1932        	jp	L3462
-7189  12fa               L614:
-7190                     ; 1008 		int2indI_slkuf(cntAirSensorLineErrorLo,1, 1, 0, 0, 0);
-7192  12fa 4b00          	push	#0
-7193  12fc 4b00          	push	#0
-7194  12fe 4b00          	push	#0
-7195  1300 4b01          	push	#1
-7196  1302 4b01          	push	#1
-7197  1304 b606          	ld	a,_cntAirSensorLineErrorLo
-7198  1306 5f            	clrw	x
-7199  1307 97            	ld	xl,a
-7200  1308 cd0000        	call	_int2indI_slkuf
-7202  130b 5b05          	addw	sp,#5
-7203                     ; 1009 		int2indI_slkuf(cntAirSensorLineErrorHi,3, 1, 0, 0, 0);
-7205  130d 4b00          	push	#0
-7206  130f 4b00          	push	#0
-7207  1311 4b00          	push	#0
-7208  1313 4b01          	push	#1
-7209  1315 4b03          	push	#3
-7210  1317 b605          	ld	a,_cntAirSensorLineErrorHi
-7211  1319 5f            	clrw	x
-7212  131a 97            	ld	xl,a
-7213  131b cd0000        	call	_int2indI_slkuf
-7215  131e 5b05          	addw	sp,#5
-7216                     ; 1010 		int2indII_slkuf(airSensorErrorStat,0, 2, 0, 0, 0);
-7218  1320 4b00          	push	#0
-7219  1322 4b00          	push	#0
-7220  1324 4b00          	push	#0
-7221  1326 4b02          	push	#2
-7222  1328 4b00          	push	#0
-7223  132a b623          	ld	a,_airSensorErrorStat
-7224  132c 5f            	clrw	x
-7225  132d 97            	ld	xl,a
-7226  132e cd0000        	call	_int2indII_slkuf
-7228  1331 5b05          	addw	sp,#5
-7229                     ; 1011 		int2indII_slkuf(airSensorErrorStatOld,2, 2, 0, 0, 0);
-7231  1333 4b00          	push	#0
-7232  1335 4b00          	push	#0
-7233  1337 4b00          	push	#0
-7234  1339 4b02          	push	#2
-7235  133b 4b02          	push	#2
-7236  133d b624          	ld	a,_airSensorErrorStatOld
-7237  133f 5f            	clrw	x
-7238  1340 97            	ld	xl,a
-7239  1341 cd0000        	call	_int2indII_slkuf
-7241  1344 5b05          	addw	sp,#5
-7242  1346 ac321932      	jpf	L3462
-7243  134a               L7203:
-7244                     ; 1016 else if(ind==iModem_deb)
-7246  134a b661          	ld	a,_a_ind
-7247  134c a10a          	cp	a,#10
-7248  134e 2703          	jreq	L024
-7249  1350 cc1514        	jp	L7713
-7250  1353               L024:
-7251                     ; 1018 	led_mask_off(0x00);
-7253  1353 4f            	clr	a
-7254  1354 cd0000        	call	_led_mask_off
-7256                     ; 1019 	led_on(1);
-7258  1357 a601          	ld	a,#1
-7259  1359 cd0000        	call	_led_on
-7261                     ; 1020 	led_on(2);
-7263  135c a602          	ld	a,#2
-7264  135e cd0000        	call	_led_on
-7266                     ; 1022 	if(sub_ind==0)
-7268  1361 3d62          	tnz	_a_ind+1
-7269  1363 2703cc13fc    	jrne	L1023
-7270                     ; 1024 		int2indI_slkuf(modemState,3, 1, 0, 0, 0);
-7272  1368 4b00          	push	#0
-7273  136a 4b00          	push	#0
-7274  136c 4b00          	push	#0
-7275  136e 4b01          	push	#1
-7276  1370 4b03          	push	#3
-7277  1372 b600          	ld	a,_modemState
-7278  1374 5f            	clrw	x
-7279  1375 97            	ld	xl,a
-7280  1376 cd0000        	call	_int2indI_slkuf
-7282  1379 5b05          	addw	sp,#5
-7283                     ; 1025 		int2indI_slkuf(modem_plazma,1, 1, 0, 0, 0);
-7285  137b 4b00          	push	#0
-7286  137d 4b00          	push	#0
-7287  137f 4b00          	push	#0
-7288  1381 4b01          	push	#1
-7289  1383 4b01          	push	#1
-7290  1385 c60000        	ld	a,_modem_plazma
-7291  1388 5f            	clrw	x
-7292  1389 97            	ld	xl,a
-7293  138a cd0000        	call	_int2indI_slkuf
-7295  138d 5b05          	addw	sp,#5
-7296                     ; 1026 		int2indI_slkuf(modem_plazma1,2, 1, 0, 0, 0);
-7298  138f 4b00          	push	#0
-7299  1391 4b00          	push	#0
-7300  1393 4b00          	push	#0
-7301  1395 4b01          	push	#1
-7302  1397 4b02          	push	#2
-7303  1399 c60000        	ld	a,_modem_plazma1
-7304  139c 5f            	clrw	x
-7305  139d 97            	ld	xl,a
-7306  139e cd0000        	call	_int2indI_slkuf
-7308  13a1 5b05          	addw	sp,#5
-7309                     ; 1028 		int2indII_slkuf(modemDrvPDUSMSSendStepCnt,2, 2, 0, 0, 0);
-7311  13a3 4b00          	push	#0
-7312  13a5 4b00          	push	#0
-7313  13a7 4b00          	push	#0
-7314  13a9 4b02          	push	#2
-7315  13ab 4b02          	push	#2
-7316  13ad be00          	ldw	x,_modemDrvPDUSMSSendStepCnt
-7317  13af cd0000        	call	_int2indII_slkuf
-7319  13b2 5b05          	addw	sp,#5
-7320                     ; 1029 		int2indII_slkuf(modemDrvInitStepCnt,0, 2, 0, 0, 0);
-7322  13b4 4b00          	push	#0
-7323  13b6 4b00          	push	#0
-7324  13b8 4b00          	push	#0
-7325  13ba 4b02          	push	#2
-7326  13bc 4b00          	push	#0
-7327  13be be00          	ldw	x,_modemDrvInitStepCnt
-7328  13c0 cd0000        	call	_int2indII_slkuf
-7330  13c3 5b05          	addw	sp,#5
-7331                     ; 1030 		if(AUTH_NUMBER_FLAGS&0x01)led_on(8);
-7333  13c5 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
-7334  13c8 a501          	bcp	a,#1
-7335  13ca 2705          	jreq	L3023
-7338  13cc a608          	ld	a,#8
-7339  13ce cd0000        	call	_led_on
-7341  13d1               L3023:
-7342                     ; 1031 		if(AUTH_NUMBER_FLAGS&0x02)led_on(7);
-7344  13d1 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
-7345  13d4 a502          	bcp	a,#2
-7346  13d6 2705          	jreq	L5023
-7349  13d8 a607          	ld	a,#7
-7350  13da cd0000        	call	_led_on
-7352  13dd               L5023:
-7353                     ; 1032 		if(AUTH_NUMBER_FLAGS&0x04)led_on(6);
-7355  13dd c6407f        	ld	a,_AUTH_NUMBER_FLAGS
-7356  13e0 a504          	bcp	a,#4
-7357  13e2 2705          	jreq	L7023
-7360  13e4 a606          	ld	a,#6
-7361  13e6 cd0000        	call	_led_on
-7363  13e9               L7023:
-7364                     ; 1033 		if(AUTH_NUMBER_FLAGS&0x08)led_on(5);
-7366  13e9 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
-7367  13ec a508          	bcp	a,#8
-7368  13ee 2603          	jrne	L224
-7369  13f0 cc1932        	jp	L3462
-7370  13f3               L224:
-7373  13f3 a605          	ld	a,#5
-7374  13f5 cd0000        	call	_led_on
-7376  13f8 ac321932      	jpf	L3462
-7377  13fc               L1023:
-7378                     ; 1036 	else if(sub_ind==1)
-7380  13fc b662          	ld	a,_a_ind+1
-7381  13fe a101          	cp	a,#1
-7382  1400 2647          	jrne	L5123
-7383                     ; 1038 		int2indI_slkuf(MAX_POWER_EE,1, 2, 0, 0, 0);
-7385  1402 4b00          	push	#0
-7386  1404 4b00          	push	#0
-7387  1406 4b00          	push	#0
-7388  1408 4b02          	push	#2
-7389  140a 4b01          	push	#1
-7390  140c 5f            	clrw	x
-7391  140d c64047        	ld	a,_MAX_POWER_EE
-7392  1410 2a01          	jrpl	L652
-7393  1412 53            	cplw	x
-7394  1413               L652:
-7395  1413 97            	ld	xl,a
-7396  1414 cd0000        	call	_int2indI_slkuf
-7398  1417 5b05          	addw	sp,#5
-7399                     ; 1039 		int2indII_slkuf(powerNeccDelta,2, 2, 0, 0, 0);
-7401  1419 4b00          	push	#0
-7402  141b 4b00          	push	#0
-7403  141d 4b00          	push	#0
-7404  141f 4b02          	push	#2
-7405  1421 4b02          	push	#2
-7406  1423 5f            	clrw	x
-7407  1424 b60b          	ld	a,_powerNeccDelta
-7408  1426 2a01          	jrpl	L062
-7409  1428 53            	cplw	x
-7410  1429               L062:
-7411  1429 97            	ld	xl,a
-7412  142a cd0000        	call	_int2indII_slkuf
-7414  142d 5b05          	addw	sp,#5
-7415                     ; 1040 		int2indII_slkuf(powerNecc,0, 2, 0, 0, 0);
-7417  142f 4b00          	push	#0
-7418  1431 4b00          	push	#0
-7419  1433 4b00          	push	#0
-7420  1435 4b02          	push	#2
-7421  1437 4b00          	push	#0
-7422  1439 5f            	clrw	x
-7423  143a b625          	ld	a,_powerNecc
-7424  143c 2a01          	jrpl	L262
-7425  143e 53            	cplw	x
-7426  143f               L262:
-7427  143f 97            	ld	xl,a
-7428  1440 cd0000        	call	_int2indII_slkuf
-7430  1443 5b05          	addw	sp,#5
-7432  1445 ac321932      	jpf	L3462
-7433  1449               L5123:
-7434                     ; 1042 	else if(sub_ind==2)
-7436  1449 b662          	ld	a,_a_ind+1
-7437  144b a102          	cp	a,#2
-7438  144d 267c          	jrne	L1223
-7439                     ; 1044 		int2indI_slkuf(aktualTemper,2, 2, 0, 0, 0);	
-7441  144f 4b00          	push	#0
-7442  1451 4b00          	push	#0
-7443  1453 4b00          	push	#0
-7444  1455 4b02          	push	#2
-7445  1457 4b02          	push	#2
-7446  1459 5f            	clrw	x
-7447  145a b61d          	ld	a,_aktualTemper
-7448  145c 2a01          	jrpl	L462
-7449  145e 53            	cplw	x
-7450  145f               L462:
-7451  145f 97            	ld	xl,a
-7452  1460 cd0000        	call	_int2indI_slkuf
-7454  1463 5b05          	addw	sp,#5
-7455                     ; 1045 		int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
-7457  1465 4b00          	push	#0
-7458  1467 4b00          	push	#0
-7459  1469 4b00          	push	#0
-7460  146b 4b01          	push	#1
-7461  146d 4b01          	push	#1
-7462  146f 5f            	clrw	x
-7463  1470 b625          	ld	a,_powerNecc
-7464  1472 2a01          	jrpl	L662
-7465  1474 53            	cplw	x
-7466  1475               L662:
-7467  1475 97            	ld	xl,a
-7468  1476 cd0000        	call	_int2indI_slkuf
-7470  1479 5b05          	addw	sp,#5
-7471                     ; 1046 		int2indII_slkuf(out_stat[0],3, 1, 0, 0, 0);
-7473  147b 4b00          	push	#0
-7474  147d 4b00          	push	#0
-7475  147f 4b00          	push	#0
-7476  1481 4b01          	push	#1
-7477  1483 4b03          	push	#3
-7478  1485 b620          	ld	a,_out_stat
-7479  1487 5f            	clrw	x
-7480  1488 97            	ld	xl,a
-7481  1489 cd0000        	call	_int2indII_slkuf
-7483  148c 5b05          	addw	sp,#5
-7484                     ; 1047 		int2indII_slkuf(out_stat[1],2, 1, 0, 0, 0);
-7486  148e 4b00          	push	#0
-7487  1490 4b00          	push	#0
-7488  1492 4b00          	push	#0
-7489  1494 4b01          	push	#1
-7490  1496 4b02          	push	#2
-7491  1498 b621          	ld	a,_out_stat+1
-7492  149a 5f            	clrw	x
-7493  149b 97            	ld	xl,a
-7494  149c cd0000        	call	_int2indII_slkuf
-7496  149f 5b05          	addw	sp,#5
-7497                     ; 1048 		int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
-7499  14a1 4b00          	push	#0
-7500  14a3 4b00          	push	#0
-7501  14a5 4b00          	push	#0
-7502  14a7 4b01          	push	#1
-7503  14a9 4b01          	push	#1
-7504  14ab b622          	ld	a,_out_stat+2
-7505  14ad 5f            	clrw	x
-7506  14ae 97            	ld	xl,a
-7507  14af cd0000        	call	_int2indII_slkuf
-7509  14b2 5b05          	addw	sp,#5
-7510                     ; 1049 		int2indII_slkuf(fiksRandom,0, 1, 0, 0, 0);
-7512  14b4 4b00          	push	#0
-7513  14b6 4b00          	push	#0
-7514  14b8 4b00          	push	#0
-7515  14ba 4b01          	push	#1
-7516  14bc 4b00          	push	#0
-7517  14be b684          	ld	a,_fiksRandom
-7518  14c0 5f            	clrw	x
-7519  14c1 97            	ld	xl,a
-7520  14c2 cd0000        	call	_int2indII_slkuf
-7522  14c5 5b05          	addw	sp,#5
-7524  14c7 ac321932      	jpf	L3462
-7525  14cb               L1223:
-7526                     ; 1051 	else if(sub_ind==3)
-7528  14cb b662          	ld	a,_a_ind+1
-7529  14cd a103          	cp	a,#3
-7530  14cf 2703          	jreq	L424
-7531  14d1 cc1932        	jp	L3462
-7532  14d4               L424:
-7533                     ; 1053 		int2indI_slkuf(temperRegToSheduler,1, 2, 0, 0, 0);	
-7535  14d4 4b00          	push	#0
-7536  14d6 4b00          	push	#0
-7537  14d8 4b00          	push	#0
-7538  14da 4b02          	push	#2
-7539  14dc 4b01          	push	#1
-7540  14de 5f            	clrw	x
-7541  14df b604          	ld	a,_temperRegToSheduler
-7542  14e1 2a01          	jrpl	L072
-7543  14e3 53            	cplw	x
-7544  14e4               L072:
-7545  14e4 97            	ld	xl,a
-7546  14e5 cd0000        	call	_int2indI_slkuf
-7548  14e8 5b05          	addw	sp,#5
-7549                     ; 1055 		int2indII_slkuf(time_day_of_week,3, 1, 0, 0, 0);
-7551  14ea 4b00          	push	#0
-7552  14ec 4b00          	push	#0
-7553  14ee 4b00          	push	#0
-7554  14f0 4b01          	push	#1
-7555  14f2 4b03          	push	#3
-7556  14f4 b60e          	ld	a,_time_day_of_week
-7557  14f6 5f            	clrw	x
-7558  14f7 97            	ld	xl,a
-7559  14f8 cd0000        	call	_int2indII_slkuf
-7561  14fb 5b05          	addw	sp,#5
-7562                     ; 1058 		int2indII_slkuf(day_sheduler_time,0, 3, 0, 0, 0);
-7564  14fd 4b00          	push	#0
-7565  14ff 4b00          	push	#0
-7566  1501 4b00          	push	#0
-7567  1503 4b03          	push	#3
-7568  1505 4b00          	push	#0
-7569  1507 b602          	ld	a,_day_sheduler_time
-7570  1509 5f            	clrw	x
-7571  150a 97            	ld	xl,a
-7572  150b cd0000        	call	_int2indII_slkuf
-7574  150e 5b05          	addw	sp,#5
-7575  1510 ac321932      	jpf	L3462
-7576  1514               L7713:
-7577                     ; 1062 else if(ind==iTemperSet)
-7579  1514 b661          	ld	a,_a_ind
-7580  1516 a108          	cp	a,#8
-7581  1518 2703          	jreq	L624
-7582  151a cc1648        	jp	L1323
-7583  151d               L624:
-7584                     ; 1071 	led_mask_off(0x00);
-7586  151d 4f            	clr	a
-7587  151e cd0000        	call	_led_mask_off
-7589                     ; 1072 	if(outMode==omON)
-7591  1521 c6401d        	ld	a,_outMode
-7592  1524 a101          	cp	a,#1
-7593  1526 262d          	jrne	L3323
-7594                     ; 1074 		if(MODE_EE==1)led_on(1);
-7596  1528 c64046        	ld	a,_MODE_EE
-7597  152b a101          	cp	a,#1
-7598  152d 2607          	jrne	L5323
-7601  152f a601          	ld	a,#1
-7602  1531 cd0000        	call	_led_on
-7605  1534 201f          	jra	L3323
-7606  1536               L5323:
-7607                     ; 1075 		else if(MODE_EE==2) led_on(2);
-7609  1536 c64046        	ld	a,_MODE_EE
-7610  1539 a102          	cp	a,#2
-7611  153b 2607          	jrne	L1423
-7614  153d a602          	ld	a,#2
-7615  153f cd0000        	call	_led_on
-7618  1542 2011          	jra	L3323
-7619  1544               L1423:
-7620                     ; 1076 		else if(MODE_EE==3)
-7622  1544 c64046        	ld	a,_MODE_EE
-7623  1547 a103          	cp	a,#3
-7624  1549 260a          	jrne	L3323
-7625                     ; 1078 			led_on(2);
-7627  154b a602          	ld	a,#2
-7628  154d cd0000        	call	_led_on
-7630                     ; 1079 			led_on(3);
-7632  1550 a603          	ld	a,#3
-7633  1552 cd0000        	call	_led_on
-7635  1555               L3323:
-7636                     ; 1082 	if((outMode==omON)&&(out_stat[0]==osON))led_on(4);
-7638  1555 c6401d        	ld	a,_outMode
-7639  1558 a101          	cp	a,#1
-7640  155a 260b          	jrne	L7423
-7642  155c b620          	ld	a,_out_stat
-7643  155e a101          	cp	a,#1
-7644  1560 2605          	jrne	L7423
-7647  1562 a604          	ld	a,#4
-7648  1564 cd0000        	call	_led_on
-7650  1567               L7423:
-7651                     ; 1083 	if((outMode==omON)&&(out_stat[1]==osON))led_on(5);
-7653  1567 c6401d        	ld	a,_outMode
-7654  156a a101          	cp	a,#1
-7655  156c 260b          	jrne	L1523
-7657  156e b621          	ld	a,_out_stat+1
-7658  1570 a101          	cp	a,#1
-7659  1572 2605          	jrne	L1523
-7662  1574 a605          	ld	a,#5
-7663  1576 cd0000        	call	_led_on
-7665  1579               L1523:
-7666                     ; 1084 	if((outMode==omON)&&(out_stat[2]==osON))led_on(6);
-7668  1579 c6401d        	ld	a,_outMode
-7669  157c a101          	cp	a,#1
-7670  157e 260b          	jrne	L3523
-7672  1580 b622          	ld	a,_out_stat+2
-7673  1582 a101          	cp	a,#1
-7674  1584 2605          	jrne	L3523
-7677  1586 a606          	ld	a,#6
-7678  1588 cd0000        	call	_led_on
-7680  158b               L3523:
-7681                     ; 1086 	if(bERR)led_on(7);
-7683  158b 3d08          	tnz	_bERR
-7684  158d 2707          	jreq	L5523
-7687  158f a607          	ld	a,#7
-7688  1591 cd0000        	call	_led_on
-7691  1594 2009          	jra	L7523
-7692  1596               L5523:
-7693                     ; 1087 	else if(bWARN)led_flash(7);
-7695  1596 3d07          	tnz	_bWARN
-7696  1598 2705          	jreq	L7523
-7699  159a a607          	ld	a,#7
-7700  159c cd0000        	call	_led_flash
-7702  159f               L7523:
-7703                     ; 1089 	if(aktualTemper>=0)
-7705  159f 9c            	rvf
-7706  15a0 b61d          	ld	a,_aktualTemper
-7707  15a2 a100          	cp	a,#0
-7708  15a4 2f1c          	jrslt	L3623
-7709                     ; 1091 		int2indI_slkuf(aktualTemper,2, 2, 0, 1, 0);
-7711  15a6 4b00          	push	#0
-7712  15a8 4b01          	push	#1
-7713  15aa 4b00          	push	#0
-7714  15ac 4b02          	push	#2
-7715  15ae 4b02          	push	#2
-7716  15b0 5f            	clrw	x
-7717  15b1 b61d          	ld	a,_aktualTemper
-7718  15b3 2a01          	jrpl	L272
-7719  15b5 53            	cplw	x
-7720  15b6               L272:
-7721  15b6 97            	ld	xl,a
-7722  15b7 cd0000        	call	_int2indI_slkuf
-7724  15ba 5b05          	addw	sp,#5
-7725                     ; 1092 		ind_outB[1]=0b10011100;
-7727  15bc 359c0076      	mov	_ind_outB+1,#156
-7729  15c0 204a          	jra	L5623
-7730  15c2               L3623:
-7731                     ; 1096 		if(-aktualTemper<10)
-7733  15c2 9c            	rvf
-7734  15c3 5f            	clrw	x
-7735  15c4 b61d          	ld	a,_aktualTemper
-7736  15c6 2a01          	jrpl	L472
-7737  15c8 53            	cplw	x
-7738  15c9               L472:
-7739  15c9 97            	ld	xl,a
-7740  15ca 50            	negw	x
-7741  15cb a3000a        	cpw	x,#10
-7742  15ce 2e21          	jrsge	L7623
-7743                     ; 1098 			ind_outB[3]=0b10111111;
-7745  15d0 35bf0078      	mov	_ind_outB+3,#191
-7746                     ; 1099 			int2indI_slkuf(-aktualTemper,2, 1, 0, 1, 0);
-7748  15d4 4b00          	push	#0
-7749  15d6 4b01          	push	#1
-7750  15d8 4b00          	push	#0
-7751  15da 4b01          	push	#1
-7752  15dc 4b02          	push	#2
-7753  15de 5f            	clrw	x
-7754  15df b61d          	ld	a,_aktualTemper
-7755  15e1 2a01          	jrpl	L672
-7756  15e3 53            	cplw	x
-7757  15e4               L672:
-7758  15e4 97            	ld	xl,a
-7759  15e5 50            	negw	x
-7760  15e6 cd0000        	call	_int2indI_slkuf
-7762  15e9 5b05          	addw	sp,#5
-7763                     ; 1100 			ind_outB[1]=0b10011100;
-7765  15eb 359c0076      	mov	_ind_outB+1,#156
-7767  15ef 201b          	jra	L5623
-7768  15f1               L7623:
-7769                     ; 1104 			ind_outB[3]=0b10111111;
-7771  15f1 35bf0078      	mov	_ind_outB+3,#191
-7772                     ; 1105 			int2indI_slkuf(-aktualTemper,1, 2, 0, 1, 0);
-7774  15f5 4b00          	push	#0
-7775  15f7 4b01          	push	#1
-7776  15f9 4b00          	push	#0
-7777  15fb 4b02          	push	#2
-7778  15fd 4b01          	push	#1
-7779  15ff 5f            	clrw	x
-7780  1600 b61d          	ld	a,_aktualTemper
-7781  1602 2a01          	jrpl	L003
-7782  1604 53            	cplw	x
-7783  1605               L003:
-7784  1605 97            	ld	xl,a
-7785  1606 50            	negw	x
-7786  1607 cd0000        	call	_int2indI_slkuf
-7788  160a 5b05          	addw	sp,#5
-7789  160c               L5623:
-7790                     ; 1109 	int2indII_slkuf(targetTemper,1, 2, 0, 1, MODE_EE==3?0:1);
-7792  160c c64046        	ld	a,_MODE_EE
-7793  160f a103          	cp	a,#3
-7794  1611 2603          	jrne	L203
-7795  1613 4f            	clr	a
-7796  1614 2002          	jra	L403
-7797  1616               L203:
-7798  1616 a601          	ld	a,#1
-7799  1618               L403:
-7800  1618 88            	push	a
-7801  1619 4b01          	push	#1
-7802  161b 4b00          	push	#0
-7803  161d 4b02          	push	#2
-7804  161f 4b01          	push	#1
-7805  1621 5f            	clrw	x
-7806  1622 b61c          	ld	a,_targetTemper
-7807  1624 2a01          	jrpl	L603
-7808  1626 53            	cplw	x
-7809  1627               L603:
-7810  1627 97            	ld	xl,a
-7811  1628 cd0000        	call	_int2indII_slkuf
-7813  162b 5b05          	addw	sp,#5
-7814                     ; 1110 	if((bFL2)&&(MODE_EE!=3))	ind_outC[0]=0b11111111;
-7816  162d 3d27          	tnz	_bFL2
-7817  162f 270f          	jreq	L3723
-7819  1631 c64046        	ld	a,_MODE_EE
-7820  1634 a103          	cp	a,#3
-7821  1636 2708          	jreq	L3723
-7824  1638 35ff000a      	mov	_ind_outC,#255
-7826  163c ac321932      	jpf	L3462
-7827  1640               L3723:
-7828                     ; 1111 	else 						ind_outC[0]=0b00111000;
-7830  1640 3538000a      	mov	_ind_outC,#56
-7831  1644 ac321932      	jpf	L3462
-7832  1648               L1323:
-7833                     ; 1115 else if(ind==iDefSet)
-7835  1648 b661          	ld	a,_a_ind
-7836  164a a109          	cp	a,#9
-7837  164c 262c          	jrne	L1033
-7838                     ; 1117 	led_mask_off(0x00);
-7840  164e 4f            	clr	a
-7841  164f cd0000        	call	_led_mask_off
-7843                     ; 1119 	int2indI_slkuf(123,1, 3, 0, 0, 0);
-7845  1652 4b00          	push	#0
-7846  1654 4b00          	push	#0
-7847  1656 4b00          	push	#0
-7848  1658 4b03          	push	#3
-7849  165a 4b01          	push	#1
-7850  165c ae007b        	ldw	x,#123
-7851  165f cd0000        	call	_int2indI_slkuf
-7853  1662 5b05          	addw	sp,#5
-7854                     ; 1120 	int2indII_slkuf(4567,0, 4, 0, 0, 0);
-7856  1664 4b00          	push	#0
-7857  1666 4b00          	push	#0
-7858  1668 4b00          	push	#0
-7859  166a 4b04          	push	#4
-7860  166c 4b00          	push	#0
-7861  166e ae11d7        	ldw	x,#4567
-7862  1671 cd0000        	call	_int2indII_slkuf
-7864  1674 5b05          	addw	sp,#5
-7866  1676 ac321932      	jpf	L3462
-7867  167a               L1033:
-7868                     ; 1122 else if(ind==iMn_number)
-7870  167a b661          	ld	a,_a_ind
-7871  167c a10b          	cp	a,#11
-7872  167e 2703cc1717    	jrne	L5033
-7873                     ; 1124 	led_mask_off(0x00);
-7875  1683 4f            	clr	a
-7876  1684 cd0000        	call	_led_mask_off
-7878                     ; 1126 	int2indI_slkuf(rand_dig[0], 3, 1, 0, 0, 0);
-7880  1687 4b00          	push	#0
-7881  1689 4b00          	push	#0
-7882  168b 4b00          	push	#0
-7883  168d 4b01          	push	#1
-7884  168f 4b03          	push	#3
-7885  1691 c6002d        	ld	a,_rand_dig
-7886  1694 5f            	clrw	x
-7887  1695 97            	ld	xl,a
-7888  1696 cd0000        	call	_int2indI_slkuf
-7890  1699 5b05          	addw	sp,#5
-7891                     ; 1127 	int2indI_slkuf(rand_dig[1], 2, 1, 0, 0, 0);
-7893  169b 4b00          	push	#0
-7894  169d 4b00          	push	#0
-7895  169f 4b00          	push	#0
-7896  16a1 4b01          	push	#1
-7897  16a3 4b02          	push	#2
-7898  16a5 c6002e        	ld	a,_rand_dig+1
-7899  16a8 5f            	clrw	x
-7900  16a9 97            	ld	xl,a
-7901  16aa cd0000        	call	_int2indI_slkuf
-7903  16ad 5b05          	addw	sp,#5
-7904                     ; 1128 	int2indI_slkuf(rand_dig[2], 1, 1, 0, 0, 0);
-7906  16af 4b00          	push	#0
-7907  16b1 4b00          	push	#0
-7908  16b3 4b00          	push	#0
-7909  16b5 4b01          	push	#1
-7910  16b7 4b01          	push	#1
-7911  16b9 c6002f        	ld	a,_rand_dig+2
-7912  16bc 5f            	clrw	x
-7913  16bd 97            	ld	xl,a
-7914  16be cd0000        	call	_int2indI_slkuf
-7916  16c1 5b05          	addw	sp,#5
-7917                     ; 1129 	int2indII_slkuf(rand_dig[3], 3, 1, 0, 0, 0);
-7919  16c3 4b00          	push	#0
-7920  16c5 4b00          	push	#0
-7921  16c7 4b00          	push	#0
-7922  16c9 4b01          	push	#1
-7923  16cb 4b03          	push	#3
-7924  16cd c60030        	ld	a,_rand_dig+3
-7925  16d0 5f            	clrw	x
-7926  16d1 97            	ld	xl,a
-7927  16d2 cd0000        	call	_int2indII_slkuf
-7929  16d5 5b05          	addw	sp,#5
-7930                     ; 1130 	int2indII_slkuf(rand_dig[4], 2, 1, 0, 0, 0);
-7932  16d7 4b00          	push	#0
-7933  16d9 4b00          	push	#0
-7934  16db 4b00          	push	#0
-7935  16dd 4b01          	push	#1
-7936  16df 4b02          	push	#2
-7937  16e1 c60031        	ld	a,_rand_dig+4
-7938  16e4 5f            	clrw	x
-7939  16e5 97            	ld	xl,a
-7940  16e6 cd0000        	call	_int2indII_slkuf
-7942  16e9 5b05          	addw	sp,#5
-7943                     ; 1131 	int2indII_slkuf(rand_dig[5], 1, 1, 0, 0, 0);
-7945  16eb 4b00          	push	#0
-7946  16ed 4b00          	push	#0
-7947  16ef 4b00          	push	#0
-7948  16f1 4b01          	push	#1
-7949  16f3 4b01          	push	#1
-7950  16f5 c60032        	ld	a,_rand_dig+5
-7951  16f8 5f            	clrw	x
-7952  16f9 97            	ld	xl,a
-7953  16fa cd0000        	call	_int2indII_slkuf
-7955  16fd 5b05          	addw	sp,#5
-7956                     ; 1132 	int2indII_slkuf(rand_dig[6], 0, 1, 0, 0, 0);
-7958  16ff 4b00          	push	#0
-7959  1701 4b00          	push	#0
-7960  1703 4b00          	push	#0
-7961  1705 4b01          	push	#1
-7962  1707 4b00          	push	#0
-7963  1709 c60033        	ld	a,_rand_dig+6
-7964  170c 5f            	clrw	x
-7965  170d 97            	ld	xl,a
-7966  170e cd0000        	call	_int2indII_slkuf
-7968  1711 5b05          	addw	sp,#5
-7970  1713 ac321932      	jpf	L3462
-7971  1717               L5033:
-7972                     ; 1135 else if(ind==iAfterReset)
-7974  1717 b661          	ld	a,_a_ind
-7975  1719 a10c          	cp	a,#12
-7976  171b 2619          	jrne	L1133
-7977                     ; 1137 	led_mask_off(0x00);
-7979  171d 4f            	clr	a
-7980  171e cd0000        	call	_led_mask_off
-7982                     ; 1139 	int2indI_slkuf(mainCnt, 1, 3, 0, 0, 0);
-7984  1721 4b00          	push	#0
-7985  1723 4b00          	push	#0
-7986  1725 4b00          	push	#0
-7987  1727 4b03          	push	#3
-7988  1729 4b01          	push	#1
-7989  172b be82          	ldw	x,_mainCnt
-7990  172d cd0000        	call	_int2indI_slkuf
-7992  1730 5b05          	addw	sp,#5
-7994  1732 ac321932      	jpf	L3462
-7995  1736               L1133:
-7996                     ; 1142 else if(ind==iWater)
-7998  1736 b661          	ld	a,_a_ind
-7999  1738 a10d          	cp	a,#13
-8000  173a 261e          	jrne	L5133
-8001                     ; 1144 	led_mask_off(0x00);
-8003  173c 4f            	clr	a
-8004  173d cd0000        	call	_led_mask_off
-8006                     ; 1146 	int2indI_slkuf(temperOfWater,1, 3, 0, 0, 0);
-8008  1740 4b00          	push	#0
-8009  1742 4b00          	push	#0
-8010  1744 4b00          	push	#0
-8011  1746 4b03          	push	#3
-8012  1748 4b01          	push	#1
-8013  174a 5f            	clrw	x
-8014  174b b61f          	ld	a,_temperOfWater
-8015  174d 2a01          	jrpl	L013
-8016  174f 53            	cplw	x
-8017  1750               L013:
-8018  1750 97            	ld	xl,a
-8019  1751 cd0000        	call	_int2indI_slkuf
-8021  1754 5b05          	addw	sp,#5
-8023  1756 ac321932      	jpf	L3462
-8024  175a               L5133:
-8025                     ; 1150 else if(ind==iAir)
-8027  175a b661          	ld	a,_a_ind
-8028  175c a10e          	cp	a,#14
-8029  175e 261e          	jrne	L1233
-8030                     ; 1152 	led_mask_off(0x00);
-8032  1760 4f            	clr	a
-8033  1761 cd0000        	call	_led_mask_off
-8035                     ; 1154 	int2indI_slkuf(temperOfAir,1, 3, 0, 0, 0);
-8037  1764 4b00          	push	#0
-8038  1766 4b00          	push	#0
-8039  1768 4b00          	push	#0
-8040  176a 4b03          	push	#3
-8041  176c 4b01          	push	#1
-8042  176e 5f            	clrw	x
-8043  176f b61e          	ld	a,_temperOfAir
-8044  1771 2a01          	jrpl	L213
-8045  1773 53            	cplw	x
-8046  1774               L213:
-8047  1774 97            	ld	xl,a
-8048  1775 cd0000        	call	_int2indI_slkuf
-8050  1778 5b05          	addw	sp,#5
-8052  177a ac321932      	jpf	L3462
-8053  177e               L1233:
-8054                     ; 1158 else if(ind==iInterf)
-8056  177e b661          	ld	a,_a_ind
-8057  1780 a10f          	cp	a,#15
-8058  1782 2703          	jreq	L034
-8059  1784 cc1932        	jp	L3462
-8060  1787               L034:
-8061                     ; 1164 	if(++ind_check_cnt1>=5)
-8063  1787 9c            	rvf
-8064  1788 ce0004        	ldw	x,_ind_check_cnt1
-8065  178b 1c0001        	addw	x,#1
-8066  178e cf0004        	ldw	_ind_check_cnt1,x
-8067  1791 a30005        	cpw	x,#5
-8068  1794 2f17          	jrslt	L7233
-8069                     ; 1166 		ind_check_cnt1=0;
-8071  1796 5f            	clrw	x
-8072  1797 cf0004        	ldw	_ind_check_cnt1,x
-8073                     ; 1167 		if(++ind_check_cnt>=64)ind_check_cnt=0;
-8075  179a 9c            	rvf
-8076  179b ce0006        	ldw	x,_ind_check_cnt
-8077  179e 1c0001        	addw	x,#1
-8078  17a1 cf0006        	ldw	_ind_check_cnt,x
-8079  17a4 a30040        	cpw	x,#64
-8080  17a7 2f04          	jrslt	L7233
-8083  17a9 5f            	clrw	x
-8084  17aa cf0006        	ldw	_ind_check_cnt,x
-8085  17ad               L7233:
-8086                     ; 1169 	ind_outB[0]=0xff;
-8088  17ad 35ff0075      	mov	_ind_outB,#255
-8089                     ; 1170 	ind_outB[1]=0xff;
-8091  17b1 35ff0076      	mov	_ind_outB+1,#255
-8092                     ; 1171 	ind_outB[2]=0xff;
-8094  17b5 35ff0077      	mov	_ind_outB+2,#255
-8095                     ; 1172 	ind_outB[3]=0xff;
-8097  17b9 35ff0078      	mov	_ind_outB+3,#255
-8098                     ; 1173 	ind_outC[0]=0xff;
-8100  17bd 35ff000a      	mov	_ind_outC,#255
-8101                     ; 1174 	ind_outC[1]=0xff;
-8103  17c1 35ff000b      	mov	_ind_outC+1,#255
-8104                     ; 1175 	ind_outC[2]=0xff;
-8106  17c5 35ff000c      	mov	_ind_outC+2,#255
-8107                     ; 1176 	ind_outC[3]=0xff;
-8109  17c9 35ff000d      	mov	_ind_outC+3,#255
-8110                     ; 1177 	ind_outG[0]=0xff;
-8112  17cd 35ff0016      	mov	_ind_outG,#255
-8113                     ; 1178 	ind_outG[1]=0xff;
-8115  17d1 35ff0017      	mov	_ind_outG+1,#255
-8116                     ; 1179 	ind_outG[2]=0xff;
-8118  17d5 35ff0018      	mov	_ind_outG+2,#255
-8119                     ; 1180 	ind_outG[3]=0xff;
-8121  17d9 35ff0019      	mov	_ind_outG+3,#255
-8122                     ; 1181 	led_mask_off(0x00);
-8124  17dd 4f            	clr	a
-8125  17de cd0000        	call	_led_mask_off
-8127                     ; 1183 	if(ind_check_cnt<=7)
-8129  17e1 9c            	rvf
-8130  17e2 ce0006        	ldw	x,_ind_check_cnt
-8131  17e5 a30008        	cpw	x,#8
-8132  17e8 2e1a          	jrsge	L3333
-8133                     ; 1185 		ind_outB[3]&=(~(1<<ind_check_cnt));	
-8135  17ea 5f            	clrw	x
-8136  17eb c60007        	ld	a,_ind_check_cnt+1
-8137  17ee 2a01          	jrpl	L413
-8138  17f0 53            	cplw	x
-8139  17f1               L413:
-8140  17f1 97            	ld	xl,a
-8141  17f2 a601          	ld	a,#1
-8142  17f4 5d            	tnzw	x
-8143  17f5 2704          	jreq	L613
-8144  17f7               L023:
-8145  17f7 48            	sll	a
-8146  17f8 5a            	decw	x
-8147  17f9 26fc          	jrne	L023
-8148  17fb               L613:
-8149  17fb 43            	cpl	a
-8150  17fc b478          	and	a,_ind_outB+3
-8151  17fe b778          	ld	_ind_outB+3,a
-8153  1800 ac321932      	jpf	L3462
-8154  1804               L3333:
-8155                     ; 1187 	else if(ind_check_cnt<=15)
-8157  1804 9c            	rvf
-8158  1805 ce0006        	ldw	x,_ind_check_cnt
-8159  1808 a30010        	cpw	x,#16
-8160  180b 2e1d          	jrsge	L7333
-8161                     ; 1189 		ind_outB[2]&=(~(1<<(ind_check_cnt-8)));	
-8163  180d c60007        	ld	a,_ind_check_cnt+1
-8164  1810 a008          	sub	a,#8
-8165  1812 5f            	clrw	x
-8166  1813 4d            	tnz	a
-8167  1814 2a01          	jrpl	L223
-8168  1816 53            	cplw	x
-8169  1817               L223:
-8170  1817 97            	ld	xl,a
-8171  1818 a601          	ld	a,#1
-8172  181a 5d            	tnzw	x
-8173  181b 2704          	jreq	L423
-8174  181d               L623:
-8175  181d 48            	sll	a
-8176  181e 5a            	decw	x
-8177  181f 26fc          	jrne	L623
-8178  1821               L423:
-8179  1821 43            	cpl	a
-8180  1822 b477          	and	a,_ind_outB+2
-8181  1824 b777          	ld	_ind_outB+2,a
-8183  1826 ac321932      	jpf	L3462
-8184  182a               L7333:
-8185                     ; 1191 	else if(ind_check_cnt<=23)
-8187  182a 9c            	rvf
-8188  182b ce0006        	ldw	x,_ind_check_cnt
-8189  182e a30018        	cpw	x,#24
-8190  1831 2e1d          	jrsge	L3433
-8191                     ; 1193 		ind_outB[1]&=(~(1<<(ind_check_cnt-16)));	
-8193  1833 c60007        	ld	a,_ind_check_cnt+1
-8194  1836 a010          	sub	a,#16
-8195  1838 5f            	clrw	x
-8196  1839 4d            	tnz	a
-8197  183a 2a01          	jrpl	L033
-8198  183c 53            	cplw	x
-8199  183d               L033:
-8200  183d 97            	ld	xl,a
-8201  183e a601          	ld	a,#1
-8202  1840 5d            	tnzw	x
-8203  1841 2704          	jreq	L233
-8204  1843               L433:
-8205  1843 48            	sll	a
-8206  1844 5a            	decw	x
-8207  1845 26fc          	jrne	L433
-8208  1847               L233:
-8209  1847 43            	cpl	a
-8210  1848 b476          	and	a,_ind_outB+1
-8211  184a b776          	ld	_ind_outB+1,a
-8213  184c ac321932      	jpf	L3462
-8214  1850               L3433:
-8215                     ; 1195 	else if(ind_check_cnt<=30)
-8217  1850 9c            	rvf
-8218  1851 ce0006        	ldw	x,_ind_check_cnt
-8219  1854 a3001f        	cpw	x,#31
-8220  1857 2e1d          	jrsge	L7433
-8221                     ; 1197 		ind_outC[3]&=(~(1<<(ind_check_cnt-23)));	
-8223  1859 c60007        	ld	a,_ind_check_cnt+1
-8224  185c a017          	sub	a,#23
-8225  185e 5f            	clrw	x
-8226  185f 4d            	tnz	a
-8227  1860 2a01          	jrpl	L633
-8228  1862 53            	cplw	x
-8229  1863               L633:
-8230  1863 97            	ld	xl,a
-8231  1864 a601          	ld	a,#1
-8232  1866 5d            	tnzw	x
-8233  1867 2704          	jreq	L043
-8234  1869               L243:
-8235  1869 48            	sll	a
-8236  186a 5a            	decw	x
-8237  186b 26fc          	jrne	L243
-8238  186d               L043:
-8239  186d 43            	cpl	a
-8240  186e b40d          	and	a,_ind_outC+3
-8241  1870 b70d          	ld	_ind_outC+3,a
-8243  1872 ac321932      	jpf	L3462
-8244  1876               L7433:
-8245                     ; 1199 	else if(ind_check_cnt==31)
-8247  1876 ce0006        	ldw	x,_ind_check_cnt
-8248  1879 a3001f        	cpw	x,#31
-8249  187c 2608          	jrne	L3533
-8250                     ; 1201 		ind_outG[3]&=0xfe;	
-8252  187e 72110019      	bres	_ind_outG+3,#0
-8254  1882 ac321932      	jpf	L3462
-8255  1886               L3533:
-8256                     ; 1203 	else if(ind_check_cnt<=38)
-8258  1886 9c            	rvf
-8259  1887 ce0006        	ldw	x,_ind_check_cnt
-8260  188a a30027        	cpw	x,#39
-8261  188d 2e1c          	jrsge	L7533
-8262                     ; 1205 		ind_outC[2]&=(~(1<<(ind_check_cnt-31)));	
-8264  188f c60007        	ld	a,_ind_check_cnt+1
-8265  1892 a01f          	sub	a,#31
-8266  1894 5f            	clrw	x
-8267  1895 4d            	tnz	a
-8268  1896 2a01          	jrpl	L443
-8269  1898 53            	cplw	x
-8270  1899               L443:
-8271  1899 97            	ld	xl,a
-8272  189a a601          	ld	a,#1
-8273  189c 5d            	tnzw	x
-8274  189d 2704          	jreq	L643
-8275  189f               L053:
-8276  189f 48            	sll	a
-8277  18a0 5a            	decw	x
-8278  18a1 26fc          	jrne	L053
-8279  18a3               L643:
-8280  18a3 43            	cpl	a
-8281  18a4 b40c          	and	a,_ind_outC+2
-8282  18a6 b70c          	ld	_ind_outC+2,a
-8284  18a8 cc1932        	jra	L3462
-8285  18ab               L7533:
-8286                     ; 1207 	else if(ind_check_cnt==39)
-8288  18ab ce0006        	ldw	x,_ind_check_cnt
-8289  18ae a30027        	cpw	x,#39
-8290  18b1 2606          	jrne	L3633
-8291                     ; 1209 		ind_outG[2]&=0xfe;	
-8293  18b3 72110018      	bres	_ind_outG+2,#0
-8295  18b7 2079          	jra	L3462
-8296  18b9               L3633:
-8297                     ; 1211 	else if(ind_check_cnt<=46)
-8299  18b9 9c            	rvf
-8300  18ba ce0006        	ldw	x,_ind_check_cnt
-8301  18bd a3002f        	cpw	x,#47
-8302  18c0 2e1b          	jrsge	L7633
-8303                     ; 1213 		ind_outC[1]&=(~(1<<(ind_check_cnt-39)));	
-8305  18c2 c60007        	ld	a,_ind_check_cnt+1
-8306  18c5 a027          	sub	a,#39
-8307  18c7 5f            	clrw	x
-8308  18c8 4d            	tnz	a
-8309  18c9 2a01          	jrpl	L253
-8310  18cb 53            	cplw	x
-8311  18cc               L253:
-8312  18cc 97            	ld	xl,a
-8313  18cd a601          	ld	a,#1
-8314  18cf 5d            	tnzw	x
-8315  18d0 2704          	jreq	L453
-8316  18d2               L653:
-8317  18d2 48            	sll	a
-8318  18d3 5a            	decw	x
-8319  18d4 26fc          	jrne	L653
-8320  18d6               L453:
-8321  18d6 43            	cpl	a
-8322  18d7 b40b          	and	a,_ind_outC+1
-8323  18d9 b70b          	ld	_ind_outC+1,a
-8325  18db 2055          	jra	L3462
-8326  18dd               L7633:
-8327                     ; 1215 	else if(ind_check_cnt==47)
-8329  18dd ce0006        	ldw	x,_ind_check_cnt
-8330  18e0 a3002f        	cpw	x,#47
-8331  18e3 2606          	jrne	L3733
-8332                     ; 1217 		ind_outG[1]&=0xfe;	
-8334  18e5 72110017      	bres	_ind_outG+1,#0
-8336  18e9 2047          	jra	L3462
-8337  18eb               L3733:
-8338                     ; 1219 	else if(ind_check_cnt<=54)
-8340  18eb 9c            	rvf
-8341  18ec ce0006        	ldw	x,_ind_check_cnt
-8342  18ef a30037        	cpw	x,#55
-8343  18f2 2e1b          	jrsge	L7733
-8344                     ; 1221 		ind_outC[0]&=(~(1<<(ind_check_cnt-47)));	
-8346  18f4 c60007        	ld	a,_ind_check_cnt+1
-8347  18f7 a02f          	sub	a,#47
-8348  18f9 5f            	clrw	x
-8349  18fa 4d            	tnz	a
-8350  18fb 2a01          	jrpl	L063
-8351  18fd 53            	cplw	x
-8352  18fe               L063:
-8353  18fe 97            	ld	xl,a
-8354  18ff a601          	ld	a,#1
-8355  1901 5d            	tnzw	x
-8356  1902 2704          	jreq	L263
-8357  1904               L463:
-8358  1904 48            	sll	a
-8359  1905 5a            	decw	x
-8360  1906 26fc          	jrne	L463
-8361  1908               L263:
-8362  1908 43            	cpl	a
-8363  1909 b40a          	and	a,_ind_outC
-8364  190b b70a          	ld	_ind_outC,a
-8366  190d 2023          	jra	L3462
-8367  190f               L7733:
-8368                     ; 1223 	else if(ind_check_cnt==55)
-8370  190f ce0006        	ldw	x,_ind_check_cnt
-8371  1912 a30037        	cpw	x,#55
-8372  1915 2606          	jrne	L3043
-8373                     ; 1225 		ind_outG[0]&=0xfe;	
-8375  1917 72110016      	bres	_ind_outG,#0
-8377  191b 2015          	jra	L3462
-8378  191d               L3043:
-8379                     ; 1227 	else if(ind_check_cnt<=64)
-8381  191d 9c            	rvf
-8382  191e ce0006        	ldw	x,_ind_check_cnt
-8383  1921 a30041        	cpw	x,#65
-8384  1924 2e0c          	jrsge	L3462
-8385                     ; 1229 		led_mask_off(0x00);
-8387  1926 4f            	clr	a
-8388  1927 cd0000        	call	_led_mask_off
-8390                     ; 1230 		led_on(ind_check_cnt-55);	
-8392  192a c60007        	ld	a,_ind_check_cnt+1
-8393  192d a037          	sub	a,#55
-8394  192f cd0000        	call	_led_on
-8396  1932               L3462:
-8397                     ; 1234 if(powerStat==psOFF)
-8399  1932 3d29          	tnz	_powerStat
-8400  1934 263a          	jrne	L1143
-8401                     ; 1236 	led_set(1,0);
-8403  1936 5f            	clrw	x
-8404  1937 a601          	ld	a,#1
-8405  1939 95            	ld	xh,a
-8406  193a cd0000        	call	_led_set
-8408                     ; 1237 	led_set(2,0);
-8410  193d 5f            	clrw	x
-8411  193e a602          	ld	a,#2
-8412  1940 95            	ld	xh,a
-8413  1941 cd0000        	call	_led_set
-8415                     ; 1238 	led_set(3,0);
-8417  1944 5f            	clrw	x
-8418  1945 a603          	ld	a,#3
-8419  1947 95            	ld	xh,a
-8420  1948 cd0000        	call	_led_set
-8422                     ; 1239 	led_set(4,0);
-8424  194b 5f            	clrw	x
-8425  194c a604          	ld	a,#4
-8426  194e 95            	ld	xh,a
-8427  194f cd0000        	call	_led_set
-8429                     ; 1240 	led_set(5,0);
-8431  1952 5f            	clrw	x
-8432  1953 a605          	ld	a,#5
-8433  1955 95            	ld	xh,a
-8434  1956 cd0000        	call	_led_set
-8436                     ; 1241 	led_set(6,0);
-8438  1959 5f            	clrw	x
-8439  195a a606          	ld	a,#6
-8440  195c 95            	ld	xh,a
-8441  195d cd0000        	call	_led_set
-8443                     ; 1242 	led_set(7,0);
-8445  1960 5f            	clrw	x
-8446  1961 a607          	ld	a,#7
-8447  1963 95            	ld	xh,a
-8448  1964 cd0000        	call	_led_set
-8450                     ; 1243 	led_set(8,2);
-8452  1967 ae0002        	ldw	x,#2
-8453  196a a608          	ld	a,#8
-8454  196c 95            	ld	xh,a
-8455  196d cd0000        	call	_led_set
-8457  1970               L1143:
-8458                     ; 1246 if(bFL5)
-8460  1970 3d28          	tnz	_bFL5
-8461  1972 2717          	jreq	L3143
-8462                     ; 1248 	ind_outB[0]=led_ind_out1;
-8464  1974 452475        	mov	_ind_outB,_led_ind_out1
-8465                     ; 1249 	ind_outB[4]=led_ind_out1;
-8467  1977 452479        	mov	_ind_outB+4,_led_ind_out1
-8468                     ; 1250 	ind_outB[5]=led_ind_out1;
-8470  197a 45247a        	mov	_ind_outB+5,_led_ind_out1
-8471                     ; 1251 	ind_outB[6]=led_ind_out1;
-8473  197d 45247b        	mov	_ind_outB+6,_led_ind_out1
-8474                     ; 1252 	ind_outB[7]=led_ind_out1;
-8476  1980 45247c        	mov	_ind_outB+7,_led_ind_out1
-8477                     ; 1253 	ind_outB[8]=led_ind_out1;
-8479  1983 45247d        	mov	_ind_outB+8,_led_ind_out1
-8480                     ; 1254 	ind_outB[9]=led_ind_out1;
-8482  1986 45247e        	mov	_ind_outB+9,_led_ind_out1
-8484  1989 2015          	jra	L5143
-8485  198b               L3143:
-8486                     ; 1258 	ind_outB[0]=led_ind_out2;
-8488  198b 452375        	mov	_ind_outB,_led_ind_out2
-8489                     ; 1259 	ind_outB[4]=led_ind_out2;
-8491  198e 452379        	mov	_ind_outB+4,_led_ind_out2
-8492                     ; 1260 	ind_outB[5]=led_ind_out2;
-8494  1991 45237a        	mov	_ind_outB+5,_led_ind_out2
-8495                     ; 1261 	ind_outB[6]=led_ind_out2;
-8497  1994 45237b        	mov	_ind_outB+6,_led_ind_out2
-8498                     ; 1262 	ind_outB[7]=led_ind_out2;
-8500  1997 45237c        	mov	_ind_outB+7,_led_ind_out2
-8501                     ; 1263 	ind_outB[8]=led_ind_out2;
-8503  199a 45237d        	mov	_ind_outB+8,_led_ind_out2
-8504                     ; 1264 	ind_outB[9]=led_ind_out2;
-8506  199d 45237e        	mov	_ind_outB+9,_led_ind_out2
-8507  19a0               L5143:
-8508                     ; 1266 }
-8511  19a0 85            	popw	x
-8512  19a1 81            	ret
-8673                     ; 1271 void but_an(void)
-8673                     ; 1272 {
-8674                     	switch	.text
-8675  19a2               _but_an:
-8677  19a2 5203          	subw	sp,#3
-8678       00000003      OFST:	set	3
-8681                     ; 1273 if(!n_but) return;
-8683  19a4 3d00          	tnz	_n_but
-8684  19a6 2603          	jrne	L265
-8685  19a8 cc28fe        	jp	L065
-8686  19ab               L265:
-8689                     ; 1274 n_but=0;
-8691  19ab 3f00          	clr	_n_but
-8692                     ; 1276 if(ind==iMn)
-8694  19ad 3d61          	tnz	_a_ind
-8695  19af 2703          	jreq	L465
-8696  19b1 cc1a4f        	jp	L7053
-8697  19b4               L465:
-8698                     ; 1278 	if(but==butM_)
-8700  19b4 b600          	ld	a,_but
-8701  19b6 a17d          	cp	a,#125
-8702  19b8 2610          	jrne	L1153
-8703                     ; 1280 		tree_up(iSet,0,0,0);
-8705  19ba 4b00          	push	#0
-8706  19bc 4b00          	push	#0
-8707  19be 5f            	clrw	x
-8708  19bf a601          	ld	a,#1
-8709  19c1 95            	ld	xh,a
-8710  19c2 cd0000        	call	_tree_up
-8712  19c5 85            	popw	x
-8714  19c6 acfe28fe      	jpf	L7453
-8715  19ca               L1153:
-8716                     ; 1282 	else if(but==butM)
-8718  19ca b600          	ld	a,_but
-8719  19cc a1fd          	cp	a,#253
-8720  19ce 2617          	jrne	L5153
-8721                     ; 1284 		tree_up(iTemperSet,0,0,0);
-8723  19d0 4b00          	push	#0
-8724  19d2 4b00          	push	#0
-8725  19d4 5f            	clrw	x
-8726  19d5 a608          	ld	a,#8
-8727  19d7 95            	ld	xh,a
-8728  19d8 cd0000        	call	_tree_up
-8730  19db 85            	popw	x
-8731                     ; 1285 		ret_ind(5,0);
-8733  19dc 5f            	clrw	x
-8734  19dd a605          	ld	a,#5
-8735  19df 95            	ld	xh,a
-8736  19e0 cd0000        	call	_ret_ind
-8739  19e3 acfe28fe      	jpf	L7453
-8740  19e7               L5153:
-8741                     ; 1287 	else if(but==butU)
-8743  19e7 b600          	ld	a,_but
-8744  19e9 a1fb          	cp	a,#251
-8745  19eb 2617          	jrne	L1253
-8746                     ; 1289 		tree_up(iDate_W,0,0,0);
-8748  19ed 4b00          	push	#0
-8749  19ef 4b00          	push	#0
-8750  19f1 5f            	clrw	x
-8751  19f2 a604          	ld	a,#4
-8752  19f4 95            	ld	xh,a
-8753  19f5 cd0000        	call	_tree_up
-8755  19f8 85            	popw	x
-8756                     ; 1290 		ret_ind(4,0);
-8758  19f9 5f            	clrw	x
-8759  19fa a604          	ld	a,#4
-8760  19fc 95            	ld	xh,a
-8761  19fd cd0000        	call	_ret_ind
-8764  1a00 acfe28fe      	jpf	L7453
-8765  1a04               L1253:
-8766                     ; 1292 	else if(but==butD_)
-8768  1a04 b600          	ld	a,_but
-8769  1a06 a177          	cp	a,#119
-8770  1a08 2603          	jrne	L665
-8771  1a0a cc28fe        	jp	L7453
-8772  1a0d               L665:
-8774                     ; 1300 	else if(but==butD)
-8776  1a0d b600          	ld	a,_but
-8777  1a0f a1f7          	cp	a,#247
-8778  1a11 2603          	jrne	L075
-8779  1a13 cc28fe        	jp	L7453
-8780  1a16               L075:
-8782                     ; 1309 	else if(but==butU_)
-8784  1a16 b600          	ld	a,_but
-8785  1a18 a17b          	cp	a,#123
-8786  1a1a 2603          	jrne	L275
-8787  1a1c cc28fe        	jp	L7453
-8788  1a1f               L275:
-8790                     ; 1313 	else if(but==butON)
-8792  1a1f b600          	ld	a,_but
-8793  1a21 a1fe          	cp	a,#254
-8794  1a23 2703          	jreq	L475
-8795  1a25 cc28fe        	jp	L7453
-8796  1a28               L475:
-8797                     ; 1315 		if(outMode==omON)	outMode=omOFF;
-8799  1a28 c6401d        	ld	a,_outMode
-8800  1a2b a101          	cp	a,#1
-8801  1a2d 2609          	jrne	L3453
-8804  1a2f 4f            	clr	a
-8805  1a30 ae401d        	ldw	x,#_outMode
-8806  1a33 cd0000        	call	c_eewrc
-8809  1a36 2008          	jra	L5453
-8810  1a38               L3453:
-8811                     ; 1316 		else 				outMode=omON;
-8813  1a38 a601          	ld	a,#1
-8814  1a3a ae401d        	ldw	x,#_outMode
-8815  1a3d cd0000        	call	c_eewrc
-8817  1a40               L5453:
-8818                     ; 1317 		HUMAN_SET_EE=1;
-8820  1a40 ae0001        	ldw	x,#1
-8821  1a43 89            	pushw	x
-8822  1a44 ae401e        	ldw	x,#_HUMAN_SET_EE
-8823  1a47 cd0000        	call	c_eewrw
-8825  1a4a 85            	popw	x
-8826  1a4b acfe28fe      	jpf	L7453
-8827  1a4f               L7053:
-8828                     ; 1321 else if(ind==iTemperSet)
-8830  1a4f b661          	ld	a,_a_ind
-8831  1a51 a108          	cp	a,#8
-8832  1a53 2703          	jreq	L675
-8833  1a55 cc1b5b        	jp	L1553
-8834  1a58               L675:
-8835                     ; 1323 	if(but==butM)
-8837  1a58 b600          	ld	a,_but
-8838  1a5a a1fd          	cp	a,#253
-8839  1a5c 2610          	jrne	L3553
-8840                     ; 1325 		tree_down(0,0);
-8842  1a5e 5f            	clrw	x
-8843  1a5f 4f            	clr	a
-8844  1a60 95            	ld	xh,a
-8845  1a61 cd0000        	call	_tree_down
-8847                     ; 1326 		ret_ind(0,0);
-8849  1a64 5f            	clrw	x
-8850  1a65 4f            	clr	a
-8851  1a66 95            	ld	xh,a
-8852  1a67 cd0000        	call	_ret_ind
-8855  1a6a acfe28fe      	jpf	L7453
-8856  1a6e               L3553:
-8857                     ; 1328 	else if(MODE_EE==1)
-8859  1a6e c64046        	ld	a,_MODE_EE
-8860  1a71 a101          	cp	a,#1
-8861  1a73 266e          	jrne	L7553
-8862                     ; 1330 		ret_ind(4,0);
-8864  1a75 5f            	clrw	x
-8865  1a76 a604          	ld	a,#4
-8866  1a78 95            	ld	xh,a
-8867  1a79 cd0000        	call	_ret_ind
-8869                     ; 1331 		if((but==butU)||(but==butU_))
-8871  1a7c b600          	ld	a,_but
-8872  1a7e a1fb          	cp	a,#251
-8873  1a80 2706          	jreq	L3653
-8875  1a82 b600          	ld	a,_but
-8876  1a84 a17b          	cp	a,#123
-8877  1a86 2624          	jrne	L1653
-8878  1a88               L3653:
-8879                     ; 1333 			NECC_TEMPER_WATER_EE++;
-8881  1a88 c64045        	ld	a,_NECC_TEMPER_WATER_EE
-8882  1a8b 4c            	inc	a
-8883  1a8c ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-8884  1a8f cd0000        	call	c_eewrc
-8886                     ; 1334 			gran_char(&NECC_TEMPER_WATER_EE,5,85);
-8888  1a92 4b55          	push	#85
-8889  1a94 4b05          	push	#5
-8890  1a96 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-8891  1a99 cd0000        	call	_gran_char
-8893  1a9c 85            	popw	x
-8894                     ; 1335 			speed=1;
-8896  1a9d 35010000      	mov	_speed,#1
-8897                     ; 1336 			HUMAN_SET_EE=1;
-8899  1aa1 ae0001        	ldw	x,#1
-8900  1aa4 89            	pushw	x
-8901  1aa5 ae401e        	ldw	x,#_HUMAN_SET_EE
-8902  1aa8 cd0000        	call	c_eewrw
-8904  1aab 85            	popw	x
-8905  1aac               L1653:
-8906                     ; 1338 		if((but==butD)||(but==butD_))
-8908  1aac b600          	ld	a,_but
-8909  1aae a1f7          	cp	a,#247
-8910  1ab0 2709          	jreq	L7653
-8912  1ab2 b600          	ld	a,_but
-8913  1ab4 a177          	cp	a,#119
-8914  1ab6 2703          	jreq	L006
-8915  1ab8 cc28fe        	jp	L7453
-8916  1abb               L006:
-8917  1abb               L7653:
-8918                     ; 1340 			NECC_TEMPER_WATER_EE--;
-8920  1abb c64045        	ld	a,_NECC_TEMPER_WATER_EE
-8921  1abe 4a            	dec	a
-8922  1abf ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-8923  1ac2 cd0000        	call	c_eewrc
-8925                     ; 1341 			gran_char(&NECC_TEMPER_WATER_EE,5,85);
-8927  1ac5 4b55          	push	#85
-8928  1ac7 4b05          	push	#5
-8929  1ac9 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-8930  1acc cd0000        	call	_gran_char
-8932  1acf 85            	popw	x
-8933                     ; 1342 			speed=1;
-8935  1ad0 35010000      	mov	_speed,#1
-8936                     ; 1343 			HUMAN_SET_EE=1;
-8938  1ad4 ae0001        	ldw	x,#1
-8939  1ad7 89            	pushw	x
-8940  1ad8 ae401e        	ldw	x,#_HUMAN_SET_EE
-8941  1adb cd0000        	call	c_eewrw
-8943  1ade 85            	popw	x
-8944  1adf acfe28fe      	jpf	L7453
-8945  1ae3               L7553:
-8946                     ; 1346 	else if(MODE_EE==2)
-8948  1ae3 c64046        	ld	a,_MODE_EE
-8949  1ae6 a102          	cp	a,#2
-8950  1ae8 2703          	jreq	L206
-8951  1aea cc28fe        	jp	L7453
-8952  1aed               L206:
-8953                     ; 1348 		ret_ind(4,0);
-8955  1aed 5f            	clrw	x
-8956  1aee a604          	ld	a,#4
-8957  1af0 95            	ld	xh,a
-8958  1af1 cd0000        	call	_ret_ind
-8960                     ; 1349 		if((but==butU)||(but==butU_))
-8962  1af4 b600          	ld	a,_but
-8963  1af6 a1fb          	cp	a,#251
-8964  1af8 2706          	jreq	L7753
-8966  1afa b600          	ld	a,_but
-8967  1afc a17b          	cp	a,#123
-8968  1afe 2624          	jrne	L5753
-8969  1b00               L7753:
-8970                     ; 1351 			NECC_TEMPER_AIR_EE++;
-8972  1b00 c64044        	ld	a,_NECC_TEMPER_AIR_EE
-8973  1b03 4c            	inc	a
-8974  1b04 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-8975  1b07 cd0000        	call	c_eewrc
-8977                     ; 1352 			gran_char(&NECC_TEMPER_AIR_EE,5,35);
-8979  1b0a 4b23          	push	#35
-8980  1b0c 4b05          	push	#5
-8981  1b0e ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-8982  1b11 cd0000        	call	_gran_char
-8984  1b14 85            	popw	x
-8985                     ; 1353 			speed=1;
-8987  1b15 35010000      	mov	_speed,#1
-8988                     ; 1354 			HUMAN_SET_EE=1;
-8990  1b19 ae0001        	ldw	x,#1
-8991  1b1c 89            	pushw	x
-8992  1b1d ae401e        	ldw	x,#_HUMAN_SET_EE
-8993  1b20 cd0000        	call	c_eewrw
-8995  1b23 85            	popw	x
-8996  1b24               L5753:
-8997                     ; 1356 		if((but==butD)||(but==butD_))
-8999  1b24 b600          	ld	a,_but
-9000  1b26 a1f7          	cp	a,#247
-9001  1b28 2709          	jreq	L3063
-9003  1b2a b600          	ld	a,_but
-9004  1b2c a177          	cp	a,#119
-9005  1b2e 2703          	jreq	L406
-9006  1b30 cc28fe        	jp	L7453
-9007  1b33               L406:
-9008  1b33               L3063:
-9009                     ; 1358 			NECC_TEMPER_AIR_EE--;
-9011  1b33 c64044        	ld	a,_NECC_TEMPER_AIR_EE
-9012  1b36 4a            	dec	a
-9013  1b37 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-9014  1b3a cd0000        	call	c_eewrc
-9016                     ; 1359 			gran_char(&NECC_TEMPER_AIR_EE,5,35);
-9018  1b3d 4b23          	push	#35
-9019  1b3f 4b05          	push	#5
-9020  1b41 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-9021  1b44 cd0000        	call	_gran_char
-9023  1b47 85            	popw	x
-9024                     ; 1360 			speed=1;
-9026  1b48 35010000      	mov	_speed,#1
-9027                     ; 1361 			HUMAN_SET_EE=1;
-9029  1b4c ae0001        	ldw	x,#1
-9030  1b4f 89            	pushw	x
-9031  1b50 ae401e        	ldw	x,#_HUMAN_SET_EE
-9032  1b53 cd0000        	call	c_eewrw
-9034  1b56 85            	popw	x
-9035  1b57 acfe28fe      	jpf	L7453
-9036  1b5b               L1553:
-9037                     ; 1365 else if(ind==iDate_W)
-9039  1b5b b661          	ld	a,_a_ind
-9040  1b5d a104          	cp	a,#4
-9041  1b5f 2635          	jrne	L7063
-9042                     ; 1367 	if(but==butU)
-9044  1b61 b600          	ld	a,_but
-9045  1b63 a1fb          	cp	a,#251
-9046  1b65 2703          	jreq	L606
-9047  1b67 cc28fe        	jp	L7453
-9048  1b6a               L606:
-9049                     ; 1369 		if(sub_ind==0)
-9051  1b6a 3d62          	tnz	_a_ind+1
-9052  1b6c 2615          	jrne	L3163
-9053                     ; 1371 			sub_ind=1;
-9055  1b6e 35010062      	mov	_a_ind+1,#1
-9056                     ; 1372 			ret_ind(4,0);
-9058  1b72 5f            	clrw	x
-9059  1b73 a604          	ld	a,#4
-9060  1b75 95            	ld	xh,a
-9061  1b76 cd0000        	call	_ret_ind
-9063                     ; 1373 			clear_ind();
-9065  1b79 cd0000        	call	_clear_ind
-9067                     ; 1374 			ind_hndl();			
-9069  1b7c cd07bc        	call	_ind_hndl
-9072  1b7f acfe28fe      	jpf	L7453
-9073  1b83               L3163:
-9074                     ; 1376 		else if(sub_ind==1)
-9076  1b83 b662          	ld	a,_a_ind+1
-9077  1b85 a101          	cp	a,#1
-9078  1b87 2703          	jreq	L016
-9079  1b89 cc28fe        	jp	L7453
-9080  1b8c               L016:
-9081                     ; 1378 			tree_down(0,0);	
-9083  1b8c 5f            	clrw	x
-9084  1b8d 4f            	clr	a
-9085  1b8e 95            	ld	xh,a
-9086  1b8f cd0000        	call	_tree_down
-9088  1b92 acfe28fe      	jpf	L7453
-9089  1b96               L7063:
-9090                     ; 1382 else if(ind==iSet)
-9092  1b96 b661          	ld	a,_a_ind
-9093  1b98 a101          	cp	a,#1
-9094  1b9a 2703          	jreq	L216
-9095  1b9c cc1c43        	jp	L3263
-9096  1b9f               L216:
-9097                     ; 1384 	if((but==butU)||(but==butU_))
-9099  1b9f b600          	ld	a,_but
-9100  1ba1 a1fb          	cp	a,#251
-9101  1ba3 2706          	jreq	L7263
-9103  1ba5 b600          	ld	a,_but
-9104  1ba7 a17b          	cp	a,#123
-9105  1ba9 2617          	jrne	L5263
-9106  1bab               L7263:
-9107                     ; 1386 		sub_ind++;
-9109  1bab 3c62          	inc	_a_ind+1
-9110                     ; 1387 		gran_char(&sub_ind,0,11);
-9112  1bad 4b0b          	push	#11
-9113  1baf 4b00          	push	#0
-9114  1bb1 ae0062        	ldw	x,#_a_ind+1
-9115  1bb4 cd0000        	call	_gran_char
-9117  1bb7 85            	popw	x
-9118                     ; 1388 		clear_ind();
-9120  1bb8 cd0000        	call	_clear_ind
-9122                     ; 1389 		ind_hndl();
-9124  1bbb cd07bc        	call	_ind_hndl
-9127  1bbe acfe28fe      	jpf	L7453
-9128  1bc2               L5263:
-9129                     ; 1391 	else if((but==butD)||(but==butD_))
-9131  1bc2 b600          	ld	a,_but
-9132  1bc4 a1f7          	cp	a,#247
-9133  1bc6 2706          	jreq	L5363
-9135  1bc8 b600          	ld	a,_but
-9136  1bca a177          	cp	a,#119
-9137  1bcc 2617          	jrne	L3363
-9138  1bce               L5363:
-9139                     ; 1393 		sub_ind--;
-9141  1bce 3a62          	dec	_a_ind+1
-9142                     ; 1394 		gran_char(&sub_ind,0,11);
-9144  1bd0 4b0b          	push	#11
-9145  1bd2 4b00          	push	#0
-9146  1bd4 ae0062        	ldw	x,#_a_ind+1
-9147  1bd7 cd0000        	call	_gran_char
-9149  1bda 85            	popw	x
-9150                     ; 1395 		clear_ind();
-9152  1bdb cd0000        	call	_clear_ind
-9154                     ; 1396 		ind_hndl();
-9156  1bde cd07bc        	call	_ind_hndl
-9159  1be1 acfe28fe      	jpf	L7453
-9160  1be5               L3363:
-9161                     ; 1398 	else if(but==butM_)
-9163  1be5 b600          	ld	a,_but
-9164  1be7 a17d          	cp	a,#125
-9165  1be9 2638          	jrne	L1463
-9166                     ; 1400 		if(sub_ind==11) //Выход 
-9168  1beb b662          	ld	a,_a_ind+1
-9169  1bed a10b          	cp	a,#11
-9170  1bef 260a          	jrne	L3463
-9171                     ; 1402 			tree_down(0,0);
-9173  1bf1 5f            	clrw	x
-9174  1bf2 4f            	clr	a
-9175  1bf3 95            	ld	xh,a
-9176  1bf4 cd0000        	call	_tree_down
-9179  1bf7 acfe28fe      	jpf	L7453
-9180  1bfb               L3463:
-9181                     ; 1404 		else if(sub_ind==10) //Вход в установку графика
-9183  1bfb b662          	ld	a,_a_ind+1
-9184  1bfd a10a          	cp	a,#10
-9185  1bff 2610          	jrne	L7463
-9186                     ; 1406 			tree_up(iSetTable,0,0,0);
-9188  1c01 4b00          	push	#0
-9189  1c03 4b00          	push	#0
-9190  1c05 5f            	clrw	x
-9191  1c06 a605          	ld	a,#5
-9192  1c08 95            	ld	xh,a
-9193  1c09 cd0000        	call	_tree_up
-9195  1c0c 85            	popw	x
-9197  1c0d acfe28fe      	jpf	L7453
-9198  1c11               L7463:
-9199                     ; 1410 			tree_up(iSet_,sub_ind,0,0);
-9201  1c11 4b00          	push	#0
-9202  1c13 4b00          	push	#0
-9203  1c15 b662          	ld	a,_a_ind+1
-9204  1c17 97            	ld	xl,a
-9205  1c18 a602          	ld	a,#2
-9206  1c1a 95            	ld	xh,a
-9207  1c1b cd0000        	call	_tree_up
-9209  1c1e 85            	popw	x
-9210  1c1f acfe28fe      	jpf	L7453
-9211  1c23               L1463:
-9212                     ; 1413 	else if(but==butOND_)
-9214  1c23 b600          	ld	a,_but
-9215  1c25 a176          	cp	a,#118
-9216  1c27 2703          	jreq	L416
-9217  1c29 cc28fe        	jp	L7453
-9218  1c2c               L416:
-9219                     ; 1415 		tree_up(iDefSet,0,0,0);
-9221  1c2c 4b00          	push	#0
-9222  1c2e 4b00          	push	#0
-9223  1c30 5f            	clrw	x
-9224  1c31 a609          	ld	a,#9
-9225  1c33 95            	ld	xh,a
-9226  1c34 cd0000        	call	_tree_up
-9228  1c37 85            	popw	x
-9229                     ; 1416 		ret_ind(5,0);
-9231  1c38 5f            	clrw	x
-9232  1c39 a605          	ld	a,#5
-9233  1c3b 95            	ld	xh,a
-9234  1c3c cd0000        	call	_ret_ind
-9236  1c3f acfe28fe      	jpf	L7453
-9237  1c43               L3263:
-9238                     ; 1419 else if(ind==iSet_)
-9240  1c43 b661          	ld	a,_a_ind
-9241  1c45 a102          	cp	a,#2
-9242  1c47 2703          	jreq	L616
-9243  1c49 cc21ee        	jp	L1663
-9244  1c4c               L616:
-9245                     ; 1421 	if(but==butM_)
-9247  1c4c b600          	ld	a,_but
-9248  1c4e a17d          	cp	a,#125
-9249  1c50 260a          	jrne	L3663
-9250                     ; 1423 		tree_down(0,0);
-9252  1c52 5f            	clrw	x
-9253  1c53 4f            	clr	a
-9254  1c54 95            	ld	xh,a
-9255  1c55 cd0000        	call	_tree_down
-9258  1c58 acfe28fe      	jpf	L7453
-9259  1c5c               L3663:
-9260                     ; 1427 		if(sub_ind==0)
-9262  1c5c 3d62          	tnz	_a_ind+1
-9263  1c5e 265f          	jrne	L7663
-9264                     ; 1429 			if((but==butU)||(but==butU_))
-9266  1c60 b600          	ld	a,_but
-9267  1c62 a1fb          	cp	a,#251
-9268  1c64 2706          	jreq	L3763
-9270  1c66 b600          	ld	a,_but
-9271  1c68 a17b          	cp	a,#123
-9272  1c6a 2620          	jrne	L1763
-9273  1c6c               L3763:
-9274                     ; 1431 				MODE_EE++;
-9276  1c6c c64046        	ld	a,_MODE_EE
-9277  1c6f 4c            	inc	a
-9278  1c70 ae4046        	ldw	x,#_MODE_EE
-9279  1c73 cd0000        	call	c_eewrc
-9281                     ; 1432 				gran_char(&MODE_EE,1,3);
-9283  1c76 4b03          	push	#3
-9284  1c78 4b01          	push	#1
-9285  1c7a ae4046        	ldw	x,#_MODE_EE
-9286  1c7d cd0000        	call	_gran_char
-9288  1c80 85            	popw	x
-9289                     ; 1433 				HUMAN_SET_EE=1;
-9291  1c81 ae0001        	ldw	x,#1
-9292  1c84 89            	pushw	x
-9293  1c85 ae401e        	ldw	x,#_HUMAN_SET_EE
-9294  1c88 cd0000        	call	c_eewrw
-9296  1c8b 85            	popw	x
-9297  1c8c               L1763:
-9298                     ; 1435 			if((but==butD)||(but==butD_))
-9300  1c8c b600          	ld	a,_but
-9301  1c8e a1f7          	cp	a,#247
-9302  1c90 2709          	jreq	L7763
-9304  1c92 b600          	ld	a,_but
-9305  1c94 a177          	cp	a,#119
-9306  1c96 2703          	jreq	L026
-9307  1c98 cc28fe        	jp	L7453
-9308  1c9b               L026:
-9309  1c9b               L7763:
-9310                     ; 1437 				MODE_EE--;
-9312  1c9b c64046        	ld	a,_MODE_EE
-9313  1c9e 4a            	dec	a
-9314  1c9f ae4046        	ldw	x,#_MODE_EE
-9315  1ca2 cd0000        	call	c_eewrc
-9317                     ; 1438 				gran_char(&MODE_EE,1,3);
-9319  1ca5 4b03          	push	#3
-9320  1ca7 4b01          	push	#1
-9321  1ca9 ae4046        	ldw	x,#_MODE_EE
-9322  1cac cd0000        	call	_gran_char
-9324  1caf 85            	popw	x
-9325                     ; 1439 				HUMAN_SET_EE=1;
-9327  1cb0 ae0001        	ldw	x,#1
-9328  1cb3 89            	pushw	x
-9329  1cb4 ae401e        	ldw	x,#_HUMAN_SET_EE
-9330  1cb7 cd0000        	call	c_eewrw
-9332  1cba 85            	popw	x
-9333  1cbb acfe28fe      	jpf	L7453
-9334  1cbf               L7663:
-9335                     ; 1442 		else if(sub_ind==1)
-9337  1cbf b662          	ld	a,_a_ind+1
-9338  1cc1 a101          	cp	a,#1
-9339  1cc3 2667          	jrne	L3073
-9340                     ; 1444 			if((but==butU)||(but==butU_))
-9342  1cc5 b600          	ld	a,_but
-9343  1cc7 a1fb          	cp	a,#251
-9344  1cc9 2706          	jreq	L7073
-9346  1ccb b600          	ld	a,_but
-9347  1ccd a17b          	cp	a,#123
-9348  1ccf 2624          	jrne	L5073
-9349  1cd1               L7073:
-9350                     ; 1446 				NECC_TEMPER_WATER_EE++;
-9352  1cd1 c64045        	ld	a,_NECC_TEMPER_WATER_EE
-9353  1cd4 4c            	inc	a
-9354  1cd5 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-9355  1cd8 cd0000        	call	c_eewrc
-9357                     ; 1447 				gran_char(&NECC_TEMPER_WATER_EE,5,85);
-9359  1cdb 4b55          	push	#85
-9360  1cdd 4b05          	push	#5
-9361  1cdf ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-9362  1ce2 cd0000        	call	_gran_char
-9364  1ce5 85            	popw	x
-9365                     ; 1448 				speed=1;
-9367  1ce6 35010000      	mov	_speed,#1
-9368                     ; 1449 				HUMAN_SET_EE=1;
-9370  1cea ae0001        	ldw	x,#1
-9371  1ced 89            	pushw	x
-9372  1cee ae401e        	ldw	x,#_HUMAN_SET_EE
-9373  1cf1 cd0000        	call	c_eewrw
-9375  1cf4 85            	popw	x
-9376  1cf5               L5073:
-9377                     ; 1451 			if((but==butD)||(but==butD_))
-9379  1cf5 b600          	ld	a,_but
-9380  1cf7 a1f7          	cp	a,#247
-9381  1cf9 2709          	jreq	L3173
-9383  1cfb b600          	ld	a,_but
-9384  1cfd a177          	cp	a,#119
-9385  1cff 2703          	jreq	L226
-9386  1d01 cc28fe        	jp	L7453
-9387  1d04               L226:
-9388  1d04               L3173:
-9389                     ; 1453 				NECC_TEMPER_WATER_EE--;
-9391  1d04 c64045        	ld	a,_NECC_TEMPER_WATER_EE
-9392  1d07 4a            	dec	a
-9393  1d08 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-9394  1d0b cd0000        	call	c_eewrc
-9396                     ; 1454 				gran_char(&NECC_TEMPER_WATER_EE,5,85);
-9398  1d0e 4b55          	push	#85
-9399  1d10 4b05          	push	#5
-9400  1d12 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-9401  1d15 cd0000        	call	_gran_char
-9403  1d18 85            	popw	x
-9404                     ; 1455 				speed=1;
-9406  1d19 35010000      	mov	_speed,#1
-9407                     ; 1456 				HUMAN_SET_EE=1;
-9409  1d1d ae0001        	ldw	x,#1
-9410  1d20 89            	pushw	x
-9411  1d21 ae401e        	ldw	x,#_HUMAN_SET_EE
-9412  1d24 cd0000        	call	c_eewrw
-9414  1d27 85            	popw	x
-9415  1d28 acfe28fe      	jpf	L7453
-9416  1d2c               L3073:
-9417                     ; 1459 		else if(sub_ind==2)
-9419  1d2c b662          	ld	a,_a_ind+1
-9420  1d2e a102          	cp	a,#2
-9421  1d30 2667          	jrne	L7173
-9422                     ; 1461 			if((but==butU)||(but==butU_))
-9424  1d32 b600          	ld	a,_but
-9425  1d34 a1fb          	cp	a,#251
-9426  1d36 2706          	jreq	L3273
-9428  1d38 b600          	ld	a,_but
-9429  1d3a a17b          	cp	a,#123
-9430  1d3c 2624          	jrne	L1273
-9431  1d3e               L3273:
-9432                     ; 1463 				NECC_TEMPER_AIR_EE++;
-9434  1d3e c64044        	ld	a,_NECC_TEMPER_AIR_EE
-9435  1d41 4c            	inc	a
-9436  1d42 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-9437  1d45 cd0000        	call	c_eewrc
-9439                     ; 1464 				gran_char(&NECC_TEMPER_AIR_EE,5,35);
-9441  1d48 4b23          	push	#35
-9442  1d4a 4b05          	push	#5
-9443  1d4c ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-9444  1d4f cd0000        	call	_gran_char
-9446  1d52 85            	popw	x
-9447                     ; 1465 				speed=1;
-9449  1d53 35010000      	mov	_speed,#1
-9450                     ; 1466 				HUMAN_SET_EE=1;
-9452  1d57 ae0001        	ldw	x,#1
-9453  1d5a 89            	pushw	x
-9454  1d5b ae401e        	ldw	x,#_HUMAN_SET_EE
-9455  1d5e cd0000        	call	c_eewrw
-9457  1d61 85            	popw	x
-9458  1d62               L1273:
-9459                     ; 1468 			if((but==butD)||(but==butD_))
-9461  1d62 b600          	ld	a,_but
-9462  1d64 a1f7          	cp	a,#247
-9463  1d66 2709          	jreq	L7273
-9465  1d68 b600          	ld	a,_but
-9466  1d6a a177          	cp	a,#119
-9467  1d6c 2703          	jreq	L426
-9468  1d6e cc28fe        	jp	L7453
-9469  1d71               L426:
-9470  1d71               L7273:
-9471                     ; 1470 				NECC_TEMPER_AIR_EE--;
-9473  1d71 c64044        	ld	a,_NECC_TEMPER_AIR_EE
-9474  1d74 4a            	dec	a
-9475  1d75 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-9476  1d78 cd0000        	call	c_eewrc
-9478                     ; 1471 				gran_char(&NECC_TEMPER_AIR_EE,5,35);
-9480  1d7b 4b23          	push	#35
-9481  1d7d 4b05          	push	#5
-9482  1d7f ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-9483  1d82 cd0000        	call	_gran_char
-9485  1d85 85            	popw	x
-9486                     ; 1472 				speed=1;
-9488  1d86 35010000      	mov	_speed,#1
-9489                     ; 1473 				HUMAN_SET_EE=1;
-9491  1d8a ae0001        	ldw	x,#1
-9492  1d8d 89            	pushw	x
-9493  1d8e ae401e        	ldw	x,#_HUMAN_SET_EE
-9494  1d91 cd0000        	call	c_eewrw
-9496  1d94 85            	popw	x
-9497  1d95 acfe28fe      	jpf	L7453
-9498  1d99               L7173:
-9499                     ; 1477 		else if(sub_ind==3)
-9501  1d99 b662          	ld	a,_a_ind+1
-9502  1d9b a103          	cp	a,#3
-9503  1d9d 2667          	jrne	L3373
-9504                     ; 1479 			if((but==butU)||(but==butU_))
-9506  1d9f b600          	ld	a,_but
-9507  1da1 a1fb          	cp	a,#251
-9508  1da3 2706          	jreq	L7373
-9510  1da5 b600          	ld	a,_but
-9511  1da7 a17b          	cp	a,#123
-9512  1da9 2624          	jrne	L5373
-9513  1dab               L7373:
-9514                     ; 1481 				MAX_POWER_EE++;
-9516  1dab c64047        	ld	a,_MAX_POWER_EE
-9517  1dae 4c            	inc	a
-9518  1daf ae4047        	ldw	x,#_MAX_POWER_EE
-9519  1db2 cd0000        	call	c_eewrc
-9521                     ; 1482 				gran_char(&MAX_POWER_EE,1,3);
-9523  1db5 4b03          	push	#3
-9524  1db7 4b01          	push	#1
-9525  1db9 ae4047        	ldw	x,#_MAX_POWER_EE
-9526  1dbc cd0000        	call	_gran_char
-9528  1dbf 85            	popw	x
-9529                     ; 1483 				speed=1;
-9531  1dc0 35010000      	mov	_speed,#1
-9532                     ; 1484 				HUMAN_SET_EE=1;
-9534  1dc4 ae0001        	ldw	x,#1
-9535  1dc7 89            	pushw	x
-9536  1dc8 ae401e        	ldw	x,#_HUMAN_SET_EE
-9537  1dcb cd0000        	call	c_eewrw
-9539  1dce 85            	popw	x
-9540  1dcf               L5373:
-9541                     ; 1486 			if((but==butD)||(but==butD_))
-9543  1dcf b600          	ld	a,_but
-9544  1dd1 a1f7          	cp	a,#247
-9545  1dd3 2709          	jreq	L3473
-9547  1dd5 b600          	ld	a,_but
-9548  1dd7 a177          	cp	a,#119
-9549  1dd9 2703          	jreq	L626
-9550  1ddb cc28fe        	jp	L7453
-9551  1dde               L626:
-9552  1dde               L3473:
-9553                     ; 1488 				MAX_POWER_EE--;
-9555  1dde c64047        	ld	a,_MAX_POWER_EE
-9556  1de1 4a            	dec	a
-9557  1de2 ae4047        	ldw	x,#_MAX_POWER_EE
-9558  1de5 cd0000        	call	c_eewrc
-9560                     ; 1489 				gran_char(&MAX_POWER_EE,1,3);
-9562  1de8 4b03          	push	#3
-9563  1dea 4b01          	push	#1
-9564  1dec ae4047        	ldw	x,#_MAX_POWER_EE
-9565  1def cd0000        	call	_gran_char
-9567  1df2 85            	popw	x
-9568                     ; 1490 				speed=1;
-9570  1df3 35010000      	mov	_speed,#1
-9571                     ; 1491 				HUMAN_SET_EE=1;
-9573  1df7 ae0001        	ldw	x,#1
-9574  1dfa 89            	pushw	x
-9575  1dfb ae401e        	ldw	x,#_HUMAN_SET_EE
-9576  1dfe cd0000        	call	c_eewrw
-9578  1e01 85            	popw	x
-9579  1e02 acfe28fe      	jpf	L7453
-9580  1e06               L3373:
-9581                     ; 1494 		else if(sub_ind==4)
-9583  1e06 b662          	ld	a,_a_ind+1
-9584  1e08 a104          	cp	a,#4
-9585  1e0a 2703          	jreq	L036
-9586  1e0c cc1eac        	jp	L7473
-9587  1e0f               L036:
-9588                     ; 1497 			temp=time_year;
-9590  1e0f b60c          	ld	a,_time_year
-9591  1e11 6b03          	ld	(OFST+0,sp),a
-9592                     ; 1499 			if((but==butU)||(but==butU_))
-9594  1e13 b600          	ld	a,_but
-9595  1e15 a1fb          	cp	a,#251
-9596  1e17 2706          	jreq	L3573
-9598  1e19 b600          	ld	a,_but
-9599  1e1b a17b          	cp	a,#123
-9600  1e1d 263d          	jrne	L1573
-9601  1e1f               L3573:
-9602                     ; 1501 				temp++;
-9604  1e1f 0c03          	inc	(OFST+0,sp)
-9605                     ; 1502 				gran_char(&temp,0,99);
-9607  1e21 4b63          	push	#99
-9608  1e23 4b00          	push	#0
-9609  1e25 96            	ldw	x,sp
-9610  1e26 1c0005        	addw	x,#OFST+2
-9611  1e29 cd0000        	call	_gran_char
-9613  1e2c 85            	popw	x
-9614                     ; 1503 				_ds1307_write_byte(6,((temp/10)<<4)+(temp%10));
-9616  1e2d 7b03          	ld	a,(OFST+0,sp)
-9617  1e2f ae000a        	ldw	x,#10
-9618  1e32 51            	exgw	x,y
-9619  1e33 5f            	clrw	x
-9620  1e34 4d            	tnz	a
-9621  1e35 2a01          	jrpl	L434
-9622  1e37 5a            	decw	x
-9623  1e38               L434:
-9624  1e38 02            	rlwa	x,a
-9625  1e39 cd0000        	call	c_idiv
-9627  1e3c 909f          	ld	a,yl
-9628  1e3e 6b01          	ld	(OFST-2,sp),a
-9629  1e40 7b03          	ld	a,(OFST+0,sp)
-9630  1e42 ae000a        	ldw	x,#10
-9631  1e45 51            	exgw	x,y
-9632  1e46 5f            	clrw	x
-9633  1e47 4d            	tnz	a
-9634  1e48 2a01          	jrpl	L634
-9635  1e4a 5a            	decw	x
-9636  1e4b               L634:
-9637  1e4b 02            	rlwa	x,a
-9638  1e4c cd0000        	call	c_idiv
-9640  1e4f 9f            	ld	a,xl
-9641  1e50 4e            	swap	a
-9642  1e51 a4f0          	and	a,#240
-9643  1e53 1b01          	add	a,(OFST-2,sp)
-9644  1e55 97            	ld	xl,a
-9645  1e56 a606          	ld	a,#6
-9646  1e58 95            	ld	xh,a
-9647  1e59 cd0000        	call	__ds1307_write_byte
-9649  1e5c               L1573:
-9650                     ; 1506 			if((but==butD)||(but==butD_))
-9652  1e5c b600          	ld	a,_but
-9653  1e5e a1f7          	cp	a,#247
-9654  1e60 2709          	jreq	L7573
-9656  1e62 b600          	ld	a,_but
-9657  1e64 a177          	cp	a,#119
-9658  1e66 2703          	jreq	L236
-9659  1e68 cc28fe        	jp	L7453
-9660  1e6b               L236:
-9661  1e6b               L7573:
-9662                     ; 1508 				temp--;
-9664  1e6b 0a03          	dec	(OFST+0,sp)
-9665                     ; 1509 				gran_char(&temp,0,99);
-9667  1e6d 4b63          	push	#99
-9668  1e6f 4b00          	push	#0
-9669  1e71 96            	ldw	x,sp
-9670  1e72 1c0005        	addw	x,#OFST+2
-9671  1e75 cd0000        	call	_gran_char
-9673  1e78 85            	popw	x
-9674                     ; 1510 				_ds1307_write_byte(6,((temp/10)<<4)+(temp%10));
-9676  1e79 7b03          	ld	a,(OFST+0,sp)
-9677  1e7b ae000a        	ldw	x,#10
-9678  1e7e 51            	exgw	x,y
-9679  1e7f 5f            	clrw	x
-9680  1e80 4d            	tnz	a
-9681  1e81 2a01          	jrpl	L044
-9682  1e83 5a            	decw	x
-9683  1e84               L044:
-9684  1e84 02            	rlwa	x,a
-9685  1e85 cd0000        	call	c_idiv
-9687  1e88 909f          	ld	a,yl
-9688  1e8a 6b01          	ld	(OFST-2,sp),a
-9689  1e8c 7b03          	ld	a,(OFST+0,sp)
-9690  1e8e ae000a        	ldw	x,#10
-9691  1e91 51            	exgw	x,y
-9692  1e92 5f            	clrw	x
-9693  1e93 4d            	tnz	a
-9694  1e94 2a01          	jrpl	L244
-9695  1e96 5a            	decw	x
-9696  1e97               L244:
-9697  1e97 02            	rlwa	x,a
-9698  1e98 cd0000        	call	c_idiv
-9700  1e9b 9f            	ld	a,xl
-9701  1e9c 4e            	swap	a
-9702  1e9d a4f0          	and	a,#240
-9703  1e9f 1b01          	add	a,(OFST-2,sp)
-9704  1ea1 97            	ld	xl,a
-9705  1ea2 a606          	ld	a,#6
-9706  1ea4 95            	ld	xh,a
-9707  1ea5 cd0000        	call	__ds1307_write_byte
-9709  1ea8 acfe28fe      	jpf	L7453
-9710  1eac               L7473:
-9711                     ; 1513 		else if(sub_ind==5)
-9713  1eac b662          	ld	a,_a_ind+1
-9714  1eae a105          	cp	a,#5
-9715  1eb0 2703          	jreq	L436
-9716  1eb2 cc1f52        	jp	L3673
-9717  1eb5               L436:
-9718                     ; 1516 			temp=time_month;
-9720  1eb5 b60d          	ld	a,_time_month
-9721  1eb7 6b03          	ld	(OFST+0,sp),a
-9722                     ; 1518 			if((but==butU)||(but==butU_))
-9724  1eb9 b600          	ld	a,_but
-9725  1ebb a1fb          	cp	a,#251
-9726  1ebd 2706          	jreq	L7673
-9728  1ebf b600          	ld	a,_but
-9729  1ec1 a17b          	cp	a,#123
-9730  1ec3 263d          	jrne	L5673
-9731  1ec5               L7673:
-9732                     ; 1520 				temp++;
-9734  1ec5 0c03          	inc	(OFST+0,sp)
-9735                     ; 1521 				gran_ring_char(&temp,1,12);
-9737  1ec7 4b0c          	push	#12
-9738  1ec9 4b01          	push	#1
-9739  1ecb 96            	ldw	x,sp
-9740  1ecc 1c0005        	addw	x,#OFST+2
-9741  1ecf cd0000        	call	_gran_ring_char
-9743  1ed2 85            	popw	x
-9744                     ; 1522 				_ds1307_write_byte(5,((temp/10)<<4)+(temp%10));
-9746  1ed3 7b03          	ld	a,(OFST+0,sp)
-9747  1ed5 ae000a        	ldw	x,#10
-9748  1ed8 51            	exgw	x,y
-9749  1ed9 5f            	clrw	x
-9750  1eda 4d            	tnz	a
-9751  1edb 2a01          	jrpl	L444
-9752  1edd 5a            	decw	x
-9753  1ede               L444:
-9754  1ede 02            	rlwa	x,a
-9755  1edf cd0000        	call	c_idiv
-9757  1ee2 909f          	ld	a,yl
-9758  1ee4 6b01          	ld	(OFST-2,sp),a
-9759  1ee6 7b03          	ld	a,(OFST+0,sp)
-9760  1ee8 ae000a        	ldw	x,#10
-9761  1eeb 51            	exgw	x,y
-9762  1eec 5f            	clrw	x
-9763  1eed 4d            	tnz	a
-9764  1eee 2a01          	jrpl	L644
-9765  1ef0 5a            	decw	x
-9766  1ef1               L644:
-9767  1ef1 02            	rlwa	x,a
-9768  1ef2 cd0000        	call	c_idiv
-9770  1ef5 9f            	ld	a,xl
-9771  1ef6 4e            	swap	a
-9772  1ef7 a4f0          	and	a,#240
-9773  1ef9 1b01          	add	a,(OFST-2,sp)
-9774  1efb 97            	ld	xl,a
-9775  1efc a605          	ld	a,#5
-9776  1efe 95            	ld	xh,a
-9777  1eff cd0000        	call	__ds1307_write_byte
-9779  1f02               L5673:
-9780                     ; 1525 			if((but==butD)||(but==butD_))
-9782  1f02 b600          	ld	a,_but
-9783  1f04 a1f7          	cp	a,#247
-9784  1f06 2709          	jreq	L3773
-9786  1f08 b600          	ld	a,_but
-9787  1f0a a177          	cp	a,#119
-9788  1f0c 2703          	jreq	L636
-9789  1f0e cc28fe        	jp	L7453
-9790  1f11               L636:
-9791  1f11               L3773:
-9792                     ; 1527 				temp--;
-9794  1f11 0a03          	dec	(OFST+0,sp)
-9795                     ; 1528 				gran_ring_char(&temp,1,12);
-9797  1f13 4b0c          	push	#12
-9798  1f15 4b01          	push	#1
-9799  1f17 96            	ldw	x,sp
-9800  1f18 1c0005        	addw	x,#OFST+2
-9801  1f1b cd0000        	call	_gran_ring_char
-9803  1f1e 85            	popw	x
-9804                     ; 1529 				_ds1307_write_byte(5,((temp/10)<<4)+(temp%10));
-9806  1f1f 7b03          	ld	a,(OFST+0,sp)
-9807  1f21 ae000a        	ldw	x,#10
-9808  1f24 51            	exgw	x,y
-9809  1f25 5f            	clrw	x
-9810  1f26 4d            	tnz	a
-9811  1f27 2a01          	jrpl	L054
-9812  1f29 5a            	decw	x
-9813  1f2a               L054:
-9814  1f2a 02            	rlwa	x,a
-9815  1f2b cd0000        	call	c_idiv
-9817  1f2e 909f          	ld	a,yl
-9818  1f30 6b01          	ld	(OFST-2,sp),a
-9819  1f32 7b03          	ld	a,(OFST+0,sp)
-9820  1f34 ae000a        	ldw	x,#10
-9821  1f37 51            	exgw	x,y
-9822  1f38 5f            	clrw	x
-9823  1f39 4d            	tnz	a
-9824  1f3a 2a01          	jrpl	L254
-9825  1f3c 5a            	decw	x
-9826  1f3d               L254:
-9827  1f3d 02            	rlwa	x,a
-9828  1f3e cd0000        	call	c_idiv
-9830  1f41 9f            	ld	a,xl
-9831  1f42 4e            	swap	a
-9832  1f43 a4f0          	and	a,#240
-9833  1f45 1b01          	add	a,(OFST-2,sp)
-9834  1f47 97            	ld	xl,a
-9835  1f48 a605          	ld	a,#5
-9836  1f4a 95            	ld	xh,a
-9837  1f4b cd0000        	call	__ds1307_write_byte
-9839  1f4e acfe28fe      	jpf	L7453
-9840  1f52               L3673:
-9841                     ; 1532 		else if(sub_ind==6)
-9843  1f52 b662          	ld	a,_a_ind+1
-9844  1f54 a106          	cp	a,#6
-9845  1f56 2703          	jreq	L046
-9846  1f58 cc2034        	jp	L7773
-9847  1f5b               L046:
-9848                     ; 1535 			temp=time_date;
-9850  1f5b b603          	ld	a,_time_date
-9851  1f5d 6b03          	ld	(OFST+0,sp),a
-9852                     ; 1536 			max_day=31;
-9854  1f5f a61f          	ld	a,#31
-9855  1f61 6b02          	ld	(OFST-1,sp),a
-9856                     ; 1537 			if((time_month==4)||(time_month==6)||(time_month==9)||(time_month==11))max_day=30;
-9858  1f63 b60d          	ld	a,_time_month
-9859  1f65 a104          	cp	a,#4
-9860  1f67 2712          	jreq	L3004
-9862  1f69 b60d          	ld	a,_time_month
-9863  1f6b a106          	cp	a,#6
-9864  1f6d 270c          	jreq	L3004
-9866  1f6f b60d          	ld	a,_time_month
-9867  1f71 a109          	cp	a,#9
-9868  1f73 2706          	jreq	L3004
-9870  1f75 b60d          	ld	a,_time_month
-9871  1f77 a10b          	cp	a,#11
-9872  1f79 2612          	jrne	L1004
-9873  1f7b               L3004:
-9876  1f7b a61e          	ld	a,#30
-9877  1f7d 6b02          	ld	(OFST-1,sp),a
-9879  1f7f               L1104:
-9880                     ; 1543 			if((but==butU)||(but==butU_))
-9882  1f7f b600          	ld	a,_but
-9883  1f81 a1fb          	cp	a,#251
-9884  1f83 2720          	jreq	L3204
-9886  1f85 b600          	ld	a,_but
-9887  1f87 a17b          	cp	a,#123
-9888  1f89 2658          	jrne	L1204
-9889  1f8b 2018          	jra	L3204
-9890  1f8d               L1004:
-9891                     ; 1538 			else if(time_month==2)
-9893  1f8d b60d          	ld	a,_time_month
-9894  1f8f a102          	cp	a,#2
-9895  1f91 26ec          	jrne	L1104
-9896                     ; 1540 				if((time_year%4)==0)max_day=29;
-9898  1f93 b60c          	ld	a,_time_year
-9899  1f95 a503          	bcp	a,#3
-9900  1f97 2606          	jrne	L5104
-9903  1f99 a61d          	ld	a,#29
-9904  1f9b 6b02          	ld	(OFST-1,sp),a
-9906  1f9d 20e0          	jra	L1104
-9907  1f9f               L5104:
-9908                     ; 1541 				else max_day=28;
-9910  1f9f a61c          	ld	a,#28
-9911  1fa1 6b02          	ld	(OFST-1,sp),a
-9912  1fa3 20da          	jra	L1104
-9913  1fa5               L3204:
-9914                     ; 1545 				temp++;
-9916  1fa5 0c03          	inc	(OFST+0,sp)
-9917                     ; 1546 				gran_ring_char(&temp,1,max_day);
-9919  1fa7 7b02          	ld	a,(OFST-1,sp)
-9920  1fa9 88            	push	a
-9921  1faa 4b01          	push	#1
-9922  1fac 96            	ldw	x,sp
-9923  1fad 1c0005        	addw	x,#OFST+2
-9924  1fb0 cd0000        	call	_gran_ring_char
-9926  1fb3 85            	popw	x
-9927                     ; 1547 				_ds1307_write_byte(4,((temp/10)<<4)+(temp%10));
-9929  1fb4 7b03          	ld	a,(OFST+0,sp)
-9930  1fb6 ae000a        	ldw	x,#10
-9931  1fb9 51            	exgw	x,y
-9932  1fba 5f            	clrw	x
-9933  1fbb 4d            	tnz	a
-9934  1fbc 2a01          	jrpl	L454
-9935  1fbe 5a            	decw	x
-9936  1fbf               L454:
-9937  1fbf 02            	rlwa	x,a
-9938  1fc0 cd0000        	call	c_idiv
-9940  1fc3 909f          	ld	a,yl
-9941  1fc5 6b01          	ld	(OFST-2,sp),a
-9942  1fc7 7b03          	ld	a,(OFST+0,sp)
-9943  1fc9 ae000a        	ldw	x,#10
-9944  1fcc 51            	exgw	x,y
-9945  1fcd 5f            	clrw	x
-9946  1fce 4d            	tnz	a
-9947  1fcf 2a01          	jrpl	L654
-9948  1fd1 5a            	decw	x
-9949  1fd2               L654:
-9950  1fd2 02            	rlwa	x,a
-9951  1fd3 cd0000        	call	c_idiv
-9953  1fd6 9f            	ld	a,xl
-9954  1fd7 4e            	swap	a
-9955  1fd8 a4f0          	and	a,#240
-9956  1fda 1b01          	add	a,(OFST-2,sp)
-9957  1fdc 97            	ld	xl,a
-9958  1fdd a604          	ld	a,#4
-9959  1fdf 95            	ld	xh,a
-9960  1fe0 cd0000        	call	__ds1307_write_byte
-9962  1fe3               L1204:
-9963                     ; 1550 			if((but==butD)||(but==butD_))
-9965  1fe3 b600          	ld	a,_but
-9966  1fe5 a1f7          	cp	a,#247
-9967  1fe7 2709          	jreq	L7204
-9969  1fe9 b600          	ld	a,_but
-9970  1feb a177          	cp	a,#119
-9971  1fed 2703          	jreq	L246
-9972  1fef cc28fe        	jp	L7453
-9973  1ff2               L246:
-9974  1ff2               L7204:
-9975                     ; 1552 				temp--;
-9977  1ff2 0a03          	dec	(OFST+0,sp)
-9978                     ; 1553 				gran_ring_char(&temp,1,max_day);
-9980  1ff4 7b02          	ld	a,(OFST-1,sp)
-9981  1ff6 88            	push	a
-9982  1ff7 4b01          	push	#1
-9983  1ff9 96            	ldw	x,sp
-9984  1ffa 1c0005        	addw	x,#OFST+2
-9985  1ffd cd0000        	call	_gran_ring_char
-9987  2000 85            	popw	x
-9988                     ; 1554 				_ds1307_write_byte(4,((temp/10)<<4)+(temp%10));
-9990  2001 7b03          	ld	a,(OFST+0,sp)
-9991  2003 ae000a        	ldw	x,#10
-9992  2006 51            	exgw	x,y
-9993  2007 5f            	clrw	x
-9994  2008 4d            	tnz	a
-9995  2009 2a01          	jrpl	L064
-9996  200b 5a            	decw	x
-9997  200c               L064:
-9998  200c 02            	rlwa	x,a
-9999  200d cd0000        	call	c_idiv
-10001  2010 909f          	ld	a,yl
-10002  2012 6b01          	ld	(OFST-2,sp),a
-10003  2014 7b03          	ld	a,(OFST+0,sp)
-10004  2016 ae000a        	ldw	x,#10
-10005  2019 51            	exgw	x,y
-10006  201a 5f            	clrw	x
-10007  201b 4d            	tnz	a
-10008  201c 2a01          	jrpl	L264
-10009  201e 5a            	decw	x
-10010  201f               L264:
-10011  201f 02            	rlwa	x,a
-10012  2020 cd0000        	call	c_idiv
-10014  2023 9f            	ld	a,xl
-10015  2024 4e            	swap	a
-10016  2025 a4f0          	and	a,#240
-10017  2027 1b01          	add	a,(OFST-2,sp)
-10018  2029 97            	ld	xl,a
-10019  202a a604          	ld	a,#4
-10020  202c 95            	ld	xh,a
-10021  202d cd0000        	call	__ds1307_write_byte
-10023  2030 acfe28fe      	jpf	L7453
-10024  2034               L7773:
-10025                     ; 1557 		else if(sub_ind==7)
-10027  2034 b662          	ld	a,_a_ind+1
-10028  2036 a107          	cp	a,#7
-10029  2038 2703          	jreq	L446
-10030  203a cc20de        	jp	L3304
-10031  203d               L446:
-10032                     ; 1560 			temp=time_hour;
-10034  203d b60f          	ld	a,_time_hour
-10035  203f 6b03          	ld	(OFST+0,sp),a
-10036                     ; 1562 			if((but==butU)||(but==butU_))
-10038  2041 b600          	ld	a,_but
-10039  2043 a1fb          	cp	a,#251
-10040  2045 2706          	jreq	L7304
-10042  2047 b600          	ld	a,_but
-10043  2049 a17b          	cp	a,#123
-10044  204b 263f          	jrne	L5304
-10045  204d               L7304:
-10046                     ; 1564 				temp++;
-10048  204d 0c03          	inc	(OFST+0,sp)
-10049                     ; 1565 				gran_ring_char(&temp,0,23);
-10051  204f 4b17          	push	#23
-10052  2051 4b00          	push	#0
-10053  2053 96            	ldw	x,sp
-10054  2054 1c0005        	addw	x,#OFST+2
-10055  2057 cd0000        	call	_gran_ring_char
-10057  205a 85            	popw	x
-10058                     ; 1566 				_ds1307_write_byte(2,(((temp/10)<<4)+(temp%10))&0b10111111);
-10060  205b 7b03          	ld	a,(OFST+0,sp)
-10061  205d ae000a        	ldw	x,#10
-10062  2060 51            	exgw	x,y
-10063  2061 5f            	clrw	x
-10064  2062 4d            	tnz	a
-10065  2063 2a01          	jrpl	L464
-10066  2065 5a            	decw	x
-10067  2066               L464:
-10068  2066 02            	rlwa	x,a
-10069  2067 cd0000        	call	c_idiv
-10071  206a 909f          	ld	a,yl
-10072  206c 6b01          	ld	(OFST-2,sp),a
-10073  206e 7b03          	ld	a,(OFST+0,sp)
-10074  2070 ae000a        	ldw	x,#10
-10075  2073 51            	exgw	x,y
-10076  2074 5f            	clrw	x
-10077  2075 4d            	tnz	a
-10078  2076 2a01          	jrpl	L664
-10079  2078 5a            	decw	x
-10080  2079               L664:
-10081  2079 02            	rlwa	x,a
-10082  207a cd0000        	call	c_idiv
-10084  207d 9f            	ld	a,xl
-10085  207e 4e            	swap	a
-10086  207f a4f0          	and	a,#240
-10087  2081 1b01          	add	a,(OFST-2,sp)
-10088  2083 a4bf          	and	a,#191
-10089  2085 97            	ld	xl,a
-10090  2086 a602          	ld	a,#2
-10091  2088 95            	ld	xh,a
-10092  2089 cd0000        	call	__ds1307_write_byte
-10094  208c               L5304:
-10095                     ; 1569 			if((but==butD)||(but==butD_))
-10097  208c b600          	ld	a,_but
-10098  208e a1f7          	cp	a,#247
-10099  2090 2709          	jreq	L3404
-10101  2092 b600          	ld	a,_but
-10102  2094 a177          	cp	a,#119
-10103  2096 2703          	jreq	L646
-10104  2098 cc28fe        	jp	L7453
-10105  209b               L646:
-10106  209b               L3404:
-10107                     ; 1571 				temp--;
-10109  209b 0a03          	dec	(OFST+0,sp)
-10110                     ; 1572 				gran_ring_char(&temp,0,23);
-10112  209d 4b17          	push	#23
-10113  209f 4b00          	push	#0
-10114  20a1 96            	ldw	x,sp
-10115  20a2 1c0005        	addw	x,#OFST+2
-10116  20a5 cd0000        	call	_gran_ring_char
-10118  20a8 85            	popw	x
-10119                     ; 1573 				_ds1307_write_byte(2,(((temp/10)<<4)+(temp%10))&0b10111111);
-10121  20a9 7b03          	ld	a,(OFST+0,sp)
-10122  20ab ae000a        	ldw	x,#10
-10123  20ae 51            	exgw	x,y
-10124  20af 5f            	clrw	x
-10125  20b0 4d            	tnz	a
-10126  20b1 2a01          	jrpl	L074
-10127  20b3 5a            	decw	x
-10128  20b4               L074:
-10129  20b4 02            	rlwa	x,a
-10130  20b5 cd0000        	call	c_idiv
-10132  20b8 909f          	ld	a,yl
-10133  20ba 6b01          	ld	(OFST-2,sp),a
-10134  20bc 7b03          	ld	a,(OFST+0,sp)
-10135  20be ae000a        	ldw	x,#10
-10136  20c1 51            	exgw	x,y
-10137  20c2 5f            	clrw	x
-10138  20c3 4d            	tnz	a
-10139  20c4 2a01          	jrpl	L274
-10140  20c6 5a            	decw	x
-10141  20c7               L274:
-10142  20c7 02            	rlwa	x,a
-10143  20c8 cd0000        	call	c_idiv
-10145  20cb 9f            	ld	a,xl
-10146  20cc 4e            	swap	a
-10147  20cd a4f0          	and	a,#240
-10148  20cf 1b01          	add	a,(OFST-2,sp)
-10149  20d1 a4bf          	and	a,#191
-10150  20d3 97            	ld	xl,a
-10151  20d4 a602          	ld	a,#2
-10152  20d6 95            	ld	xh,a
-10153  20d7 cd0000        	call	__ds1307_write_byte
-10155  20da acfe28fe      	jpf	L7453
-10156  20de               L3304:
-10157                     ; 1576 		else if(sub_ind==8)
-10159  20de b662          	ld	a,_a_ind+1
-10160  20e0 a108          	cp	a,#8
-10161  20e2 2703          	jreq	L056
-10162  20e4 cc2190        	jp	L7404
-10163  20e7               L056:
-10164                     ; 1579 			temp=time_min;
-10166  20e7 b610          	ld	a,_time_min
-10167  20e9 6b03          	ld	(OFST+0,sp),a
-10168                     ; 1581 			if((but==butU)||(but==butU_))
-10170  20eb b600          	ld	a,_but
-10171  20ed a1fb          	cp	a,#251
-10172  20ef 2706          	jreq	L3504
-10174  20f1 b600          	ld	a,_but
-10175  20f3 a17b          	cp	a,#123
-10176  20f5 2643          	jrne	L1504
-10177  20f7               L3504:
-10178                     ; 1583 				temp++;
-10180  20f7 0c03          	inc	(OFST+0,sp)
-10181                     ; 1584 				gran_ring_char(&temp,0,59);
-10183  20f9 4b3b          	push	#59
-10184  20fb 4b00          	push	#0
-10185  20fd 96            	ldw	x,sp
-10186  20fe 1c0005        	addw	x,#OFST+2
-10187  2101 cd0000        	call	_gran_ring_char
-10189  2104 85            	popw	x
-10190                     ; 1585 				_ds1307_write_byte(1,((temp/10)<<4)+(temp%10));
-10192  2105 7b03          	ld	a,(OFST+0,sp)
-10193  2107 ae000a        	ldw	x,#10
-10194  210a 51            	exgw	x,y
-10195  210b 5f            	clrw	x
-10196  210c 4d            	tnz	a
-10197  210d 2a01          	jrpl	L474
-10198  210f 5a            	decw	x
-10199  2110               L474:
-10200  2110 02            	rlwa	x,a
-10201  2111 cd0000        	call	c_idiv
-10203  2114 909f          	ld	a,yl
-10204  2116 6b01          	ld	(OFST-2,sp),a
-10205  2118 7b03          	ld	a,(OFST+0,sp)
-10206  211a ae000a        	ldw	x,#10
-10207  211d 51            	exgw	x,y
-10208  211e 5f            	clrw	x
-10209  211f 4d            	tnz	a
-10210  2120 2a01          	jrpl	L674
-10211  2122 5a            	decw	x
-10212  2123               L674:
-10213  2123 02            	rlwa	x,a
-10214  2124 cd0000        	call	c_idiv
-10216  2127 9f            	ld	a,xl
-10217  2128 4e            	swap	a
-10218  2129 a4f0          	and	a,#240
-10219  212b 1b01          	add	a,(OFST-2,sp)
-10220  212d 97            	ld	xl,a
-10221  212e a601          	ld	a,#1
-10222  2130 95            	ld	xh,a
-10223  2131 cd0000        	call	__ds1307_write_byte
-10225                     ; 1586 				_ds1307_write_byte(0,0);
-10227  2134 5f            	clrw	x
-10228  2135 4f            	clr	a
-10229  2136 95            	ld	xh,a
-10230  2137 cd0000        	call	__ds1307_write_byte
-10232  213a               L1504:
-10233                     ; 1588 			if((but==butD)||(but==butD_))
-10235  213a b600          	ld	a,_but
-10236  213c a1f7          	cp	a,#247
-10237  213e 2709          	jreq	L7504
-10239  2140 b600          	ld	a,_but
-10240  2142 a177          	cp	a,#119
-10241  2144 2703          	jreq	L256
-10242  2146 cc28fe        	jp	L7453
-10243  2149               L256:
-10244  2149               L7504:
-10245                     ; 1590 				temp--;
-10247  2149 0a03          	dec	(OFST+0,sp)
-10248                     ; 1591 				gran_ring_char(&temp,0,59);
-10250  214b 4b3b          	push	#59
-10251  214d 4b00          	push	#0
-10252  214f 96            	ldw	x,sp
-10253  2150 1c0005        	addw	x,#OFST+2
-10254  2153 cd0000        	call	_gran_ring_char
-10256  2156 85            	popw	x
-10257                     ; 1592 				_ds1307_write_byte(1,((temp/10)<<4)+(temp%10));
-10259  2157 7b03          	ld	a,(OFST+0,sp)
-10260  2159 ae000a        	ldw	x,#10
-10261  215c 51            	exgw	x,y
-10262  215d 5f            	clrw	x
-10263  215e 4d            	tnz	a
-10264  215f 2a01          	jrpl	L005
-10265  2161 5a            	decw	x
-10266  2162               L005:
-10267  2162 02            	rlwa	x,a
-10268  2163 cd0000        	call	c_idiv
-10270  2166 909f          	ld	a,yl
-10271  2168 6b01          	ld	(OFST-2,sp),a
-10272  216a 7b03          	ld	a,(OFST+0,sp)
-10273  216c ae000a        	ldw	x,#10
-10274  216f 51            	exgw	x,y
-10275  2170 5f            	clrw	x
-10276  2171 4d            	tnz	a
-10277  2172 2a01          	jrpl	L205
-10278  2174 5a            	decw	x
-10279  2175               L205:
-10280  2175 02            	rlwa	x,a
-10281  2176 cd0000        	call	c_idiv
-10283  2179 9f            	ld	a,xl
-10284  217a 4e            	swap	a
-10285  217b a4f0          	and	a,#240
-10286  217d 1b01          	add	a,(OFST-2,sp)
-10287  217f 97            	ld	xl,a
-10288  2180 a601          	ld	a,#1
-10289  2182 95            	ld	xh,a
-10290  2183 cd0000        	call	__ds1307_write_byte
-10292                     ; 1593 				_ds1307_write_byte(0,0);
-10294  2186 5f            	clrw	x
-10295  2187 4f            	clr	a
-10296  2188 95            	ld	xh,a
-10297  2189 cd0000        	call	__ds1307_write_byte
-10299  218c acfe28fe      	jpf	L7453
-10300  2190               L7404:
-10301                     ; 1596 		else if(sub_ind==9)
-10303  2190 b662          	ld	a,_a_ind+1
-10304  2192 a109          	cp	a,#9
-10305  2194 2703          	jreq	L456
-10306  2196 cc28fe        	jp	L7453
-10307  2199               L456:
-10308                     ; 1599 			temp=time_day_of_week;
-10310  2199 b60e          	ld	a,_time_day_of_week
-10311  219b 6b03          	ld	(OFST+0,sp),a
-10312                     ; 1601 			if((but==butU)||(but==butU_))
-10314  219d b600          	ld	a,_but
-10315  219f a1fb          	cp	a,#251
-10316  21a1 2706          	jreq	L7604
-10318  21a3 b600          	ld	a,_but
-10319  21a5 a17b          	cp	a,#123
-10320  21a7 2619          	jrne	L5604
-10321  21a9               L7604:
-10322                     ; 1603 				temp++;
-10324  21a9 0c03          	inc	(OFST+0,sp)
-10325                     ; 1604 				gran_ring_char(&temp,1,7);
-10327  21ab 4b07          	push	#7
-10328  21ad 4b01          	push	#1
-10329  21af 96            	ldw	x,sp
-10330  21b0 1c0005        	addw	x,#OFST+2
-10331  21b3 cd0000        	call	_gran_ring_char
-10333  21b6 85            	popw	x
-10334                     ; 1605 				_ds1307_write_byte(3,temp&0x07);
-10336  21b7 7b03          	ld	a,(OFST+0,sp)
-10337  21b9 a407          	and	a,#7
-10338  21bb 97            	ld	xl,a
-10339  21bc a603          	ld	a,#3
-10340  21be 95            	ld	xh,a
-10341  21bf cd0000        	call	__ds1307_write_byte
-10343  21c2               L5604:
-10344                     ; 1607 			if((but==butD)||(but==butD_))
-10346  21c2 b600          	ld	a,_but
-10347  21c4 a1f7          	cp	a,#247
-10348  21c6 2709          	jreq	L3704
-10350  21c8 b600          	ld	a,_but
-10351  21ca a177          	cp	a,#119
-10352  21cc 2703          	jreq	L656
-10353  21ce cc28fe        	jp	L7453
-10354  21d1               L656:
-10355  21d1               L3704:
-10356                     ; 1609 				temp--;
-10358  21d1 0a03          	dec	(OFST+0,sp)
-10359                     ; 1610 				gran_ring_char(&temp,1,7);
-10361  21d3 4b07          	push	#7
-10362  21d5 4b01          	push	#1
-10363  21d7 96            	ldw	x,sp
-10364  21d8 1c0005        	addw	x,#OFST+2
-10365  21db cd0000        	call	_gran_ring_char
-10367  21de 85            	popw	x
-10368                     ; 1611 				_ds1307_write_byte(3,temp&0x07);
-10370  21df 7b03          	ld	a,(OFST+0,sp)
-10371  21e1 a407          	and	a,#7
-10372  21e3 97            	ld	xl,a
-10373  21e4 a603          	ld	a,#3
-10374  21e6 95            	ld	xh,a
-10375  21e7 cd0000        	call	__ds1307_write_byte
-10377  21ea acfe28fe      	jpf	L7453
-10378  21ee               L1663:
-10379                     ; 1616 else if(ind==iSetTable)
-10381  21ee b661          	ld	a,_a_ind
-10382  21f0 a105          	cp	a,#5
-10383  21f2 2703          	jreq	L066
-10384  21f4 cc2288        	jp	L7704
-10385  21f7               L066:
-10386                     ; 1618 	if((but==butU)/*||(but==butU_)*/)
-10388  21f7 b600          	ld	a,_but
-10389  21f9 a1fb          	cp	a,#251
-10390  21fb 2617          	jrne	L1014
-10391                     ; 1620 		sub_ind++;
-10393  21fd 3c62          	inc	_a_ind+1
-10394                     ; 1621 		gran_char(&sub_ind,0,34);
-10396  21ff 4b22          	push	#34
-10397  2201 4b00          	push	#0
-10398  2203 ae0062        	ldw	x,#_a_ind+1
-10399  2206 cd0000        	call	_gran_char
-10401  2209 85            	popw	x
-10402                     ; 1622 		clear_ind();
-10404  220a cd0000        	call	_clear_ind
-10406                     ; 1623 		ind_hndl();
-10408  220d cd07bc        	call	_ind_hndl
-10411  2210 acfe28fe      	jpf	L7453
-10412  2214               L1014:
-10413                     ; 1625 	else if((but==butD)/*||(but==butD_)*/)
-10415  2214 b600          	ld	a,_but
-10416  2216 a1f7          	cp	a,#247
-10417  2218 2617          	jrne	L5014
-10418                     ; 1627 		sub_ind--;
-10420  221a 3a62          	dec	_a_ind+1
-10421                     ; 1628 		gran_char(&sub_ind,0,34);
-10423  221c 4b22          	push	#34
-10424  221e 4b00          	push	#0
-10425  2220 ae0062        	ldw	x,#_a_ind+1
-10426  2223 cd0000        	call	_gran_char
-10428  2226 85            	popw	x
-10429                     ; 1629 		clear_ind();
-10431  2227 cd0000        	call	_clear_ind
-10433                     ; 1630 		ind_hndl();
-10435  222a cd07bc        	call	_ind_hndl
-10438  222d acfe28fe      	jpf	L7453
-10439  2231               L5014:
-10440                     ; 1632 	else if(but==butM)
-10442  2231 b600          	ld	a,_but
-10443  2233 a1fd          	cp	a,#253
-10444  2235 2616          	jrne	L1114
-10445                     ; 1634 		if(sub_ind1==0)sub_ind1=1;
-10447  2237 3d63          	tnz	_a_ind+2
-10448  2239 2606          	jrne	L3114
-10451  223b 35010063      	mov	_a_ind+2,#1
-10453  223f 2002          	jra	L5114
-10454  2241               L3114:
-10455                     ; 1635 		else sub_ind1=0;
-10457  2241 3f63          	clr	_a_ind+2
-10458  2243               L5114:
-10459                     ; 1636 		clear_ind();
-10461  2243 cd0000        	call	_clear_ind
-10463                     ; 1637 		ind_hndl();
-10465  2246 cd07bc        	call	_ind_hndl
-10468  2249 acfe28fe      	jpf	L7453
-10469  224d               L1114:
-10470                     ; 1639 	else if((but==butD_)/*||(but==butD_)*/)
-10472  224d b600          	ld	a,_but
-10473  224f a177          	cp	a,#119
-10474  2251 2610          	jrne	L1214
-10475                     ; 1641 		tree_down(0,0);
-10477  2253 5f            	clrw	x
-10478  2254 4f            	clr	a
-10479  2255 95            	ld	xh,a
-10480  2256 cd0000        	call	_tree_down
-10482                     ; 1642 		clear_ind();
-10484  2259 cd0000        	call	_clear_ind
-10486                     ; 1643 		ind_hndl();
-10488  225c cd07bc        	call	_ind_hndl
-10491  225f acfe28fe      	jpf	L7453
-10492  2263               L1214:
-10493                     ; 1645 	else if(but==butUD_)
-10495  2263 b600          	ld	a,_but
-10496  2265 a173          	cp	a,#115
-10497  2267 2603          	jrne	L266
-10498  2269 cc28fe        	jp	L7453
-10499  226c               L266:
-10501                     ; 1726 	else if(but==butM_)
-10503  226c b600          	ld	a,_but
-10504  226e a17d          	cp	a,#125
-10505  2270 2703          	jreq	L466
-10506  2272 cc28fe        	jp	L7453
-10507  2275               L466:
-10508                     ; 1728 		tree_up(iSetTable_,sub_ind,0,sub_ind1);
-10510  2275 3b0063        	push	_a_ind+2
-10511  2278 4b00          	push	#0
-10512  227a b662          	ld	a,_a_ind+1
-10513  227c 97            	ld	xl,a
-10514  227d a606          	ld	a,#6
-10515  227f 95            	ld	xh,a
-10516  2280 cd0000        	call	_tree_up
-10518  2283 85            	popw	x
-10519  2284 acfe28fe      	jpf	L7453
-10520  2288               L7704:
-10521                     ; 1732 else if(ind==iSetTable_)
-10523  2288 b661          	ld	a,_a_ind
-10524  228a a106          	cp	a,#6
-10525  228c 2703          	jreq	L666
-10526  228e cc2513        	jp	L5314
-10527  2291               L666:
-10528                     ; 1734 	if(but==butM_)
-10530  2291 b600          	ld	a,_but
-10531  2293 a17d          	cp	a,#125
-10532  2295 260a          	jrne	L7314
-10533                     ; 1736 		tree_down(0,0);
-10535  2297 5f            	clrw	x
-10536  2298 4f            	clr	a
-10537  2299 95            	ld	xh,a
-10538  229a cd0000        	call	_tree_down
-10541  229d acfe28fe      	jpf	L7453
-10542  22a1               L7314:
-10543                     ; 1738 	else if(but==butM)
-10545  22a1 b600          	ld	a,_but
-10546  22a3 a1fd          	cp	a,#253
-10547  22a5 2618          	jrne	L3414
-10548                     ; 1740 		if(sub_ind1==1)sub_ind1=0;
-10550  22a7 b663          	ld	a,_a_ind+2
-10551  22a9 a101          	cp	a,#1
-10552  22ab 2604          	jrne	L5414
-10555  22ad 3f63          	clr	_a_ind+2
-10557  22af 2004          	jra	L7414
-10558  22b1               L5414:
-10559                     ; 1741 		else sub_ind1=1;
-10561  22b1 35010063      	mov	_a_ind+2,#1
-10562  22b5               L7414:
-10563                     ; 1742 		clear_ind();
-10565  22b5 cd0000        	call	_clear_ind
-10567                     ; 1743 		ind_hndl();
-10569  22b8 cd07bc        	call	_ind_hndl
-10572  22bb acfe28fe      	jpf	L7453
-10573  22bf               L3414:
-10574                     ; 1745 	else if(sub_ind1==0)
-10576  22bf 3d63          	tnz	_a_ind+2
-10577  22c1 2703          	jreq	L076
-10578  22c3 cc23f6        	jp	L3514
-10579  22c6               L076:
-10580                     ; 1750 		num_of_day=sub_ind/5;
-10582  22c6 b662          	ld	a,_a_ind+1
-10583  22c8 ae0005        	ldw	x,#5
-10584  22cb 51            	exgw	x,y
-10585  22cc 5f            	clrw	x
-10586  22cd 4d            	tnz	a
-10587  22ce 2a01          	jrpl	L405
-10588  22d0 5a            	decw	x
-10589  22d1               L405:
-10590  22d1 02            	rlwa	x,a
-10591  22d2 cd0000        	call	c_idiv
-10593  22d5 9f            	ld	a,xl
-10594  22d6 6b02          	ld	(OFST-1,sp),a
-10595                     ; 1751 		num_of_set=sub_ind%5;
-10597  22d8 b662          	ld	a,_a_ind+1
-10598  22da ae0005        	ldw	x,#5
-10599  22dd 51            	exgw	x,y
-10600  22de 5f            	clrw	x
-10601  22df 4d            	tnz	a
-10602  22e0 2a01          	jrpl	L605
-10603  22e2 5a            	decw	x
-10604  22e3               L605:
-10605  22e3 02            	rlwa	x,a
-10606  22e4 cd0000        	call	c_idiv
-10608  22e7 909f          	ld	a,yl
-10609  22e9 6b03          	ld	(OFST+0,sp),a
-10610                     ; 1753 		if((but==butU)||(but==butU_))
-10612  22eb b600          	ld	a,_but
-10613  22ed a1fb          	cp	a,#251
-10614  22ef 2706          	jreq	L7514
-10616  22f1 b600          	ld	a,_but
-10617  22f3 a17b          	cp	a,#123
-10618  22f5 2674          	jrne	L5514
-10619  22f7               L7514:
-10620                     ; 1755 			tempUC=TABLE_TIME_EE[num_of_day][num_of_set];
-10622  22f7 7b02          	ld	a,(OFST-1,sp)
-10623  22f9 97            	ld	xl,a
-10624  22fa a605          	ld	a,#5
-10625  22fc 42            	mul	x,a
-10626  22fd 01            	rrwa	x,a
-10627  22fe 1b03          	add	a,(OFST+0,sp)
-10628  2300 2401          	jrnc	L015
-10629  2302 5c            	incw	x
-10630  2303               L015:
-10631  2303 02            	rlwa	x,a
-10632  2304 d64020        	ld	a,(_TABLE_TIME_EE,x)
-10633  2307 b701          	ld	_tempUC,a
-10634                     ; 1756 			tempUC++;
-10636  2309 3c01          	inc	_tempUC
-10637                     ; 1757 			if(tempUC>TABLE_TIME_EE_MAX[num_of_set])tempUC=TABLE_TIME_EE_MAX[num_of_set];
-10639  230b 7b03          	ld	a,(OFST+0,sp)
-10640  230d 5f            	clrw	x
-10641  230e 97            	ld	xl,a
-10642  230f d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
-10643  2312 b101          	cp	a,_tempUC
-10644  2314 2409          	jruge	L1614
-10647  2316 7b03          	ld	a,(OFST+0,sp)
-10648  2318 5f            	clrw	x
-10649  2319 97            	ld	xl,a
-10650  231a d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
-10651  231d b701          	ld	_tempUC,a
-10652  231f               L1614:
-10653                     ; 1758 			if(tempUC<TABLE_TIME_EE_MIN[num_of_set])tempUC=TABLE_TIME_EE_MIN[num_of_set];
-10655  231f 7b03          	ld	a,(OFST+0,sp)
-10656  2321 5f            	clrw	x
-10657  2322 97            	ld	xl,a
-10658  2323 d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
-10659  2326 b101          	cp	a,_tempUC
-10660  2328 2309          	jrule	L3614
-10663  232a 7b03          	ld	a,(OFST+0,sp)
-10664  232c 5f            	clrw	x
-10665  232d 97            	ld	xl,a
-10666  232e d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
-10667  2331 b701          	ld	_tempUC,a
-10668  2333               L3614:
-10669                     ; 1759 			if(TABLE_TIME_EE[num_of_day][num_of_set]!=tempUC)TABLE_TIME_EE[num_of_day][num_of_set]=tempUC;
-10671  2333 7b02          	ld	a,(OFST-1,sp)
-10672  2335 97            	ld	xl,a
-10673  2336 a605          	ld	a,#5
-10674  2338 42            	mul	x,a
-10675  2339 01            	rrwa	x,a
-10676  233a 1b03          	add	a,(OFST+0,sp)
-10677  233c 2401          	jrnc	L215
-10678  233e 5c            	incw	x
-10679  233f               L215:
-10680  233f 02            	rlwa	x,a
-10681  2340 d64020        	ld	a,(_TABLE_TIME_EE,x)
-10682  2343 b101          	cp	a,_tempUC
-10683  2345 2715          	jreq	L5614
-10686  2347 7b02          	ld	a,(OFST-1,sp)
-10687  2349 97            	ld	xl,a
-10688  234a a605          	ld	a,#5
-10689  234c 42            	mul	x,a
-10690  234d 01            	rrwa	x,a
-10691  234e 1b03          	add	a,(OFST+0,sp)
-10692  2350 2401          	jrnc	L415
-10693  2352 5c            	incw	x
-10694  2353               L415:
-10695  2353 02            	rlwa	x,a
-10696  2354 b601          	ld	a,_tempUC
-10697  2356 1c4020        	addw	x,#_TABLE_TIME_EE
-10698  2359 cd0000        	call	c_eewrc
-10700  235c               L5614:
-10701                     ; 1760 			speed=1;
-10703  235c 35010000      	mov	_speed,#1
-10704                     ; 1761 			HUMAN_SET_EE=1;
-10706  2360 ae0001        	ldw	x,#1
-10707  2363 89            	pushw	x
-10708  2364 ae401e        	ldw	x,#_HUMAN_SET_EE
-10709  2367 cd0000        	call	c_eewrw
-10711  236a 85            	popw	x
-10712  236b               L5514:
-10713                     ; 1763 		if((but==butD)||(but==butD_))
-10715  236b b600          	ld	a,_but
-10716  236d a1f7          	cp	a,#247
-10717  236f 2709          	jreq	L1714
-10719  2371 b600          	ld	a,_but
-10720  2373 a177          	cp	a,#119
-10721  2375 2703          	jreq	L276
-10722  2377 cc28fe        	jp	L7453
-10723  237a               L276:
-10724  237a               L1714:
-10725                     ; 1765 			tempUC=TABLE_TIME_EE[num_of_day][num_of_set];
-10727  237a 7b02          	ld	a,(OFST-1,sp)
-10728  237c 97            	ld	xl,a
-10729  237d a605          	ld	a,#5
-10730  237f 42            	mul	x,a
-10731  2380 01            	rrwa	x,a
-10732  2381 1b03          	add	a,(OFST+0,sp)
-10733  2383 2401          	jrnc	L615
-10734  2385 5c            	incw	x
-10735  2386               L615:
-10736  2386 02            	rlwa	x,a
-10737  2387 d64020        	ld	a,(_TABLE_TIME_EE,x)
-10738  238a b701          	ld	_tempUC,a
-10739                     ; 1766 			if(tempUC)tempUC--;
-10741  238c 3d01          	tnz	_tempUC
-10742  238e 2702          	jreq	L3714
-10745  2390 3a01          	dec	_tempUC
-10746  2392               L3714:
-10747                     ; 1767 			if(tempUC>TABLE_TIME_EE_MAX[num_of_set])tempUC=TABLE_TIME_EE_MAX[num_of_set];
-10749  2392 7b03          	ld	a,(OFST+0,sp)
-10750  2394 5f            	clrw	x
-10751  2395 97            	ld	xl,a
-10752  2396 d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
-10753  2399 b101          	cp	a,_tempUC
-10754  239b 2409          	jruge	L5714
-10757  239d 7b03          	ld	a,(OFST+0,sp)
-10758  239f 5f            	clrw	x
-10759  23a0 97            	ld	xl,a
-10760  23a1 d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
-10761  23a4 b701          	ld	_tempUC,a
-10762  23a6               L5714:
-10763                     ; 1768 			if(tempUC<TABLE_TIME_EE_MIN[num_of_set])tempUC=TABLE_TIME_EE_MIN[num_of_set];
-10765  23a6 7b03          	ld	a,(OFST+0,sp)
-10766  23a8 5f            	clrw	x
-10767  23a9 97            	ld	xl,a
-10768  23aa d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
-10769  23ad b101          	cp	a,_tempUC
-10770  23af 2309          	jrule	L7714
-10773  23b1 7b03          	ld	a,(OFST+0,sp)
-10774  23b3 5f            	clrw	x
-10775  23b4 97            	ld	xl,a
-10776  23b5 d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
-10777  23b8 b701          	ld	_tempUC,a
-10778  23ba               L7714:
-10779                     ; 1769 			if(TABLE_TIME_EE[num_of_day][num_of_set]!=tempUC)TABLE_TIME_EE[num_of_day][num_of_set]=tempUC;
-10781  23ba 7b02          	ld	a,(OFST-1,sp)
-10782  23bc 97            	ld	xl,a
-10783  23bd a605          	ld	a,#5
-10784  23bf 42            	mul	x,a
-10785  23c0 01            	rrwa	x,a
-10786  23c1 1b03          	add	a,(OFST+0,sp)
-10787  23c3 2401          	jrnc	L025
-10788  23c5 5c            	incw	x
-10789  23c6               L025:
-10790  23c6 02            	rlwa	x,a
-10791  23c7 d64020        	ld	a,(_TABLE_TIME_EE,x)
-10792  23ca b101          	cp	a,_tempUC
-10793  23cc 2715          	jreq	L1024
-10796  23ce 7b02          	ld	a,(OFST-1,sp)
-10797  23d0 97            	ld	xl,a
-10798  23d1 a605          	ld	a,#5
-10799  23d3 42            	mul	x,a
-10800  23d4 01            	rrwa	x,a
-10801  23d5 1b03          	add	a,(OFST+0,sp)
-10802  23d7 2401          	jrnc	L225
-10803  23d9 5c            	incw	x
-10804  23da               L225:
-10805  23da 02            	rlwa	x,a
-10806  23db b601          	ld	a,_tempUC
-10807  23dd 1c4020        	addw	x,#_TABLE_TIME_EE
-10808  23e0 cd0000        	call	c_eewrc
-10810  23e3               L1024:
-10811                     ; 1770 			speed=1;
-10813  23e3 35010000      	mov	_speed,#1
-10814                     ; 1771 			HUMAN_SET_EE=1;
-10816  23e7 ae0001        	ldw	x,#1
-10817  23ea 89            	pushw	x
-10818  23eb ae401e        	ldw	x,#_HUMAN_SET_EE
-10819  23ee cd0000        	call	c_eewrw
-10821  23f1 85            	popw	x
-10822  23f2 acfe28fe      	jpf	L7453
-10823  23f6               L3514:
-10824                     ; 1774 	else if(sub_ind1==1)
-10826  23f6 b663          	ld	a,_a_ind+2
-10827  23f8 a101          	cp	a,#1
-10828  23fa 2703          	jreq	L476
-10829  23fc cc28fe        	jp	L7453
-10830  23ff               L476:
-10831                     ; 1779 		num_of_day=sub_ind/5;
-10833  23ff b662          	ld	a,_a_ind+1
-10834  2401 ae0005        	ldw	x,#5
-10835  2404 51            	exgw	x,y
-10836  2405 5f            	clrw	x
-10837  2406 4d            	tnz	a
-10838  2407 2a01          	jrpl	L425
-10839  2409 5a            	decw	x
-10840  240a               L425:
-10841  240a 02            	rlwa	x,a
-10842  240b cd0000        	call	c_idiv
-10844  240e 9f            	ld	a,xl
-10845  240f 6b02          	ld	(OFST-1,sp),a
-10846                     ; 1780 		num_of_set=sub_ind%5;
-10848  2411 b662          	ld	a,_a_ind+1
-10849  2413 ae0005        	ldw	x,#5
-10850  2416 51            	exgw	x,y
-10851  2417 5f            	clrw	x
-10852  2418 4d            	tnz	a
-10853  2419 2a01          	jrpl	L625
-10854  241b 5a            	decw	x
-10855  241c               L625:
-10856  241c 02            	rlwa	x,a
-10857  241d cd0000        	call	c_idiv
-10859  2420 909f          	ld	a,yl
-10860  2422 6b03          	ld	(OFST+0,sp),a
-10861                     ; 1782 		if((but==butU)||(but==butU_))
-10863  2424 b600          	ld	a,_but
-10864  2426 a1fb          	cp	a,#251
-10865  2428 2706          	jreq	L1124
-10867  242a b600          	ld	a,_but
-10868  242c a17b          	cp	a,#123
-10869  242e 2668          	jrne	L7024
-10870  2430               L1124:
-10871                     ; 1784 			tempUC=TABLE_TEMPER_EE[num_of_day][num_of_set];
-10873  2430 7b02          	ld	a,(OFST-1,sp)
-10874  2432 97            	ld	xl,a
-10875  2433 a605          	ld	a,#5
-10876  2435 42            	mul	x,a
-10877  2436 01            	rrwa	x,a
-10878  2437 1b03          	add	a,(OFST+0,sp)
-10879  2439 2401          	jrnc	L035
-10880  243b 5c            	incw	x
-10881  243c               L035:
-10882  243c 02            	rlwa	x,a
-10883  243d d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-10884  2440 b701          	ld	_tempUC,a
-10885                     ; 1785 			if(tempUC)tempUC++;
-10887  2442 3d01          	tnz	_tempUC
-10888  2444 2702          	jreq	L3124
-10891  2446 3c01          	inc	_tempUC
-10892  2448               L3124:
-10893                     ; 1786 			if(tempUC>35)tempUC=35;
-10895  2448 b601          	ld	a,_tempUC
-10896  244a a124          	cp	a,#36
-10897  244c 2504          	jrult	L5124
-10900  244e 35230001      	mov	_tempUC,#35
-10901  2452               L5124:
-10902                     ; 1787 			if(tempUC<5)tempUC=5;
-10904  2452 b601          	ld	a,_tempUC
-10905  2454 a105          	cp	a,#5
-10906  2456 2404          	jruge	L7124
-10909  2458 35050001      	mov	_tempUC,#5
-10910  245c               L7124:
-10911                     ; 1788 			if(TABLE_TEMPER_EE[num_of_day][num_of_set]!=tempUC)TABLE_TEMPER_EE[num_of_day][num_of_set]=tempUC;
-10913  245c 7b02          	ld	a,(OFST-1,sp)
-10914  245e 97            	ld	xl,a
-10915  245f a605          	ld	a,#5
-10916  2461 42            	mul	x,a
-10917  2462 01            	rrwa	x,a
-10918  2463 1b03          	add	a,(OFST+0,sp)
-10919  2465 2401          	jrnc	L235
-10920  2467 5c            	incw	x
-10921  2468               L235:
-10922  2468 02            	rlwa	x,a
-10923  2469 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-10924  246c 5f            	clrw	x
-10925  246d 4d            	tnz	a
-10926  246e 2a01          	jrpl	L435
-10927  2470 53            	cplw	x
-10928  2471               L435:
-10929  2471 97            	ld	xl,a
-10930  2472 b601          	ld	a,_tempUC
-10931  2474 905f          	clrw	y
-10932  2476 9097          	ld	yl,a
-10933  2478 90bf00        	ldw	c_y,y
-10934  247b b300          	cpw	x,c_y
-10935  247d 2715          	jreq	L1224
-10938  247f 7b02          	ld	a,(OFST-1,sp)
-10939  2481 97            	ld	xl,a
-10940  2482 a605          	ld	a,#5
-10941  2484 42            	mul	x,a
-10942  2485 01            	rrwa	x,a
-10943  2486 1b03          	add	a,(OFST+0,sp)
-10944  2488 2401          	jrnc	L635
-10945  248a 5c            	incw	x
-10946  248b               L635:
-10947  248b 02            	rlwa	x,a
-10948  248c b601          	ld	a,_tempUC
-10949  248e 1c4048        	addw	x,#_TABLE_TEMPER_EE
-10950  2491 cd0000        	call	c_eewrc
-10952  2494               L1224:
-10953                     ; 1789 			speed=1;
-10955  2494 35010000      	mov	_speed,#1
-10956  2498               L7024:
-10957                     ; 1791 		if((but==butD)||(but==butD_))
-10959  2498 b600          	ld	a,_but
-10960  249a a1f7          	cp	a,#247
-10961  249c 2709          	jreq	L5224
-10963  249e b600          	ld	a,_but
-10964  24a0 a177          	cp	a,#119
-10965  24a2 2703          	jreq	L676
-10966  24a4 cc28fe        	jp	L7453
-10967  24a7               L676:
-10968  24a7               L5224:
-10969                     ; 1793 			tempUC=TABLE_TEMPER_EE[num_of_day][num_of_set];
-10971  24a7 7b02          	ld	a,(OFST-1,sp)
-10972  24a9 97            	ld	xl,a
-10973  24aa a605          	ld	a,#5
-10974  24ac 42            	mul	x,a
-10975  24ad 01            	rrwa	x,a
-10976  24ae 1b03          	add	a,(OFST+0,sp)
-10977  24b0 2401          	jrnc	L045
-10978  24b2 5c            	incw	x
-10979  24b3               L045:
-10980  24b3 02            	rlwa	x,a
-10981  24b4 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-10982  24b7 b701          	ld	_tempUC,a
-10983                     ; 1794 			if(tempUC)tempUC--;
-10985  24b9 3d01          	tnz	_tempUC
-10986  24bb 2702          	jreq	L7224
-10989  24bd 3a01          	dec	_tempUC
-10990  24bf               L7224:
-10991                     ; 1795 			if(tempUC>35)tempUC=35;
-10993  24bf b601          	ld	a,_tempUC
-10994  24c1 a124          	cp	a,#36
-10995  24c3 2504          	jrult	L1324
-10998  24c5 35230001      	mov	_tempUC,#35
-10999  24c9               L1324:
-11000                     ; 1796 			if(tempUC<5)tempUC=5;
-11002  24c9 b601          	ld	a,_tempUC
-11003  24cb a105          	cp	a,#5
-11004  24cd 2404          	jruge	L3324
-11007  24cf 35050001      	mov	_tempUC,#5
-11008  24d3               L3324:
-11009                     ; 1797 			if(TABLE_TEMPER_EE[num_of_day][num_of_set]!=tempUC)TABLE_TEMPER_EE[num_of_day][num_of_set]=tempUC;
-11011  24d3 7b02          	ld	a,(OFST-1,sp)
-11012  24d5 97            	ld	xl,a
-11013  24d6 a605          	ld	a,#5
-11014  24d8 42            	mul	x,a
-11015  24d9 01            	rrwa	x,a
-11016  24da 1b03          	add	a,(OFST+0,sp)
-11017  24dc 2401          	jrnc	L245
-11018  24de 5c            	incw	x
-11019  24df               L245:
-11020  24df 02            	rlwa	x,a
-11021  24e0 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
-11022  24e3 5f            	clrw	x
-11023  24e4 4d            	tnz	a
-11024  24e5 2a01          	jrpl	L445
-11025  24e7 53            	cplw	x
-11026  24e8               L445:
-11027  24e8 97            	ld	xl,a
-11028  24e9 b601          	ld	a,_tempUC
-11029  24eb 905f          	clrw	y
-11030  24ed 9097          	ld	yl,a
-11031  24ef 90bf00        	ldw	c_y,y
-11032  24f2 b300          	cpw	x,c_y
-11033  24f4 2715          	jreq	L5324
-11036  24f6 7b02          	ld	a,(OFST-1,sp)
-11037  24f8 97            	ld	xl,a
-11038  24f9 a605          	ld	a,#5
-11039  24fb 42            	mul	x,a
-11040  24fc 01            	rrwa	x,a
-11041  24fd 1b03          	add	a,(OFST+0,sp)
-11042  24ff 2401          	jrnc	L645
-11043  2501 5c            	incw	x
-11044  2502               L645:
-11045  2502 02            	rlwa	x,a
-11046  2503 b601          	ld	a,_tempUC
-11047  2505 1c4048        	addw	x,#_TABLE_TEMPER_EE
-11048  2508 cd0000        	call	c_eewrc
-11050  250b               L5324:
-11051                     ; 1798 			speed=1;
-11053  250b 35010000      	mov	_speed,#1
-11054  250f acfe28fe      	jpf	L7453
-11055  2513               L5314:
-11056                     ; 1802 else if(ind==iDeb)
-11058  2513 b661          	ld	a,_a_ind
-11059  2515 a107          	cp	a,#7
-11060  2517 2703          	jreq	L007
-11061  2519 cc25ad        	jp	L1424
-11062  251c               L007:
-11063                     ; 1804 	if(but==butU)
-11065  251c b600          	ld	a,_but
-11066  251e a1fb          	cp	a,#251
-11067  2520 2617          	jrne	L3424
-11068                     ; 1806 		sub_ind++;
-11070  2522 3c62          	inc	_a_ind+1
-11071                     ; 1807 		gran_char(&sub_ind,0,12);
-11073  2524 4b0c          	push	#12
-11074  2526 4b00          	push	#0
-11075  2528 ae0062        	ldw	x,#_a_ind+1
-11076  252b cd0000        	call	_gran_char
-11078  252e 85            	popw	x
-11079                     ; 1808 		clear_ind();
-11081  252f cd0000        	call	_clear_ind
-11083                     ; 1809 		ind_hndl();
-11085  2532 cd07bc        	call	_ind_hndl
-11088  2535 acfe28fe      	jpf	L7453
-11089  2539               L3424:
-11090                     ; 1811 	else if(but==butD)
-11092  2539 b600          	ld	a,_but
-11093  253b a1f7          	cp	a,#247
-11094  253d 2617          	jrne	L7424
-11095                     ; 1813 		sub_ind--;
-11097  253f 3a62          	dec	_a_ind+1
-11098                     ; 1814 		gran_char(&sub_ind,0,12);
-11100  2541 4b0c          	push	#12
-11101  2543 4b00          	push	#0
-11102  2545 ae0062        	ldw	x,#_a_ind+1
-11103  2548 cd0000        	call	_gran_char
-11105  254b 85            	popw	x
-11106                     ; 1815 		clear_ind();
-11108  254c cd0000        	call	_clear_ind
-11110                     ; 1816 		ind_hndl();
-11112  254f cd07bc        	call	_ind_hndl
-11115  2552 acfe28fe      	jpf	L7453
-11116  2556               L7424:
-11117                     ; 1818 	else if(but==butD_)
-11119  2556 b600          	ld	a,_but
-11120  2558 a177          	cp	a,#119
-11121  255a 260b          	jrne	L3524
-11122                     ; 1820 		tree_down(-1,0);
-11124  255c 5f            	clrw	x
-11125  255d a6ff          	ld	a,#255
-11126  255f 95            	ld	xh,a
-11127  2560 cd0000        	call	_tree_down
-11130  2563 acfe28fe      	jpf	L7453
-11131  2567               L3524:
-11132                     ; 1822 	else if(but==butM)
-11134  2567 b600          	ld	a,_but
-11135  2569 a1fd          	cp	a,#253
-11136  256b 2610          	jrne	L7524
-11137                     ; 1824 		tree_up(iModem_deb,0,0,0);
-11139  256d 4b00          	push	#0
-11140  256f 4b00          	push	#0
-11141  2571 5f            	clrw	x
-11142  2572 a60a          	ld	a,#10
-11143  2574 95            	ld	xh,a
-11144  2575 cd0000        	call	_tree_up
-11146  2578 85            	popw	x
-11148  2579 acfe28fe      	jpf	L7453
-11149  257d               L7524:
-11150                     ; 1829 	else if(sub_ind==8)
-11152  257d b662          	ld	a,_a_ind+1
-11153  257f a108          	cp	a,#8
-11154  2581 2703          	jreq	L207
-11155  2583 cc28fe        	jp	L7453
-11156  2586               L207:
-11157                     ; 1831 		if((but==butU)||(but==butD)||(but==butM)||(but==butON))	
-11159  2586 b600          	ld	a,_but
-11160  2588 a1fb          	cp	a,#251
-11161  258a 2715          	jreq	L7624
-11163  258c b600          	ld	a,_but
-11164  258e a1f7          	cp	a,#247
-11165  2590 270f          	jreq	L7624
-11167  2592 b600          	ld	a,_but
-11168  2594 a1fd          	cp	a,#253
-11169  2596 2709          	jreq	L7624
-11171  2598 b600          	ld	a,_but
-11172  259a a1fe          	cp	a,#254
-11173  259c 2703          	jreq	L407
-11174  259e cc28fe        	jp	L7453
-11175  25a1               L407:
-11176  25a1               L7624:
-11177                     ; 1833 			beepTestCnt=10;
-11179  25a1 350a0008      	mov	_beepTestCnt,#10
-11180                     ; 1834 			ind_check_cnt=0;
-11182  25a5 5f            	clrw	x
-11183  25a6 cf0006        	ldw	_ind_check_cnt,x
-11184  25a9 acfe28fe      	jpf	L7453
-11185  25ad               L1424:
-11186                     ; 1839 else if(ind==iModem_deb)
-11188  25ad b661          	ld	a,_a_ind
-11189  25af a10a          	cp	a,#10
-11190  25b1 2703          	jreq	L607
-11191  25b3 cc2664        	jp	L7724
-11192  25b6               L607:
-11193                     ; 1841 	if(but==butU)
-11195  25b6 b600          	ld	a,_but
-11196  25b8 a1fb          	cp	a,#251
-11197  25ba 2603          	jrne	L017
-11198  25bc cc28fe        	jp	L7453
-11199  25bf               L017:
-11201                     ; 1852 	else if(but==butD)
-11203  25bf b600          	ld	a,_but
-11204  25c1 a1f7          	cp	a,#247
-11205  25c3 2603          	jrne	L217
-11206  25c5 cc28fe        	jp	L7453
-11207  25c8               L217:
-11209                     ; 1860 	else if(but==butUD_)
-11211  25c8 b600          	ld	a,_but
-11212  25ca a173          	cp	a,#115
-11213  25cc 260a          	jrne	L1134
-11214                     ; 1862 		tree_down(0,0);
-11216  25ce 5f            	clrw	x
-11217  25cf 4f            	clr	a
-11218  25d0 95            	ld	xh,a
-11219  25d1 cd0000        	call	_tree_down
-11222  25d4 acfe28fe      	jpf	L7453
-11223  25d8               L1134:
-11224                     ; 1880 	else if(but==butD_)
-11226  25d8 b600          	ld	a,_but
-11227  25da a177          	cp	a,#119
-11228  25dc 2616          	jrne	L5134
-11229                     ; 1882 		AUTH_NUMBER_FLAGS=0;
-11231  25de 4f            	clr	a
-11232  25df ae407f        	ldw	x,#_AUTH_NUMBER_FLAGS
-11233  25e2 cd0000        	call	c_eewrc
-11235                     ; 1887 		HUMAN_SET_EE=1;
-11237  25e5 ae0001        	ldw	x,#1
-11238  25e8 89            	pushw	x
-11239  25e9 ae401e        	ldw	x,#_HUMAN_SET_EE
-11240  25ec cd0000        	call	c_eewrw
-11242  25ef 85            	popw	x
-11244  25f0 acfe28fe      	jpf	L7453
-11245  25f4               L5134:
-11246                     ; 1889 	else if(but==butU_)
-11248  25f4 b600          	ld	a,_but
-11249  25f6 a17b          	cp	a,#123
-11250  25f8 261a          	jrne	L1234
-11251                     ; 1891 		AUTH_NUMBER_FLAGS&=0x01;
-11253  25fa c6407f        	ld	a,_AUTH_NUMBER_FLAGS
-11254  25fd a401          	and	a,#1
-11255  25ff ae407f        	ldw	x,#_AUTH_NUMBER_FLAGS
-11256  2602 cd0000        	call	c_eewrc
-11258                     ; 1896 		HUMAN_SET_EE=1;
-11260  2605 ae0001        	ldw	x,#1
-11261  2608 89            	pushw	x
-11262  2609 ae401e        	ldw	x,#_HUMAN_SET_EE
-11263  260c cd0000        	call	c_eewrw
-11265  260f 85            	popw	x
-11267  2610 acfe28fe      	jpf	L7453
-11268  2614               L1234:
-11269                     ; 1898 	else if(but==butUD_)
-11271  2614 b600          	ld	a,_but
-11272  2616 a173          	cp	a,#115
-11273  2618 2703          	jreq	L417
-11274  261a cc28fe        	jp	L7453
-11275  261d               L417:
-11276                     ; 1900 		AUTH_NUMBER_FLAGS=0x0f;
-11278  261d a60f          	ld	a,#15
-11279  261f ae407f        	ldw	x,#_AUTH_NUMBER_FLAGS
-11280  2622 cd0000        	call	c_eewrc
-11282                     ; 1901 		memcpy(MAIN_NUMBER,"9139294352",10);
-11284  2625 ae000a        	ldw	x,#10
-11285  2628               L055:
-11286  2628 d6006b        	ld	a,(L7234-1,x)
-11287  262b d74001        	ld	(_MAIN_NUMBER-1,x),a
-11288  262e 5a            	decw	x
-11289  262f 26f7          	jrne	L055
-11290                     ; 1902 		memcpy(AUTH_NUMBER_1,"9134863890",10);
-11292  2631 ae000a        	ldw	x,#10
-11293  2634               L255:
-11294  2634 d60060        	ld	a,(L1334-1,x)
-11295  2637 d7400b        	ld	(_AUTH_NUMBER_1-1,x),a
-11296  263a 5a            	decw	x
-11297  263b 26f7          	jrne	L255
-11298                     ; 1903 		memcpy(AUTH_NUMBER_2,"9237328354",10);
-11300  263d ae000a        	ldw	x,#10
-11301  2640               L455:
-11302  2640 d60055        	ld	a,(L3334-1,x)
-11303  2643 d7406a        	ld	(_AUTH_NUMBER_2-1,x),a
-11304  2646 5a            	decw	x
-11305  2647 26f7          	jrne	L455
-11306                     ; 1904 		memcpy(AUTH_NUMBER_3,"11234567890",10);
-11308  2649 ae000a        	ldw	x,#10
-11309  264c               L655:
-11310  264c d60049        	ld	a,(L5334-1,x)
-11311  264f d74074        	ld	(_AUTH_NUMBER_3-1,x),a
-11312  2652 5a            	decw	x
-11313  2653 26f7          	jrne	L655
-11314                     ; 1905 		HUMAN_SET_EE=1;
-11316  2655 ae0001        	ldw	x,#1
-11317  2658 89            	pushw	x
-11318  2659 ae401e        	ldw	x,#_HUMAN_SET_EE
-11319  265c cd0000        	call	c_eewrw
-11321  265f 85            	popw	x
-11322  2660 acfe28fe      	jpf	L7453
-11323  2664               L7724:
-11324                     ; 1909 else if(ind==iDefSet)
-11326  2664 b661          	ld	a,_a_ind
-11327  2666 a109          	cp	a,#9
-11328  2668 2703          	jreq	L617
-11329  266a cc28d8        	jp	L1434
-11330  266d               L617:
-11331                     ; 1911 	if(but==butMU_)
-11333  266d b600          	ld	a,_but
-11334  266f a179          	cp	a,#121
-11335  2671 2703          	jreq	L027
-11336  2673 cc28fe        	jp	L7453
-11337  2676               L027:
-11338                     ; 1913 		TABLE_TIME_EE[0][0]=0;
-11340  2676 4f            	clr	a
-11341  2677 ae4020        	ldw	x,#_TABLE_TIME_EE
-11342  267a cd0000        	call	c_eewrc
-11344                     ; 1914 		TABLE_TEMPER_EE[0][0]=20;	
-11346  267d a614          	ld	a,#20
-11347  267f ae4048        	ldw	x,#_TABLE_TEMPER_EE
-11348  2682 cd0000        	call	c_eewrc
-11350                     ; 1915 		TABLE_TIME_EE[0][1]=36;
-11352  2685 a624          	ld	a,#36
-11353  2687 ae4021        	ldw	x,#_TABLE_TIME_EE+1
-11354  268a cd0000        	call	c_eewrc
-11356                     ; 1916 		TABLE_TEMPER_EE[0][1]=20;	
-11358  268d a614          	ld	a,#20
-11359  268f ae4049        	ldw	x,#_TABLE_TEMPER_EE+1
-11360  2692 cd0000        	call	c_eewrc
-11362                     ; 1917 		TABLE_TIME_EE[0][2]=72;
-11364  2695 a648          	ld	a,#72
-11365  2697 ae4022        	ldw	x,#_TABLE_TIME_EE+2
-11366  269a cd0000        	call	c_eewrc
-11368                     ; 1918 		TABLE_TEMPER_EE[0][2]=20;	
-11370  269d a614          	ld	a,#20
-11371  269f ae404a        	ldw	x,#_TABLE_TEMPER_EE+2
-11372  26a2 cd0000        	call	c_eewrc
-11374                     ; 1919 		TABLE_TIME_EE[0][3]=108;
-11376  26a5 a66c          	ld	a,#108
-11377  26a7 ae4023        	ldw	x,#_TABLE_TIME_EE+3
-11378  26aa cd0000        	call	c_eewrc
-11380                     ; 1920 		TABLE_TEMPER_EE[0][3]=20;	
-11382  26ad a614          	ld	a,#20
-11383  26af ae404b        	ldw	x,#_TABLE_TEMPER_EE+3
-11384  26b2 cd0000        	call	c_eewrc
-11386                     ; 1921 		TABLE_TIME_EE[0][4]=126;
-11388  26b5 a67e          	ld	a,#126
-11389  26b7 ae4024        	ldw	x,#_TABLE_TIME_EE+4
-11390  26ba cd0000        	call	c_eewrc
-11392                     ; 1922 		TABLE_TEMPER_EE[0][4]=20;
-11394  26bd a614          	ld	a,#20
-11395  26bf ae404c        	ldw	x,#_TABLE_TEMPER_EE+4
-11396  26c2 cd0000        	call	c_eewrc
-11398                     ; 1924 		TABLE_TIME_EE[1][0]=0;
-11400  26c5 4f            	clr	a
-11401  26c6 ae4025        	ldw	x,#_TABLE_TIME_EE+5
-11402  26c9 cd0000        	call	c_eewrc
-11404                     ; 1925 		TABLE_TEMPER_EE[1][0]=20;	
-11406  26cc a614          	ld	a,#20
-11407  26ce ae404d        	ldw	x,#_TABLE_TEMPER_EE+5
-11408  26d1 cd0000        	call	c_eewrc
-11410                     ; 1926 		TABLE_TIME_EE[1][1]=36;
-11412  26d4 a624          	ld	a,#36
-11413  26d6 ae4026        	ldw	x,#_TABLE_TIME_EE+6
-11414  26d9 cd0000        	call	c_eewrc
-11416                     ; 1927 		TABLE_TEMPER_EE[1][1]=20;	
-11418  26dc a614          	ld	a,#20
-11419  26de ae404e        	ldw	x,#_TABLE_TEMPER_EE+6
-11420  26e1 cd0000        	call	c_eewrc
-11422                     ; 1928 		TABLE_TIME_EE[1][2]=72;
-11424  26e4 a648          	ld	a,#72
-11425  26e6 ae4027        	ldw	x,#_TABLE_TIME_EE+7
-11426  26e9 cd0000        	call	c_eewrc
-11428                     ; 1929 		TABLE_TEMPER_EE[1][2]=20;	
-11430  26ec a614          	ld	a,#20
-11431  26ee ae404f        	ldw	x,#_TABLE_TEMPER_EE+7
-11432  26f1 cd0000        	call	c_eewrc
-11434                     ; 1930 		TABLE_TIME_EE[1][3]=108;
-11436  26f4 a66c          	ld	a,#108
-11437  26f6 ae4028        	ldw	x,#_TABLE_TIME_EE+8
-11438  26f9 cd0000        	call	c_eewrc
-11440                     ; 1931 		TABLE_TEMPER_EE[1][3]=20;	
-11442  26fc a614          	ld	a,#20
-11443  26fe ae4050        	ldw	x,#_TABLE_TEMPER_EE+8
-11444  2701 cd0000        	call	c_eewrc
-11446                     ; 1932 		TABLE_TIME_EE[1][4]=126;
-11448  2704 a67e          	ld	a,#126
-11449  2706 ae4029        	ldw	x,#_TABLE_TIME_EE+9
-11450  2709 cd0000        	call	c_eewrc
-11452                     ; 1933 		TABLE_TEMPER_EE[1][4]=20;	
-11454  270c a614          	ld	a,#20
-11455  270e ae4051        	ldw	x,#_TABLE_TEMPER_EE+9
-11456  2711 cd0000        	call	c_eewrc
-11458                     ; 1935 		TABLE_TIME_EE[2][0]=0;
-11460  2714 4f            	clr	a
-11461  2715 ae402a        	ldw	x,#_TABLE_TIME_EE+10
-11462  2718 cd0000        	call	c_eewrc
-11464                     ; 1936 		TABLE_TEMPER_EE[2][0]=20;	
-11466  271b a614          	ld	a,#20
-11467  271d ae4052        	ldw	x,#_TABLE_TEMPER_EE+10
-11468  2720 cd0000        	call	c_eewrc
-11470                     ; 1937 		TABLE_TIME_EE[2][1]=36;
-11472  2723 a624          	ld	a,#36
-11473  2725 ae402b        	ldw	x,#_TABLE_TIME_EE+11
-11474  2728 cd0000        	call	c_eewrc
-11476                     ; 1938 		TABLE_TEMPER_EE[2][1]=20;	
-11478  272b a614          	ld	a,#20
-11479  272d ae4053        	ldw	x,#_TABLE_TEMPER_EE+11
-11480  2730 cd0000        	call	c_eewrc
-11482                     ; 1939 		TABLE_TIME_EE[2][2]=72;
-11484  2733 a648          	ld	a,#72
-11485  2735 ae402c        	ldw	x,#_TABLE_TIME_EE+12
-11486  2738 cd0000        	call	c_eewrc
-11488                     ; 1940 		TABLE_TEMPER_EE[2][2]=20;	
-11490  273b a614          	ld	a,#20
-11491  273d ae4054        	ldw	x,#_TABLE_TEMPER_EE+12
-11492  2740 cd0000        	call	c_eewrc
-11494                     ; 1941 		TABLE_TIME_EE[2][3]=108;
-11496  2743 a66c          	ld	a,#108
-11497  2745 ae402d        	ldw	x,#_TABLE_TIME_EE+13
-11498  2748 cd0000        	call	c_eewrc
-11500                     ; 1942 		TABLE_TEMPER_EE[2][3]=20;	
-11502  274b a614          	ld	a,#20
-11503  274d ae4055        	ldw	x,#_TABLE_TEMPER_EE+13
-11504  2750 cd0000        	call	c_eewrc
-11506                     ; 1943 		TABLE_TIME_EE[2][4]=126;
-11508  2753 a67e          	ld	a,#126
-11509  2755 ae402e        	ldw	x,#_TABLE_TIME_EE+14
-11510  2758 cd0000        	call	c_eewrc
-11512                     ; 1944 		TABLE_TEMPER_EE[2][4]=20;
-11514  275b a614          	ld	a,#20
-11515  275d ae4056        	ldw	x,#_TABLE_TEMPER_EE+14
-11516  2760 cd0000        	call	c_eewrc
-11518                     ; 1946 		TABLE_TIME_EE[3][0]=0;
-11520  2763 4f            	clr	a
-11521  2764 ae402f        	ldw	x,#_TABLE_TIME_EE+15
-11522  2767 cd0000        	call	c_eewrc
-11524                     ; 1947 		TABLE_TEMPER_EE[3][0]=20;	
-11526  276a a614          	ld	a,#20
-11527  276c ae4057        	ldw	x,#_TABLE_TEMPER_EE+15
-11528  276f cd0000        	call	c_eewrc
-11530                     ; 1948 		TABLE_TIME_EE[3][1]=36;
-11532  2772 a624          	ld	a,#36
-11533  2774 ae4030        	ldw	x,#_TABLE_TIME_EE+16
-11534  2777 cd0000        	call	c_eewrc
-11536                     ; 1949 		TABLE_TEMPER_EE[3][1]=20;	
-11538  277a a614          	ld	a,#20
-11539  277c ae4058        	ldw	x,#_TABLE_TEMPER_EE+16
-11540  277f cd0000        	call	c_eewrc
-11542                     ; 1950 		TABLE_TIME_EE[3][2]=72;
-11544  2782 a648          	ld	a,#72
-11545  2784 ae4031        	ldw	x,#_TABLE_TIME_EE+17
-11546  2787 cd0000        	call	c_eewrc
-11548                     ; 1951 		TABLE_TEMPER_EE[3][2]=20;	
-11550  278a a614          	ld	a,#20
-11551  278c ae4059        	ldw	x,#_TABLE_TEMPER_EE+17
-11552  278f cd0000        	call	c_eewrc
-11554                     ; 1952 		TABLE_TIME_EE[3][3]=108;
-11556  2792 a66c          	ld	a,#108
-11557  2794 ae4032        	ldw	x,#_TABLE_TIME_EE+18
-11558  2797 cd0000        	call	c_eewrc
-11560                     ; 1953 		TABLE_TEMPER_EE[3][3]=20;	
-11562  279a a614          	ld	a,#20
-11563  279c ae405a        	ldw	x,#_TABLE_TEMPER_EE+18
-11564  279f cd0000        	call	c_eewrc
-11566                     ; 1954 		TABLE_TIME_EE[3][4]=126;
-11568  27a2 a67e          	ld	a,#126
-11569  27a4 ae4033        	ldw	x,#_TABLE_TIME_EE+19
-11570  27a7 cd0000        	call	c_eewrc
-11572                     ; 1955 		TABLE_TEMPER_EE[3][4]=20;
-11574  27aa a614          	ld	a,#20
-11575  27ac ae405b        	ldw	x,#_TABLE_TEMPER_EE+19
-11576  27af cd0000        	call	c_eewrc
-11578                     ; 1957 		TABLE_TIME_EE[4][0]=0;
-11580  27b2 4f            	clr	a
-11581  27b3 ae4034        	ldw	x,#_TABLE_TIME_EE+20
-11582  27b6 cd0000        	call	c_eewrc
-11584                     ; 1958 		TABLE_TEMPER_EE[4][0]=20;	
-11586  27b9 a614          	ld	a,#20
-11587  27bb ae405c        	ldw	x,#_TABLE_TEMPER_EE+20
-11588  27be cd0000        	call	c_eewrc
-11590                     ; 1959 		TABLE_TIME_EE[4][1]=36;
-11592  27c1 a624          	ld	a,#36
-11593  27c3 ae4035        	ldw	x,#_TABLE_TIME_EE+21
-11594  27c6 cd0000        	call	c_eewrc
-11596                     ; 1960 		TABLE_TEMPER_EE[4][1]=20;	
-11598  27c9 a614          	ld	a,#20
-11599  27cb ae405d        	ldw	x,#_TABLE_TEMPER_EE+21
-11600  27ce cd0000        	call	c_eewrc
-11602                     ; 1961 		TABLE_TIME_EE[4][2]=72;
-11604  27d1 a648          	ld	a,#72
-11605  27d3 ae4036        	ldw	x,#_TABLE_TIME_EE+22
-11606  27d6 cd0000        	call	c_eewrc
-11608                     ; 1962 		TABLE_TEMPER_EE[4][2]=20;	
-11610  27d9 a614          	ld	a,#20
-11611  27db ae405e        	ldw	x,#_TABLE_TEMPER_EE+22
-11612  27de cd0000        	call	c_eewrc
-11614                     ; 1963 		TABLE_TIME_EE[4][3]=108;
-11616  27e1 a66c          	ld	a,#108
-11617  27e3 ae4037        	ldw	x,#_TABLE_TIME_EE+23
-11618  27e6 cd0000        	call	c_eewrc
-11620                     ; 1964 		TABLE_TEMPER_EE[4][3]=20;	
-11622  27e9 a614          	ld	a,#20
-11623  27eb ae405f        	ldw	x,#_TABLE_TEMPER_EE+23
-11624  27ee cd0000        	call	c_eewrc
-11626                     ; 1965 		TABLE_TIME_EE[4][4]=126;
-11628  27f1 a67e          	ld	a,#126
-11629  27f3 ae4038        	ldw	x,#_TABLE_TIME_EE+24
-11630  27f6 cd0000        	call	c_eewrc
-11632                     ; 1966 		TABLE_TEMPER_EE[4][4]=20;
-11634  27f9 a614          	ld	a,#20
-11635  27fb ae4060        	ldw	x,#_TABLE_TEMPER_EE+24
-11636  27fe cd0000        	call	c_eewrc
-11638                     ; 1968 		TABLE_TIME_EE[5][0]=0;
-11640  2801 4f            	clr	a
-11641  2802 ae4039        	ldw	x,#_TABLE_TIME_EE+25
-11642  2805 cd0000        	call	c_eewrc
-11644                     ; 1969 		TABLE_TEMPER_EE[5][0]=20;	
-11646  2808 a614          	ld	a,#20
-11647  280a ae4061        	ldw	x,#_TABLE_TEMPER_EE+25
-11648  280d cd0000        	call	c_eewrc
-11650                     ; 1970 		TABLE_TIME_EE[5][1]=36;
-11652  2810 a624          	ld	a,#36
-11653  2812 ae403a        	ldw	x,#_TABLE_TIME_EE+26
-11654  2815 cd0000        	call	c_eewrc
-11656                     ; 1971 		TABLE_TEMPER_EE[5][1]=20;	
-11658  2818 a614          	ld	a,#20
-11659  281a ae4062        	ldw	x,#_TABLE_TEMPER_EE+26
-11660  281d cd0000        	call	c_eewrc
-11662                     ; 1972 		TABLE_TIME_EE[5][2]=72;
-11664  2820 a648          	ld	a,#72
-11665  2822 ae403b        	ldw	x,#_TABLE_TIME_EE+27
-11666  2825 cd0000        	call	c_eewrc
-11668                     ; 1973 		TABLE_TEMPER_EE[5][2]=20;	
-11670  2828 a614          	ld	a,#20
-11671  282a ae4063        	ldw	x,#_TABLE_TEMPER_EE+27
-11672  282d cd0000        	call	c_eewrc
-11674                     ; 1974 		TABLE_TIME_EE[5][3]=108;
-11676  2830 a66c          	ld	a,#108
-11677  2832 ae403c        	ldw	x,#_TABLE_TIME_EE+28
-11678  2835 cd0000        	call	c_eewrc
-11680                     ; 1975 		TABLE_TEMPER_EE[5][3]=20;	
-11682  2838 a614          	ld	a,#20
-11683  283a ae4064        	ldw	x,#_TABLE_TEMPER_EE+28
-11684  283d cd0000        	call	c_eewrc
-11686                     ; 1976 		TABLE_TIME_EE[5][4]=126;
-11688  2840 a67e          	ld	a,#126
-11689  2842 ae403d        	ldw	x,#_TABLE_TIME_EE+29
-11690  2845 cd0000        	call	c_eewrc
-11692                     ; 1977 		TABLE_TEMPER_EE[5][4]=20;
-11694  2848 a614          	ld	a,#20
-11695  284a ae4065        	ldw	x,#_TABLE_TEMPER_EE+29
-11696  284d cd0000        	call	c_eewrc
-11698                     ; 1979 		TABLE_TIME_EE[6][0]=0;
-11700  2850 4f            	clr	a
-11701  2851 ae403e        	ldw	x,#_TABLE_TIME_EE+30
-11702  2854 cd0000        	call	c_eewrc
-11704                     ; 1980 		TABLE_TEMPER_EE[6][0]=20;	
-11706  2857 a614          	ld	a,#20
-11707  2859 ae4066        	ldw	x,#_TABLE_TEMPER_EE+30
-11708  285c cd0000        	call	c_eewrc
-11710                     ; 1981 		TABLE_TIME_EE[6][1]=36;
-11712  285f a624          	ld	a,#36
-11713  2861 ae403f        	ldw	x,#_TABLE_TIME_EE+31
-11714  2864 cd0000        	call	c_eewrc
-11716                     ; 1982 		TABLE_TEMPER_EE[6][1]=20;	
-11718  2867 a614          	ld	a,#20
-11719  2869 ae4067        	ldw	x,#_TABLE_TEMPER_EE+31
-11720  286c cd0000        	call	c_eewrc
-11722                     ; 1983 		TABLE_TIME_EE[6][2]=72;
-11724  286f a648          	ld	a,#72
-11725  2871 ae4040        	ldw	x,#_TABLE_TIME_EE+32
-11726  2874 cd0000        	call	c_eewrc
-11728                     ; 1984 		TABLE_TEMPER_EE[6][2]=20;	
-11730  2877 a614          	ld	a,#20
-11731  2879 ae4068        	ldw	x,#_TABLE_TEMPER_EE+32
-11732  287c cd0000        	call	c_eewrc
-11734                     ; 1985 		TABLE_TIME_EE[6][3]=108;
-11736  287f a66c          	ld	a,#108
-11737  2881 ae4041        	ldw	x,#_TABLE_TIME_EE+33
-11738  2884 cd0000        	call	c_eewrc
-11740                     ; 1986 		TABLE_TEMPER_EE[6][3]=20;	
-11742  2887 a614          	ld	a,#20
-11743  2889 ae4069        	ldw	x,#_TABLE_TEMPER_EE+33
-11744  288c cd0000        	call	c_eewrc
-11746                     ; 1987 		TABLE_TIME_EE[6][4]=126;
-11748  288f a67e          	ld	a,#126
-11749  2891 ae4042        	ldw	x,#_TABLE_TIME_EE+34
-11750  2894 cd0000        	call	c_eewrc
-11752                     ; 1988 		TABLE_TEMPER_EE[6][4]=20;
-11754  2897 a614          	ld	a,#20
-11755  2899 ae406a        	ldw	x,#_TABLE_TEMPER_EE+34
-11756  289c cd0000        	call	c_eewrc
-11758                     ; 1990 		MODE_EE=1;
-11760  289f a601          	ld	a,#1
-11761  28a1 ae4046        	ldw	x,#_MODE_EE
-11762  28a4 cd0000        	call	c_eewrc
-11764                     ; 1991 		NECC_TEMPER_WATER_EE=50;
-11766  28a7 a632          	ld	a,#50
-11767  28a9 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
-11768  28ac cd0000        	call	c_eewrc
-11770                     ; 1992 		NECC_TEMPER_AIR_EE=20;
-11772  28af a614          	ld	a,#20
-11773  28b1 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
-11774  28b4 cd0000        	call	c_eewrc
-11776                     ; 1993 		MAX_POWER_EE=3;
-11778  28b7 a603          	ld	a,#3
-11779  28b9 ae4047        	ldw	x,#_MAX_POWER_EE
-11780  28bc cd0000        	call	c_eewrc
-11782                     ; 1995 		tree_down(0,0);
-11784  28bf 5f            	clrw	x
-11785  28c0 4f            	clr	a
-11786  28c1 95            	ld	xh,a
-11787  28c2 cd0000        	call	_tree_down
-11789                     ; 1996 		ret_ind(0,0);
-11791  28c5 5f            	clrw	x
-11792  28c6 4f            	clr	a
-11793  28c7 95            	ld	xh,a
-11794  28c8 cd0000        	call	_ret_ind
-11796                     ; 1997 		HUMAN_SET_EE=1;
-11798  28cb ae0001        	ldw	x,#1
-11799  28ce 89            	pushw	x
-11800  28cf ae401e        	ldw	x,#_HUMAN_SET_EE
-11801  28d2 cd0000        	call	c_eewrw
-11803  28d5 85            	popw	x
-11804  28d6 2026          	jra	L7453
-11805  28d8               L1434:
-11806                     ; 2001 else if(ind==iInterf)
-11808  28d8 b661          	ld	a,_a_ind
-11809  28da a10f          	cp	a,#15
-11810  28dc 2620          	jrne	L7453
-11811                     ; 2003 	if((but==butU)||(but==butD)||(but==butM)||(but==butON))	
-11813  28de b600          	ld	a,_but
-11814  28e0 a1fb          	cp	a,#251
-11815  28e2 2712          	jreq	L3534
-11817  28e4 b600          	ld	a,_but
-11818  28e6 a1f7          	cp	a,#247
-11819  28e8 270c          	jreq	L3534
-11821  28ea b600          	ld	a,_but
-11822  28ec a1fd          	cp	a,#253
-11823  28ee 2706          	jreq	L3534
-11825  28f0 b600          	ld	a,_but
-11826  28f2 a1fe          	cp	a,#254
-11827  28f4 2608          	jrne	L7453
-11828  28f6               L3534:
-11829                     ; 2005 		beepTestCnt=10;
-11831  28f6 350a0008      	mov	_beepTestCnt,#10
-11832                     ; 2006 		ind_check_cnt=0;
-11834  28fa 5f            	clrw	x
-11835  28fb cf0006        	ldw	_ind_check_cnt,x
-11836  28fe               L7453:
-11837                     ; 2009 }
-11838  28fe               L065:
-11841  28fe 5b03          	addw	sp,#3
-11842  2900 81            	ret
-11865                     ; 2011 void t4_init(void)
-11865                     ; 2012 {
-11866                     	switch	.text
-11867  2901               _t4_init:
-11871                     ; 2013 TIM4->PSCR = 6;
-11873  2901 35065345      	mov	21317,#6
-11874                     ; 2014 TIM4->ARR= 158;
-11876  2905 359e5346      	mov	21318,#158
-11877                     ; 2015 TIM4->IER|= TIM4_IER_UIE;					// enable break interrupt
-11879  2909 72105341      	bset	21313,#0
-11880                     ; 2017 TIM4->CR1=(TIM4_CR1_URS | TIM4_CR1_CEN | TIM4_CR1_ARPE);	
-11882  290d 35855340      	mov	21312,#133
-11883                     ; 2019 }
-11886  2911 81            	ret
-11929                     ; 2025 @far @interrupt void TIM4_UPD_Interrupt (void) 
-11929                     ; 2026 {
-11931                     	switch	.text
-11932  2912               f_TIM4_UPD_Interrupt:
-11936                     ; 2028 GPIOD->ODR|=0b00111100;
-11938  2912 c6500f        	ld	a,20495
-11939  2915 aa3c          	or	a,#60
-11940  2917 c7500f        	ld	20495,a
-11941                     ; 2029 ind_cnt++;
-11943  291a 3c81          	inc	_ind_cnt
-11944                     ; 2030 if(ind_cnt>=10)
-11946  291c b681          	ld	a,_ind_cnt
-11947  291e a10a          	cp	a,#10
-11948  2920 2507          	jrult	L1044
-11949                     ; 2032 	ind_cnt=0;
-11951  2922 3f81          	clr	_ind_cnt
-11952                     ; 2033 	but_new=GPIOB->IDR;
-11954  2924 5550060000    	mov	_but_new,20486
-11955  2929               L1044:
-11956                     ; 2035 GPIOB->ODR=ind_outB[ind_cnt];
-11958  2929 b681          	ld	a,_ind_cnt
-11959  292b 5f            	clrw	x
-11960  292c 97            	ld	xl,a
-11961  292d e675          	ld	a,(_ind_outB,x)
-11962  292f c75005        	ld	20485,a
-11963                     ; 2036 GPIOC->ODR=ind_outC[ind_cnt];
-11965  2932 b681          	ld	a,_ind_cnt
-11966  2934 5f            	clrw	x
-11967  2935 97            	ld	xl,a
-11968  2936 e60a          	ld	a,(_ind_outC,x)
-11969  2938 c7500a        	ld	20490,a
-11970                     ; 2037 if(powerStat==psOFF)GPIOC->ODR=0xff;
-11972  293b 3d29          	tnz	_powerStat
-11973  293d 2604          	jrne	L3044
-11976  293f 35ff500a      	mov	20490,#255
-11977  2943               L3044:
-11978                     ; 2038 GPIOG->ODR|=0x01;
-11980  2943 7210501e      	bset	20510,#0
-11981                     ; 2039 GPIOG->ODR&=ind_outG[ind_cnt];
-11983  2947 b681          	ld	a,_ind_cnt
-11984  2949 5f            	clrw	x
-11985  294a 97            	ld	xl,a
-11986  294b c6501e        	ld	a,20510
-11987  294e e416          	and	a,(_ind_outG,x)
-11988  2950 c7501e        	ld	20510,a
-11989                     ; 2040 if(ind_cnt==9)GPIOB->DDR=0x00;
-11991  2953 b681          	ld	a,_ind_cnt
-11992  2955 a109          	cp	a,#9
-11993  2957 2606          	jrne	L5044
-11996  2959 725f5007      	clr	20487
-11998  295d 2004          	jra	L7044
-11999  295f               L5044:
-12000                     ; 2041 else GPIOB->DDR=0xff;
-12002  295f 35ff5007      	mov	20487,#255
-12003  2963               L7044:
-12004                     ; 2042 if(powerStat==psOFF)
-12006  2963 3d29          	tnz	_powerStat
-12007  2965 2618          	jrne	L1144
-12008                     ; 2044 	GPIOD->ODR|=0b00111100;
-12010  2967 c6500f        	ld	a,20495
-12011  296a aa3c          	or	a,#60
-12012  296c c7500f        	ld	20495,a
-12013                     ; 2045 	if((ind_cnt==0)||(ind_cnt>3))GPIOD->ODR&=ind_strob[0];
-12015  296f 3d81          	tnz	_ind_cnt
-12016  2971 2706          	jreq	L5144
-12018  2973 b681          	ld	a,_ind_cnt
-12019  2975 a104          	cp	a,#4
-12020  2977 2513          	jrult	L7144
-12021  2979               L5144:
-12024  2979 721b500f      	bres	20495,#5
-12025  297d 200d          	jra	L7144
-12026  297f               L1144:
-12027                     ; 2047 else GPIOD->ODR&=ind_strob[ind_cnt];
-12029  297f b681          	ld	a,_ind_cnt
-12030  2981 5f            	clrw	x
-12031  2982 97            	ld	xl,a
-12032  2983 c6500f        	ld	a,20495
-12033  2986 d40012        	and	a,(_ind_strob,x)
-12034  2989 c7500f        	ld	20495,a
-12035  298c               L7144:
-12036                     ; 2049 if(++t0_cnt0>=10)
-12038  298c 3c05          	inc	_t0_cnt0
-12039  298e b605          	ld	a,_t0_cnt0
-12040  2990 a10a          	cp	a,#10
-12041  2992 255f          	jrult	L1244
-12042                     ; 2051   t0_cnt0=0;
-12044  2994 3f05          	clr	_t0_cnt0
-12045                     ; 2052   b100Hz=1;
-12047  2996 35010000      	mov	_b100Hz,#1
-12048                     ; 2054 	if(++t0_cnt1>=10)
-12050  299a 3c06          	inc	_t0_cnt1
-12051  299c b606          	ld	a,_t0_cnt1
-12052  299e a10a          	cp	a,#10
-12053  29a0 2506          	jrult	L3244
-12054                     ; 2056 		t0_cnt1=0;
-12056  29a2 3f06          	clr	_t0_cnt1
-12057                     ; 2057 		b10Hz=1;
-12059  29a4 35010001      	mov	_b10Hz,#1
-12060  29a8               L3244:
-12061                     ; 2060 	if(++t0_cnt2>=20)
-12063  29a8 3c07          	inc	_t0_cnt2
-12064  29aa b607          	ld	a,_t0_cnt2
-12065  29ac a114          	cp	a,#20
-12066  29ae 2511          	jrult	L5244
-12067                     ; 2062 		t0_cnt2=0;
-12069  29b0 3f07          	clr	_t0_cnt2
-12070                     ; 2063 		b5Hz=1;
-12072  29b2 35010002      	mov	_b5Hz,#1
-12073                     ; 2064 		bFL5=!bFL5;
-12075  29b6 3d28          	tnz	_bFL5
-12076  29b8 2604          	jrne	L627
-12077  29ba a601          	ld	a,#1
-12078  29bc 2001          	jra	L037
-12079  29be               L627:
-12080  29be 4f            	clr	a
-12081  29bf               L037:
-12082  29bf b728          	ld	_bFL5,a
-12083  29c1               L5244:
-12084                     ; 2067 	if(++t0_cnt3>=50)
-12086  29c1 3c08          	inc	_t0_cnt3
-12087  29c3 b608          	ld	a,_t0_cnt3
-12088  29c5 a132          	cp	a,#50
-12089  29c7 2511          	jrult	L7244
-12090                     ; 2069 		t0_cnt3=0;
-12092  29c9 3f08          	clr	_t0_cnt3
-12093                     ; 2070 		b2Hz=1;
-12095  29cb 35010003      	mov	_b2Hz,#1
-12096                     ; 2071 		bFL2=!bFL2;
-12098  29cf 3d27          	tnz	_bFL2
-12099  29d1 2604          	jrne	L237
-12100  29d3 a601          	ld	a,#1
-12101  29d5 2001          	jra	L437
-12102  29d7               L237:
-12103  29d7 4f            	clr	a
-12104  29d8               L437:
-12105  29d8 b727          	ld	_bFL2,a
-12106  29da               L7244:
-12107                     ; 2073 	if(++t0_cnt4>=100)
-12109  29da 3c09          	inc	_t0_cnt4
-12110  29dc b609          	ld	a,_t0_cnt4
-12111  29de a164          	cp	a,#100
-12112  29e0 2511          	jrult	L1244
-12113                     ; 2075 		t0_cnt4=0;
-12115  29e2 3f09          	clr	_t0_cnt4
-12116                     ; 2076 		b1Hz=1;
-12118  29e4 35010004      	mov	_b1Hz,#1
-12119                     ; 2077 		bFL1=!bFL1;
-12121  29e8 3d26          	tnz	_bFL1
-12122  29ea 2604          	jrne	L637
-12123  29ec a601          	ld	a,#1
-12124  29ee 2001          	jra	L047
-12125  29f0               L637:
-12126  29f0 4f            	clr	a
-12127  29f1               L047:
-12128  29f1 b726          	ld	_bFL1,a
-12129  29f3               L1244:
-12130                     ; 2080 TIM4->SR1&=~TIM4_SR1_UIF;			// disable break interrupt
-12132  29f3 72115342      	bres	21314,#0
-12133                     ; 2081 return;
-12136  29f7 80            	iret
-12204                     ; 2088 main()
-12204                     ; 2089 {
-12206                     	switch	.text
-12207  29f8               _main:
-12211                     ; 2090 CLK->ECKR|=1;
-12213  29f8 721050c1      	bset	20673,#0
-12215  29fc               L5444:
-12216                     ; 2091 while((CLK->ECKR & 2) == 0);
-12218  29fc c650c1        	ld	a,20673
-12219  29ff a502          	bcp	a,#2
-12220  2a01 27f9          	jreq	L5444
-12221                     ; 2092 CLK->SWCR|=2;
-12223  2a03 721250c5      	bset	20677,#1
-12224                     ; 2093 CLK->SWR=0xB4;	
-12226  2a07 35b450c4      	mov	20676,#180
-12227                     ; 2095 CLK->CKDIVR=0;
-12229  2a0b 725f50c6      	clr	20678
-12230                     ; 2097 FLASH_DUKR=0xae;
-12232  2a0f 35ae5064      	mov	_FLASH_DUKR,#174
-12233                     ; 2098 FLASH_DUKR=0x56;
-12235  2a13 35565064      	mov	_FLASH_DUKR,#86
-12236                     ; 2101 GPIOD->DDR|=0b00111100;		//PD2-PD5 выходы открытый коллектор
-12238  2a17 c65011        	ld	a,20497
-12239  2a1a aa3c          	or	a,#60
-12240  2a1c c75011        	ld	20497,a
-12241                     ; 2102 GPIOD->CR1&=0b11000011;		//....
-12243  2a1f c65012        	ld	a,20498
-12244  2a22 a4c3          	and	a,#195
-12245  2a24 c75012        	ld	20498,a
-12246                     ; 2103 GPIOD->CR2&=0b11000011;		//....
-12248  2a27 c65013        	ld	a,20499
-12249  2a2a a4c3          	and	a,#195
-12250  2a2c c75013        	ld	20499,a
-12251                     ; 2104 GPIOB->DDR|=0b11111111;		//PORTB все выходы ТТЛ
-12253  2a2f c65007        	ld	a,20487
-12254  2a32 aaff          	or	a,#255
-12255  2a34 c75007        	ld	20487,a
-12256                     ; 2105 GPIOB->CR1|=0b11111111;		//....
-12258  2a37 c65008        	ld	a,20488
-12259  2a3a aaff          	or	a,#255
-12260  2a3c c75008        	ld	20488,a
-12261                     ; 2106 GPIOB->CR2&=0b00000000;		//....
-12263  2a3f 725f5009      	clr	20489
-12264                     ; 2107 GPIOC->DDR|=0b11111111;		//PORTC все выходы открытый коллектор
-12266  2a43 c6500c        	ld	a,20492
-12267  2a46 aaff          	or	a,#255
-12268  2a48 c7500c        	ld	20492,a
-12269                     ; 2108 GPIOC->CR1&=0b00000000;		//....
-12271  2a4b 725f500d      	clr	20493
-12272                     ; 2109 GPIOC->CR2&=0b00000000;		//....
-12274  2a4f 725f500e      	clr	20494
-12275                     ; 2110 GPIOG->DDR|=0b00000001;		//PG0 выход открытый коллектор
-12277  2a53 72105020      	bset	20512,#0
-12278                     ; 2111 GPIOG->CR1&=0b11111110;		//....
-12280  2a57 72115021      	bres	20513,#0
-12281                     ; 2112 GPIOG->CR2&=0b11111110;		//....
-12283  2a5b 72115022      	bres	20514,#0
-12284                     ; 2113 t4_init();
-12286  2a5f cd2901        	call	_t4_init
-12288                     ; 2114 uart3_init();
-12290  2a62 cd0000        	call	_uart3_init
-12292                     ; 2115 uart1_init();
-12294  2a65 cd0000        	call	_uart1_init
-12296                     ; 2116 modem_gpio_init();
-12298  2a68 cd0000        	call	_modem_gpio_init
-12300                     ; 2118 enableInterrupts();
-12303  2a6b 9a            rim
-12305                     ; 2120 clear_ind();
-12308  2a6c cd0000        	call	_clear_ind
-12310                     ; 2121 ind=iMn;//iModem_deb;
-12312  2a6f 3f61          	clr	_a_ind
-12313                     ; 2127 bERR=0;
-12315  2a71 3f08          	clr	_bERR
-12316                     ; 2128 bWARN=0;
-12318  2a73 3f07          	clr	_bWARN
-12319                     ; 2130 modemDrvInitStepCnt=1;
-12321  2a75 ae0001        	ldw	x,#1
-12322  2a78 bf00          	ldw	_modemDrvInitStepCnt,x
-12323                     ; 2135 watchdog_enable();
-12325  2a7a cd0000        	call	_watchdog_enable
-12327                     ; 2137 if(power_in_test()==0)
-12329  2a7d cd0169        	call	_power_in_test
-12331  2a80 a30000        	cpw	x,#0
-12332  2a83 2609          	jrne	L1544
-12333                     ; 2139 	GPIOD->ODR|=0b00111100;
-12335  2a85 c6500f        	ld	a,20495
-12336  2a88 aa3c          	or	a,#60
-12337  2a8a c7500f        	ld	20495,a
-12338                     ; 2140 	halt();
-12341  2a8d 8e            halt
-12344  2a8e               L1544:
-12345                     ; 2143 isp_main_cnt=0;
-12347  2a8e ae0000        	ldw	x,#0
-12348  2a91 cf0002        	ldw	_isp_main_cnt+2,x
-12349  2a94 ae0000        	ldw	x,#0
-12350  2a97 cf0000        	ldw	_isp_main_cnt,x
-12351  2a9a               L3544:
-12352                     ; 2147 	uart1_in_an();
-12354  2a9a cd0000        	call	_uart1_in_an
-12356                     ; 2148 	if(b100Hz)
-12358  2a9d 3d00          	tnz	_b100Hz
-12359  2a9f 270b          	jreq	L7544
-12360                     ; 2150 		b100Hz=0;
-12362  2aa1 3f00          	clr	_b100Hz
-12363                     ; 2152 		but_drv();
-12365  2aa3 cd0000        	call	_but_drv
-12367                     ; 2153 		but_an();
-12369  2aa6 cd19a2        	call	_but_an
-12371                     ; 2155 		modem_stat_drv();
-12373  2aa9 cd0000        	call	_modem_stat_drv
-12375  2aac               L7544:
-12376                     ; 2158 	if(b10Hz)
-12378  2aac 3d01          	tnz	_b10Hz
-12379  2aae 271e          	jreq	L1644
-12380                     ; 2160 		b10Hz=0;
-12382  2ab0 3f01          	clr	_b10Hz
-12383                     ; 2162 		if(bWATCHDOG_REFRESH)watchdog_reset();
-12385  2ab2 3d2a          	tnz	_bWATCHDOG_REFRESH
-12386  2ab4 2703          	jreq	L3644
-12389  2ab6 cd0000        	call	_watchdog_reset
-12391  2ab9               L3644:
-12392                     ; 2163 		ind_hndl();
-12394  2ab9 cd07bc        	call	_ind_hndl
-12396                     ; 2164 		uart3_in_an();
-12398  2abc cd0000        	call	_uart3_in_an
-12400                     ; 2165 		out_drv();
-12402  2abf cd0000        	call	_out_drv
-12404                     ; 2166 		matemath();
-12406  2ac2 cd075f        	call	_matemath
-12408                     ; 2167 		modem_drv();
-12410  2ac5 cd0000        	call	_modem_drv
-12412                     ; 2168 		sms_fifo_drv();
-12414  2ac8 cd0000        	call	_sms_fifo_drv
-12416                     ; 2169 		power_in_drv();
-12418  2acb cd0000        	call	_power_in_drv
-12420  2ace               L1644:
-12421                     ; 2171 	if(b5Hz)
-12423  2ace 3d02          	tnz	_b5Hz
-12424  2ad0 270c          	jreq	L5644
-12425                     ; 2173 		b5Hz=0;
-12427  2ad2 3f02          	clr	_b5Hz
-12428                     ; 2175 		if(version_show_cnt)version_show_cnt--;
-12430  2ad4 725d000c      	tnz	_version_show_cnt
-12431  2ad8 2704          	jreq	L5644
-12434  2ada 725a000c      	dec	_version_show_cnt
-12435  2ade               L5644:
-12436                     ; 2177 	if(b2Hz)
-12438  2ade 3d03          	tnz	_b2Hz
-12439  2ae0 2705          	jreq	L1744
-12440                     ; 2179 		b2Hz=0;
-12442  2ae2 3f03          	clr	_b2Hz
-12443                     ; 2181 		time_drv();
-12445  2ae4 cd0430        	call	_time_drv
-12447  2ae7               L1744:
-12448                     ; 2183 	if(b1Hz)
-12450  2ae7 3d04          	tnz	_b1Hz
-12451  2ae9 27af          	jreq	L3544
-12452                     ; 2185 		b1Hz=0;
-12454  2aeb 3f04          	clr	_b1Hz
-12455                     ; 2187 		isp_main_cnt++;
-12457  2aed ae0000        	ldw	x,#_isp_main_cnt
-12458  2af0 a601          	ld	a,#1
-12459  2af2 cd0000        	call	c_lgadc
-12461                     ; 2189 		if(mainCnt<1000)
-12463  2af5 9c            	rvf
-12464  2af6 be82          	ldw	x,_mainCnt
-12465  2af8 a303e8        	cpw	x,#1000
-12466  2afb 2e07          	jrsge	L5744
-12467                     ; 2191 			mainCnt++;
-12469  2afd be82          	ldw	x,_mainCnt
-12470  2aff 1c0001        	addw	x,#1
-12471  2b02 bf82          	ldw	_mainCnt,x
-12472  2b04               L5744:
-12473                     ; 2195 		ds18b20_temper_drv();
-12475  2b04 cd0000        	call	_ds18b20_temper_drv
-12477                     ; 2196 		ret_ind_hndl();
-12479  2b07 cd0000        	call	_ret_ind_hndl
-12481                     ; 2197 		random_gen();
-12483  2b0a cd0000        	call	_random_gen
-12485                     ; 2198 		power_necc_hndl();
-12487  2b0d cd0710        	call	_power_necc_hndl
-12489                     ; 2199 		power_hndl();
-12491  2b10 cd065f        	call	_power_hndl
-12493                     ; 2200 		sheduler_hndl();
-12495  2b13 cd04c3        	call	_sheduler_hndl
-12497                     ; 2201 		error_warn_hndl();
-12499  2b16 cd01ac        	call	_error_warn_hndl
-12501                     ; 2202 		airSensorLineErrorDrv();
-12503  2b19 cd020e        	call	_airSensorLineErrorDrv
-12505                     ; 2203 		waterTemperAlarmHndl();
-12507  2b1c cd02ae        	call	_waterTemperAlarmHndl
-12509                     ; 2204 		power_off_hndl();
-12511  2b1f cd05fa        	call	_power_off_hndl
-12513  2b22 ac9a2a9a      	jpf	L3544
-13792                     	xdef	_main
-13793                     	xdef	f_TIM4_UPD_Interrupt
-13794                     	xdef	_matemath
-13795                     	xdef	_power_necc_hndl
-13796                     	xdef	_power_hndl
-13797                     	xdef	_power_off_hndl
-13798                     	xdef	_sheduler_hndl
-13799                     	xdef	_time_drv
-13800                     	xdef	_beep_drv
-13801                     	xdef	_waterTemperAlarmHndl
-13802                     	xdef	_airSensorLineErrorDrv
-13803                     	xdef	_error_warn_hndl
-13804                     	xdef	_power_in_test
-13805                     	xdef	_power_in_drv
-13806                     	switch	.bss
-13807  0000               _isp_main_cnt:
-13808  0000 00000000      	ds.b	4
-13809                     	xdef	_isp_main_cnt
-13810                     	xdef	_version_show_cnt
-13811                     	switch	.ubsct
-13812  0000               _bDEB:
-13813  0000 00            	ds.b	1
-13814                     	xdef	_bDEB
-13815                     	xdef	_bWATCHDOG_REFRESH
-13816  0001               _tempUC:
-13817  0001 00            	ds.b	1
-13818                     	xdef	_tempUC
-13819                     	xdef	_TABLE_TIME_EE_MAX
-13820                     	xdef	_TABLE_TIME_EE_MIN
-13821  0002               _day_sheduler_time:
-13822  0002 00            	ds.b	1
-13823                     	xdef	_day_sheduler_time
-13824  0003               _time_date:
-13825  0003 00            	ds.b	1
-13826                     	xdef	_time_date
-13827  0004               _temperRegToSheduler:
-13828  0004 00            	ds.b	1
-13829                     	xdef	_temperRegToSheduler
-13830                     	xdef	_b1Hz
-13831                     	xdef	_b2Hz
-13832                     	xdef	_b5Hz
-13833                     	xdef	_b10Hz
-13834                     	xdef	_b100Hz
-13835                     	xref	_watchdog_reset
-13836                     	xref	_watchdog_enable
-13837                     	xref	_strcpy
-13838                     	xref	_printf
-13839                     	xref	_sms_fifo_drv
-13840                     	xref	_modem_send_sms
-13841                     	xref	_modem_drv
-13842                     	xref	_modem_stat_drv
-13843                     	xref	_modem_gpio_init
-13844                     	xref	_tempRussianText
-13845                     	xref.b	_modemDrvWatchDogCnt
-13846                     	xref.b	_modemDrvPowerDownStepCnt
-13847                     	xref.b	_modemDrvPDUSMSSendStepCnt
-13848                     	xref.b	_modemDrvInitStepCnt
-13849                     	xref.b	_modemState
-13850                     	xref	__ds1307_read_time
-13851                     	xref	__ds1307_write_byte
-13852                     	xref	_uart1_in_an
-13853                     	xref	_uart1_init
-13854                     	xref	_modem_plazma1
-13855                     	xref	_modem_plazma
-13856                     	xref	_tx_counter1
-13857                     	xref	_tx_wr_index1
-13858                     	xref	_uart3_in_an
-13859                     	xref	_uart3_init
-13860                     	xref	_ds18b20_temper_drv
-13861                     	xref	_waterSensorErrorStat
-13862                     	xref	_wire1_in
-13863                     	xref	_random_gen
-13864                     	xref	_led_flash
-13865                     	xref	_led_on
-13866                     	xref	_led_off
-13867                     	xref	_led_mask_off
-13868                     	xref	_led_set
-13869                     	xref	_ret_ind_hndl
-13870                     	xref	_ret_ind
-13871                     	xref	_int2indII_slkuf
-13872                     	xref	_int2indI_slkuf
-13873                     	xref	_gran_ring_char
-13874                     	xref	_gran_char
-13875                     	xref	_tree_up
-13876                     	xref	_tree_down
-13877                     	xref	_clear_ind
-13878                     	xref	_but_drv
-13879                     	xref	_out_drv
-13880                     	xref.b	_speed
-13881                     	xref.b	_n_but
-13882                     	xref.b	_but
-13883                     	xref.b	_but_new
-13884                     	xdef	_t4_init
-13885                     	xdef	_ind_hndl
-13886                     	xdef	_but_an
-13887                     	switch	.bss
-13888  0004               _ind_check_cnt1:
-13889  0004 0000          	ds.b	2
-13890                     	xdef	_ind_check_cnt1
-13891  0006               _ind_check_cnt:
-13892  0006 0000          	ds.b	2
-13893                     	xdef	_ind_check_cnt
-13894  0008               _beepTestCnt:
-13895  0008 00            	ds.b	1
-13896                     	xdef	_beepTestCnt
-13897  0009               _bCBC_SELF:
-13898  0009 00            	ds.b	1
-13899                     	xdef	_bCBC_SELF
-13900  000a               _cbcVoltage:
-13901  000a 0000          	ds.b	2
-13902                     	xdef	_cbcVoltage
-13903  000c               _cbc_temp1:
-13904  000c 000000000000  	ds.b	15
-13905                     	xdef	_cbc_temp1
-13906  001b               _cbc_temp:
-13907  001b 000000000000  	ds.b	15
-13908                     	xdef	_cbc_temp
-13909  002a               _cbcSystemRequ:
-13910  002a 00            	ds.b	1
-13911                     	xdef	_cbcSystemRequ
-13912  002b               _main_power_off_hndl_cnt:
-13913  002b 0000          	ds.b	2
-13914                     	xdef	_main_power_off_hndl_cnt
-13915                     	xdef	_powerStat
-13916                     	xdef	_power_in_drv_alarm_cnt
-13917                     	xdef	_power_in_drv_off_cnt
-13918                     	xdef	_rand_dig_str
-13919  002d               _rand_dig:
-13920  002d 000000000000  	ds.b	7
-13921                     	xdef	_rand_dig
-13922  0034               _waterTemperAlarmCnt:
-13923  0034 00            	ds.b	1
-13924                     	xdef	_waterTemperAlarmCnt
-13925                     	xdef	_waterTemperAlarmOld
-13926                     	xdef	_waterTemperAlarm
-13927                     	switch	.ubsct
-13928  0005               _cntAirSensorLineErrorHi:
-13929  0005 00            	ds.b	1
-13930                     	xdef	_cntAirSensorLineErrorHi
-13931  0006               _cntAirSensorLineErrorLo:
-13932  0006 00            	ds.b	1
-13933                     	xdef	_cntAirSensorLineErrorLo
-13934  0007               _bWARN:
-13935  0007 00            	ds.b	1
-13936                     	xdef	_bWARN
-13937  0008               _bERR:
-13938  0008 00            	ds.b	1
-13939                     	xdef	_bERR
-13940  0009               _beep_drv_cnt:
-13941  0009 00            	ds.b	1
-13942                     	xdef	_beep_drv_cnt
-13943  000a               _powerEnabled:
-13944  000a 00            	ds.b	1
-13945                     	xdef	_powerEnabled
-13946  000b               _powerNeccDelta:
-13947  000b 00            	ds.b	1
-13948                     	xdef	_powerNeccDelta
-13949                     	xdef	_powerNeccOld
-13950                     	xdef	_powerNecc
-13951  000c               _time_year:
-13952  000c 00            	ds.b	1
-13953                     	xdef	_time_year
-13954  000d               _time_month:
-13955  000d 00            	ds.b	1
-13956                     	xdef	_time_month
-13957  000e               _time_day_of_week:
-13958  000e 00            	ds.b	1
-13959                     	xdef	_time_day_of_week
-13960  000f               _time_hour:
-13961  000f 00            	ds.b	1
-13962                     	xdef	_time_hour
-13963  0010               _time_min:
-13964  0010 00            	ds.b	1
-13965                     	xdef	_time_min
-13966  0011               _time_sec:
-13967  0011 00            	ds.b	1
-13968                     	xdef	_time_sec
-13969  0012               _buff_for_time:
-13970  0012 000000000000  	ds.b	10
-13971                     	xdef	_buff_for_time
-13972                     	xdef	_airSensorErrorStatOld
-13973                     	xdef	_airSensorErrorStat
-13974  001c               _targetTemper:
-13975  001c 00            	ds.b	1
-13976                     	xdef	_targetTemper
-13977  001d               _aktualTemper:
-13978  001d 00            	ds.b	1
-13979                     	xdef	_aktualTemper
-13980  001e               _temperOfAir:
-13981  001e 00            	ds.b	1
-13982                     	xdef	_temperOfAir
-13983  001f               _temperOfWater:
-13984  001f 00            	ds.b	1
-13985                     	xdef	_temperOfWater
-13986                     	switch	.bss
-13987  0035               _optr_kontr_cnt:
-13988  0035 00            	ds.b	1
-13989                     	xdef	_optr_kontr_cnt
-13990  0036               _optr_stat:
-13991  0036 00            	ds.b	1
-13992                     	xdef	_optr_stat
-13993                     	switch	.ubsct
-13994  0020               _out_stat:
-13995  0020 000000        	ds.b	3
-13996                     	xdef	_out_stat
-13997  0023               _led_ind_out2:
-13998  0023 00            	ds.b	1
-13999                     	xdef	_led_ind_out2
-14000  0024               _led_ind_out1:
-14001  0024 00            	ds.b	1
-14002                     	xdef	_led_ind_out1
-14003  0025               _bFL_:
-14004  0025 00            	ds.b	1
-14005                     	xdef	_bFL_
-14006  0026               _bFL1:
-14007  0026 00            	ds.b	1
-14008                     	xdef	_bFL1
-14009  0027               _bFL2:
-14010  0027 00            	ds.b	1
-14011                     	xdef	_bFL2
-14012  0028               _bFL5:
-14013  0028 00            	ds.b	1
-14014                     	xdef	_bFL5
-14015  0029               _zero_on:
-14016  0029 00            	ds.b	1
-14017                     	xdef	_zero_on
-14018                     	xdef	_ind_pointer
-14019  002a               _c_ind:
-14020  002a 0000000000    	ds.b	5
-14021                     	xdef	_c_ind
-14022  002f               _b_ind:
-14023  002f 000000000000  	ds.b	50
-14024                     	xdef	_b_ind
-14025  0061               _a_ind:
-14026  0061 0000000000    	ds.b	5
-14027                     	xdef	_a_ind
-14028                     	xdef	_DIGISYM
-14029  0066               _ind_out_:
-14030  0066 0000000000    	ds.b	5
-14031                     	xdef	_ind_out_
-14032  006b               _dig:
-14033  006b 000000000000  	ds.b	10
-14034                     	xdef	_dig
-14035                     	xdef	_ind_strob
-14036                     	xdef	_ind_outG
-14037                     	xdef	_ind_outC
-14038  0075               _ind_outB:
-14039  0075 000000000000  	ds.b	12
-14040                     	xdef	_ind_outB
-14041  0081               _ind_cnt:
-14042  0081 00            	ds.b	1
-14043                     	xdef	_ind_cnt
-14044  0082               _mainCnt:
-14045  0082 0000          	ds.b	2
-14046                     	xdef	_mainCnt
-14047                     	xdef	_t0_cnt4
-14048                     	xdef	_t0_cnt3
-14049                     	xdef	_t0_cnt2
-14050                     	xdef	_t0_cnt1
-14051                     	xdef	_t0_cnt0
-14052  0084               _fiksRandom:
-14053  0084 00            	ds.b	1
-14054                     	xdef	_fiksRandom
-14055  0085               _currRandom:
-14056  0085 00            	ds.b	1
-14057                     	xdef	_currRandom
-14058                     	xdef	_warmOrder
-14059                     	switch	.const
-14060  004a               L5334:
-14061  004a 313132333435  	dc.b	"11234567890",0
-14062  0056               L3334:
-14063  0056 393233373332  	dc.b	"9237328354",0
-14064  0061               L1334:
-14065  0061 393133343836  	dc.b	"9134863890",0
-14066  006c               L7234:
-14067  006c 393133393239  	dc.b	"9139294352",0
-14068  0077               L1242:
-14069  0077 4154202b2043  	dc.b	"AT + CBC ",13,0
-14070  0082               L1522:
-14071  0082 d2e5ecefe5f0  	dc.b	210,229,236,239,229,240
-14072  0088 e0f2f3f0e020  	dc.b	224,242,243,240,224,32
-14073  008e e2eee4fb20e2  	dc.b	226,238,228,251,32,226
-14074  0094 20f1          	dc.b	" ",241
-14075  0096 e8f1f2e5ece5  	dc.b	232,241,242,229,236,229
-14076  009c 20e2          	dc.b	" ",226
-14077  009e fbf8e5203930  	dc.b	251,248,229,32,57,48
-14078  00a4 20e3          	dc.b	" ",227
-14079  00a6 f02ed62e00    	dc.b	240,46,214,46,0
-14080  00ab               L3422:
-14081  00ab d2e5ecefe5f0  	dc.b	210,229,236,239,229,240
-14082  00b1 e0f2f3f0e020  	dc.b	224,242,243,240,224,32
-14083  00b7 e2eee4fb20e2  	dc.b	226,238,228,251,32,226
-14084  00bd 20f1          	dc.b	" ",241
-14085  00bf e8f1f2e5ece5  	dc.b	232,241,242,229,236,229
-14086  00c5 20ed          	dc.b	" ",237
-14087  00c7 e8e6e5203320  	dc.b	232,230,229,32,51,32
-14088  00cd e3f02ed62e00  	dc.b	227,240,46,214,46,0
-14089  00d3               L5612:
-14090  00d3 cde5e8f1eff0  	dc.b	205,229,232,241,239,240
-14091  00d9 e0e2edeef1f2  	dc.b	224,226,237,238,241,242
-14092  00df fc20e4e0f2f7  	dc.b	252,32,228,224,242,247
-14093  00e5 e8eae020f2e5  	dc.b	232,234,224,32,242,229
-14094  00eb ecefe5f0e0f2  	dc.b	236,239,229,240,224,242
-14095  00f1 f3f0fb20e2ee  	dc.b	243,240,251,32,226,238
-14096  00f7 e7e4f3f5e000  	dc.b	231,228,243,245,224,0
-14097  00fd               L7302:
-14098  00fd ddebe5eaf2f0  	dc.b	221,235,229,234,242,240
-14099  0103 e8f7e5f1f2e2  	dc.b	232,247,229,241,242,226
-14100  0109 ee20e2eaebfe  	dc.b	238,32,226,234,235,254
-14101  010f f7e5edee00    	dc.b	247,229,237,238,0
-14102  0114               L3102:
-14103  0114 ddebe5eaf2f0  	dc.b	221,235,229,234,242,240
-14104  011a e8f7e5f1f2e2  	dc.b	232,247,229,241,242,226
-14105  0120 ee20eef2eaeb  	dc.b	238,32,238,242,234,235
-14106  0126 fef7e5edee00  	dc.b	254,247,229,237,238,0
-14107                     	xref.b	c_lreg
-14108                     	xref.b	c_x
-14109                     	xref.b	c_y
-14129                     	xref	c_lgadc
-14130                     	xref	c_idiv
-14131                     	xref	c_eewrw
-14132                     	xref	c_smodx
-14133                     	xref	c_smody
-14134                     	xref	c_sdivx
-14135                     	xref	c_ldiv
-14136                     	xref	c_lmod
-14137                     	xref	c_ltor
-14138                     	xref	c_imul
-14139                     	xref	c_eewrc
-14140                     	end
+4221                     ; 479 void sheduler_hndl(void)
+4221                     ; 480 {
+4222                     	switch	.text
+4223  04c3               _sheduler_hndl:
+4227                     ; 510 }
+4230  04c3 81            	ret
+4256                     ; 513 void isp_hndl(void)
+4256                     ; 514 {
+4257                     	switch	.text
+4258  04c4               _isp_hndl:
+4262                     ; 515 isp_cnt++;
+4264  04c4 725c0000      	inc	_isp_cnt
+4265                     ; 516 if(isp_cnt>=10)
+4267  04c8 c60000        	ld	a,_isp_cnt
+4268  04cb a10a          	cp	a,#10
+4269  04cd 2515          	jrult	L1632
+4270                     ; 518 	isp_cnt=0;
+4272  04cf 725f0000      	clr	_isp_cnt
+4273                     ; 519 	isp_main_cnt++;
+4275  04d3 ae4020        	ldw	x,#_isp_main_cnt
+4276  04d6 cd0000        	call	c_ltor
+4278  04d9 a601          	ld	a,#1
+4279  04db cd0000        	call	c_ladc
+4281  04de ae4020        	ldw	x,#_isp_main_cnt
+4282  04e1 cd0000        	call	c_eewrl
+4284  04e4               L1632:
+4285                     ; 522 if((isp_cnt>=1)&&(isp_cnt<6))out_stat[0]=osON;	
+4287  04e4 725d0000      	tnz	_isp_cnt
+4288  04e8 270d          	jreq	L3632
+4290  04ea c60000        	ld	a,_isp_cnt
+4291  04ed a106          	cp	a,#6
+4292  04ef 2406          	jruge	L3632
+4295  04f1 35010020      	mov	_out_stat,#1
+4297  04f5 2002          	jra	L5632
+4298  04f7               L3632:
+4299                     ; 523 else out_stat[0]=osOFF;
+4301  04f7 3f20          	clr	_out_stat
+4302  04f9               L5632:
+4303                     ; 525 if((isp_cnt>=2)&&(isp_cnt<7))out_stat[1]=osON;	
+4305  04f9 c60000        	ld	a,_isp_cnt
+4306  04fc a102          	cp	a,#2
+4307  04fe 250d          	jrult	L7632
+4309  0500 c60000        	ld	a,_isp_cnt
+4310  0503 a107          	cp	a,#7
+4311  0505 2406          	jruge	L7632
+4314  0507 35010021      	mov	_out_stat+1,#1
+4316  050b 2002          	jra	L1732
+4317  050d               L7632:
+4318                     ; 526 else out_stat[1]=osOFF;
+4320  050d 3f21          	clr	_out_stat+1
+4321  050f               L1732:
+4322                     ; 528 if((isp_cnt>=3)&&(isp_cnt<8))out_stat[2]=osON;	
+4324  050f c60000        	ld	a,_isp_cnt
+4325  0512 a103          	cp	a,#3
+4326  0514 250d          	jrult	L3732
+4328  0516 c60000        	ld	a,_isp_cnt
+4329  0519 a108          	cp	a,#8
+4330  051b 2406          	jruge	L3732
+4333  051d 35010022      	mov	_out_stat+2,#1
+4335  0521 2002          	jra	L5732
+4336  0523               L3732:
+4337                     ; 529 else out_stat[2]=osOFF;
+4339  0523 3f22          	clr	_out_stat+2
+4340  0525               L5732:
+4341                     ; 530 }
+4344  0525 81            	ret
+4389                     ; 533 void power_hndl(void)
+4389                     ; 534 {
+4390                     	switch	.text
+4391  0526               _power_hndl:
+4393  0526 88            	push	a
+4394       00000001      OFST:	set	1
+4397                     ; 535 disableInterrupts();	
+4400  0527 9b            sim
+4402                     ; 536 if((powerNecc)&&(powerNeccOld==0))
+4405  0528 3d25          	tnz	_powerNecc
+4406  052a 2707          	jreq	L5142
+4408  052c 3d26          	tnz	_powerNeccOld
+4409  052e 2603          	jrne	L5142
+4410                     ; 538 	fiksRandom=currRandom;
+4412  0530 458584        	mov	_fiksRandom,_currRandom
+4413  0533               L5142:
+4414                     ; 541 if(!powerNecc)
+4416  0533 3d25          	tnz	_powerNecc
+4417  0535 2608          	jrne	L7142
+4418                     ; 543 	out_stat[0]=osOFF;
+4420  0537 3f20          	clr	_out_stat
+4421                     ; 544 	out_stat[1]=osOFF;
+4423  0539 3f21          	clr	_out_stat+1
+4424                     ; 545 	out_stat[2]=osOFF;
+4426  053b 3f22          	clr	_out_stat+2
+4428  053d 2063          	jra	L1242
+4429  053f               L7142:
+4430                     ; 550 	for(i=0;i<3;i++)
+4432  053f 0f01          	clr	(OFST+0,sp)
+4433  0541               L3242:
+4434                     ; 552 		if((i<powerNecc)&&(i<MAX_POWER_EE))		out_stat[warmOrder[fiksRandom][i]]=osON;
+4436  0541 9c            	rvf
+4437  0542 7b01          	ld	a,(OFST+0,sp)
+4438  0544 5f            	clrw	x
+4439  0545 97            	ld	xl,a
+4440  0546 905f          	clrw	y
+4441  0548 b625          	ld	a,_powerNecc
+4442  054a 2a02          	jrpl	L24
+4443  054c 9053          	cplw	y
+4444  054e               L24:
+4445  054e 9097          	ld	yl,a
+4446  0550 90bf00        	ldw	c_y,y
+4447  0553 b300          	cpw	x,c_y
+4448  0555 2e2f          	jrsge	L1342
+4450  0557 9c            	rvf
+4451  0558 7b01          	ld	a,(OFST+0,sp)
+4452  055a 5f            	clrw	x
+4453  055b 97            	ld	xl,a
+4454  055c 905f          	clrw	y
+4455  055e c64047        	ld	a,_MAX_POWER_EE
+4456  0561 2a02          	jrpl	L44
+4457  0563 9053          	cplw	y
+4458  0565               L44:
+4459  0565 9097          	ld	yl,a
+4460  0567 90bf00        	ldw	c_y,y
+4461  056a b300          	cpw	x,c_y
+4462  056c 2e18          	jrsge	L1342
+4465  056e b684          	ld	a,_fiksRandom
+4466  0570 97            	ld	xl,a
+4467  0571 a603          	ld	a,#3
+4468  0573 42            	mul	x,a
+4469  0574 01            	rrwa	x,a
+4470  0575 1b01          	add	a,(OFST+0,sp)
+4471  0577 2401          	jrnc	L64
+4472  0579 5c            	incw	x
+4473  057a               L64:
+4474  057a 02            	rlwa	x,a
+4475  057b d60000        	ld	a,(_warmOrder,x)
+4476  057e 5f            	clrw	x
+4477  057f 97            	ld	xl,a
+4478  0580 a601          	ld	a,#1
+4479  0582 e720          	ld	(_out_stat,x),a
+4481  0584 2014          	jra	L3342
+4482  0586               L1342:
+4483                     ; 553 		else									out_stat[warmOrder[fiksRandom][i]]=osOFF;
+4485  0586 b684          	ld	a,_fiksRandom
+4486  0588 97            	ld	xl,a
+4487  0589 a603          	ld	a,#3
+4488  058b 42            	mul	x,a
+4489  058c 01            	rrwa	x,a
+4490  058d 1b01          	add	a,(OFST+0,sp)
+4491  058f 2401          	jrnc	L05
+4492  0591 5c            	incw	x
+4493  0592               L05:
+4494  0592 02            	rlwa	x,a
+4495  0593 d60000        	ld	a,(_warmOrder,x)
+4496  0596 5f            	clrw	x
+4497  0597 97            	ld	xl,a
+4498  0598 6f20          	clr	(_out_stat,x)
+4499  059a               L3342:
+4500                     ; 550 	for(i=0;i<3;i++)
+4502  059a 0c01          	inc	(OFST+0,sp)
+4505  059c 7b01          	ld	a,(OFST+0,sp)
+4506  059e a103          	cp	a,#3
+4507  05a0 259f          	jrult	L3242
+4508  05a2               L1242:
+4509                     ; 557 powerNeccOld=powerNecc;
+4511  05a2 452526        	mov	_powerNeccOld,_powerNecc
+4512                     ; 559 powerEnabled=0;
+4514  05a5 3f0a          	clr	_powerEnabled
+4515                     ; 560 if((out_stat[0]==osON)&&(outMode==omON))powerEnabled++;
+4517  05a7 b620          	ld	a,_out_stat
+4518  05a9 a101          	cp	a,#1
+4519  05ab 2609          	jrne	L5342
+4521  05ad c6401d        	ld	a,_outMode
+4522  05b0 a101          	cp	a,#1
+4523  05b2 2602          	jrne	L5342
+4526  05b4 3c0a          	inc	_powerEnabled
+4527  05b6               L5342:
+4528                     ; 561 if((out_stat[1]==osON)&&(outMode==omON))powerEnabled++;
+4530  05b6 b621          	ld	a,_out_stat+1
+4531  05b8 a101          	cp	a,#1
+4532  05ba 2609          	jrne	L7342
+4534  05bc c6401d        	ld	a,_outMode
+4535  05bf a101          	cp	a,#1
+4536  05c1 2602          	jrne	L7342
+4539  05c3 3c0a          	inc	_powerEnabled
+4540  05c5               L7342:
+4541                     ; 562 if((out_stat[2]==osON)&&(outMode==omON))powerEnabled++;
+4543  05c5 b622          	ld	a,_out_stat+2
+4544  05c7 a101          	cp	a,#1
+4545  05c9 2609          	jrne	L1442
+4547  05cb c6401d        	ld	a,_outMode
+4548  05ce a101          	cp	a,#1
+4549  05d0 2602          	jrne	L1442
+4552  05d2 3c0a          	inc	_powerEnabled
+4553  05d4               L1442:
+4554                     ; 564 enableInterrupts();
+4557  05d4 9a            rim
+4559                     ; 565 }
+4563  05d5 84            	pop	a
+4564  05d6 81            	ret
+4594                     ; 568 void power_necc_hndl(void)
+4594                     ; 569 {
+4595                     	switch	.text
+4596  05d7               _power_necc_hndl:
+4600                     ; 571 if((aktualTemper>=targetTemper)||(temperOfWater>=90)||(mainCnt<3)||(powerStat==psOFF))
+4602  05d7 9c            	rvf
+4603  05d8 b61d          	ld	a,_aktualTemper
+4604  05da b11c          	cp	a,_targetTemper
+4605  05dc 2e13          	jrsge	L5542
+4607  05de 9c            	rvf
+4608  05df b61f          	ld	a,_temperOfWater
+4609  05e1 a15a          	cp	a,#90
+4610  05e3 2e0c          	jrsge	L5542
+4612  05e5 9c            	rvf
+4613  05e6 be82          	ldw	x,_mainCnt
+4614  05e8 a30003        	cpw	x,#3
+4615  05eb 2f04          	jrslt	L5542
+4617  05ed 3d29          	tnz	_powerStat
+4618  05ef 2603          	jrne	L3542
+4619  05f1               L5542:
+4620                     ; 573 	powerNecc=0;	
+4622  05f1 3f25          	clr	_powerNecc
+4624  05f3               L3642:
+4625                     ; 584 }
+4628  05f3 81            	ret
+4629  05f4               L3542:
+4630                     ; 575 else if(aktualTemper<targetTemper)
+4632  05f4 9c            	rvf
+4633  05f5 b61d          	ld	a,_aktualTemper
+4634  05f7 b11c          	cp	a,_targetTemper
+4635  05f9 2ef8          	jrsge	L3642
+4636                     ; 577 	powerNeccDelta=targetTemper-aktualTemper;
+4638  05fb b61c          	ld	a,_targetTemper
+4639  05fd b01d          	sub	a,_aktualTemper
+4640  05ff b70b          	ld	_powerNeccDelta,a
+4641                     ; 578 	powerNecc=0;
+4643  0601 3f25          	clr	_powerNecc
+4644                     ; 579 	if(powerNeccDelta>=2) powerNecc=1;
+4646  0603 9c            	rvf
+4647  0604 b60b          	ld	a,_powerNeccDelta
+4648  0606 a102          	cp	a,#2
+4649  0608 2f04          	jrslt	L7642
+4652  060a 35010025      	mov	_powerNecc,#1
+4653  060e               L7642:
+4654                     ; 580 	if(powerNeccDelta>=3) powerNecc=2;
+4656  060e 9c            	rvf
+4657  060f b60b          	ld	a,_powerNeccDelta
+4658  0611 a103          	cp	a,#3
+4659  0613 2f04          	jrslt	L1742
+4662  0615 35020025      	mov	_powerNecc,#2
+4663  0619               L1742:
+4664                     ; 581 	if(powerNeccDelta>=4) powerNecc=3;
+4666  0619 9c            	rvf
+4667  061a b60b          	ld	a,_powerNeccDelta
+4668  061c a104          	cp	a,#4
+4669  061e 2fd3          	jrslt	L3642
+4672  0620 35030025      	mov	_powerNecc,#3
+4673  0624 20cd          	jra	L3642
+4717                     ; 587 void matemath(void)
+4717                     ; 588 {
+4718                     	switch	.text
+4719  0626               _matemath:
+4721  0626 89            	pushw	x
+4722       00000002      OFST:	set	2
+4725                     ; 590 if((wire1_in[1]&0xf0)==0)
+4727  0627 c60001        	ld	a,_wire1_in+1
+4728  062a a5f0          	bcp	a,#240
+4729  062c 2624          	jrne	L3152
+4730                     ; 592 	temperOfWaterTemp=((wire1_in[0]&0xf0)>>4)+((wire1_in[1]&0x0f)<<4);
+4732  062e c60001        	ld	a,_wire1_in+1
+4733  0631 a40f          	and	a,#15
+4734  0633 97            	ld	xl,a
+4735  0634 a610          	ld	a,#16
+4736  0636 42            	mul	x,a
+4737  0637 9f            	ld	a,xl
+4738  0638 6b01          	ld	(OFST-1,sp),a
+4739  063a c60000        	ld	a,_wire1_in
+4740  063d a4f0          	and	a,#240
+4741  063f 4e            	swap	a
+4742  0640 a40f          	and	a,#15
+4743  0642 1b01          	add	a,(OFST-1,sp)
+4744  0644 6b02          	ld	(OFST+0,sp),a
+4745                     ; 593 	temperOfWater=(signed short)temperOfWaterTemp;
+4747  0646 7b02          	ld	a,(OFST+0,sp)
+4748  0648 b71f          	ld	_temperOfWater,a
+4749                     ; 594 	if(bDEB)temperOfWater=1;
+4751  064a 3d00          	tnz	_bDEB
+4752  064c 2704          	jreq	L3152
+4755  064e 3501001f      	mov	_temperOfWater,#1
+4756  0652               L3152:
+4757                     ; 596 if(MODE_EE==1)
+4759  0652 c64046        	ld	a,_MODE_EE
+4760  0655 a101          	cp	a,#1
+4761  0657 260a          	jrne	L7152
+4762                     ; 598 	aktualTemper=temperOfWater;
+4764  0659 451f1d        	mov	_aktualTemper,_temperOfWater
+4765                     ; 599 	targetTemper=NECC_TEMPER_WATER_EE;
+4767  065c 554045001c    	mov	_targetTemper,_NECC_TEMPER_WATER_EE
+4769  0661 201e          	jra	L1252
+4770  0663               L7152:
+4771                     ; 601 else if(MODE_EE==2)
+4773  0663 c64046        	ld	a,_MODE_EE
+4774  0666 a102          	cp	a,#2
+4775  0668 260a          	jrne	L3252
+4776                     ; 603 	aktualTemper=temperOfAir;
+4778  066a 451e1d        	mov	_aktualTemper,_temperOfAir
+4779                     ; 604 	targetTemper=NECC_TEMPER_AIR_EE;
+4781  066d 554044001c    	mov	_targetTemper,_NECC_TEMPER_AIR_EE
+4783  0672 200d          	jra	L1252
+4784  0674               L3252:
+4785                     ; 606 else if(MODE_EE==3)
+4787  0674 c64046        	ld	a,_MODE_EE
+4788  0677 a103          	cp	a,#3
+4789  0679 2606          	jrne	L1252
+4790                     ; 608 	aktualTemper=temperOfAir;
+4792  067b 451e1d        	mov	_aktualTemper,_temperOfAir
+4793                     ; 609 	targetTemper=temperRegToSheduler;
+4795  067e 45041c        	mov	_targetTemper,_temperRegToSheduler
+4796  0681               L1252:
+4797                     ; 611 }
+4800  0681 85            	popw	x
+4801  0682 81            	ret
+4890                     	switch	.const
+4891  0046               L06:
+4892  0046 00002710      	dc.l	10000
+4893                     ; 614 void ind_hndl(void)
+4893                     ; 615 {
+4894                     	switch	.text
+4895  0683               _ind_hndl:
+4897  0683 89            	pushw	x
+4898       00000002      OFST:	set	2
+4901                     ; 628 else */if(ind==iMn)
+4903  0684 3d61          	tnz	_a_ind
+4904  0686 2703          	jreq	L643
+4905  0688 cc079d        	jp	L1452
+4906  068b               L643:
+4907                     ; 631 	int2indII_slkuf(isp_main_cnt%10000,0, 4, 0, 0, 0);
+4909  068b 4b00          	push	#0
+4910  068d 4b00          	push	#0
+4911  068f 4b00          	push	#0
+4912  0691 4b04          	push	#4
+4913  0693 4b00          	push	#0
+4914  0695 ae4020        	ldw	x,#_isp_main_cnt
+4915  0698 cd0000        	call	c_ltor
+4917  069b ae0046        	ldw	x,#L06
+4918  069e cd0000        	call	c_lmod
+4920  06a1 be02          	ldw	x,c_lreg+2
+4921  06a3 cd0000        	call	_int2indII_slkuf
+4923  06a6 5b05          	addw	sp,#5
+4924                     ; 632 	int2indI_slkuf(isp_main_cnt/10000,1, 3, 0, 0, 0);
+4926  06a8 4b00          	push	#0
+4927  06aa 4b00          	push	#0
+4928  06ac 4b00          	push	#0
+4929  06ae 4b03          	push	#3
+4930  06b0 4b01          	push	#1
+4931  06b2 ae4020        	ldw	x,#_isp_main_cnt
+4932  06b5 cd0000        	call	c_ltor
+4934  06b8 ae0046        	ldw	x,#L06
+4935  06bb cd0000        	call	c_ldiv
+4937  06be be02          	ldw	x,c_lreg+2
+4938  06c0 cd0000        	call	_int2indI_slkuf
+4940  06c3 5b05          	addw	sp,#5
+4941                     ; 643 	led_mask_off(0x00);
+4943  06c5 4f            	clr	a
+4944  06c6 cd0000        	call	_led_mask_off
+4946                     ; 644 	if(outMode==omON)
+4948  06c9 c6401d        	ld	a,_outMode
+4949  06cc a101          	cp	a,#1
+4950  06ce 262d          	jrne	L3452
+4951                     ; 646 		if(MODE_EE==1)led_on(1);
+4953  06d0 c64046        	ld	a,_MODE_EE
+4954  06d3 a101          	cp	a,#1
+4955  06d5 2607          	jrne	L5452
+4958  06d7 a601          	ld	a,#1
+4959  06d9 cd0000        	call	_led_on
+4962  06dc 201f          	jra	L3452
+4963  06de               L5452:
+4964                     ; 647 		else if(MODE_EE==2) led_on(2);
+4966  06de c64046        	ld	a,_MODE_EE
+4967  06e1 a102          	cp	a,#2
+4968  06e3 2607          	jrne	L1552
+4971  06e5 a602          	ld	a,#2
+4972  06e7 cd0000        	call	_led_on
+4975  06ea 2011          	jra	L3452
+4976  06ec               L1552:
+4977                     ; 648 		else if(MODE_EE==3)
+4979  06ec c64046        	ld	a,_MODE_EE
+4980  06ef a103          	cp	a,#3
+4981  06f1 260a          	jrne	L3452
+4982                     ; 650 			led_on(2);
+4984  06f3 a602          	ld	a,#2
+4985  06f5 cd0000        	call	_led_on
+4987                     ; 651 			led_on(3);
+4989  06f8 a603          	ld	a,#3
+4990  06fa cd0000        	call	_led_on
+4992  06fd               L3452:
+4993                     ; 654 	if(!optr_kontr_cnt)
+4995  06fd 725d0032      	tnz	_optr_kontr_cnt
+4996  0701 2638          	jrne	L7552
+4997                     ; 656 		if((outMode==omON)&&(out_stat[0]==osON))led_on(4);
+4999  0703 c6401d        	ld	a,_outMode
+5000  0706 a101          	cp	a,#1
+5001  0708 260b          	jrne	L1652
+5003  070a b620          	ld	a,_out_stat
+5004  070c a101          	cp	a,#1
+5005  070e 2605          	jrne	L1652
+5008  0710 a604          	ld	a,#4
+5009  0712 cd0000        	call	_led_on
+5011  0715               L1652:
+5012                     ; 657 		if((outMode==omON)&&(out_stat[1]==osON))led_on(5);
+5014  0715 c6401d        	ld	a,_outMode
+5015  0718 a101          	cp	a,#1
+5016  071a 260b          	jrne	L3652
+5018  071c b621          	ld	a,_out_stat+1
+5019  071e a101          	cp	a,#1
+5020  0720 2605          	jrne	L3652
+5023  0722 a605          	ld	a,#5
+5024  0724 cd0000        	call	_led_on
+5026  0727               L3652:
+5027                     ; 658 		if((outMode==omON)&&(out_stat[2]==osON))led_on(6);
+5029  0727 c6401d        	ld	a,_outMode
+5030  072a a101          	cp	a,#1
+5031  072c 2643          	jrne	L7652
+5033  072e b622          	ld	a,_out_stat+2
+5034  0730 a101          	cp	a,#1
+5035  0732 263d          	jrne	L7652
+5038  0734 a606          	ld	a,#6
+5039  0736 cd0000        	call	_led_on
+5041  0739 2036          	jra	L7652
+5042  073b               L7552:
+5043                     ; 662 		if(((optr_kontr_cnt)&&(optr_stat&0x01)))led_on(4);
+5045  073b 725d0032      	tnz	_optr_kontr_cnt
+5046  073f 270c          	jreq	L1752
+5048  0741 c60033        	ld	a,_optr_stat
+5049  0744 a501          	bcp	a,#1
+5050  0746 2705          	jreq	L1752
+5053  0748 a604          	ld	a,#4
+5054  074a cd0000        	call	_led_on
+5056  074d               L1752:
+5057                     ; 663 		if(((optr_kontr_cnt)&&(optr_stat&0x02)))led_on(5);
+5059  074d 725d0032      	tnz	_optr_kontr_cnt
+5060  0751 270c          	jreq	L3752
+5062  0753 c60033        	ld	a,_optr_stat
+5063  0756 a502          	bcp	a,#2
+5064  0758 2705          	jreq	L3752
+5067  075a a605          	ld	a,#5
+5068  075c cd0000        	call	_led_on
+5070  075f               L3752:
+5071                     ; 664 		if(((optr_kontr_cnt)&&(optr_stat&0x04)))led_on(6);
+5073  075f 725d0032      	tnz	_optr_kontr_cnt
+5074  0763 270c          	jreq	L7652
+5076  0765 c60033        	ld	a,_optr_stat
+5077  0768 a504          	bcp	a,#4
+5078  076a 2705          	jreq	L7652
+5081  076c a606          	ld	a,#6
+5082  076e cd0000        	call	_led_on
+5084  0771               L7652:
+5085                     ; 667 	if(bERR)led_on(7);
+5087  0771 3d08          	tnz	_bERR
+5088  0773 2707          	jreq	L7752
+5091  0775 a607          	ld	a,#7
+5092  0777 cd0000        	call	_led_on
+5095  077a 2009          	jra	L1062
+5096  077c               L7752:
+5097                     ; 668 	else if(bWARN)led_flash(7);
+5099  077c 3d07          	tnz	_bWARN
+5100  077e 2705          	jreq	L1062
+5103  0780 a607          	ld	a,#7
+5104  0782 cd0000        	call	_led_flash
+5106  0785               L1062:
+5107                     ; 673 	if(modemState==MS_LINKED_INITIALIZED)	led_on(8);
+5109  0785 b600          	ld	a,_modemState
+5110  0787 a105          	cp	a,#5
+5111  0789 2609          	jrne	L5062
+5114  078b a608          	ld	a,#8
+5115  078d cd0000        	call	_led_on
+5118  0790 acf716f7      	jpf	L1162
+5119  0794               L5062:
+5120                     ; 674 	else 									led_off(8);
+5122  0794 a608          	ld	a,#8
+5123  0796 cd0000        	call	_led_off
+5125  0799 acf716f7      	jpf	L1162
+5126  079d               L1452:
+5127                     ; 677 else if(ind==iDate_W)
+5129  079d b661          	ld	a,_a_ind
+5130  079f a104          	cp	a,#4
+5131  07a1 2661          	jrne	L3162
+5132                     ; 679 	if(sub_ind==0)
+5134  07a3 3d62          	tnz	_a_ind+1
+5135  07a5 262a          	jrne	L5162
+5136                     ; 682 		int2indI_slkuf(time_date,1, 2, 0, 1, 0);
+5138  07a7 4b00          	push	#0
+5139  07a9 4b01          	push	#1
+5140  07ab 4b00          	push	#0
+5141  07ad 4b02          	push	#2
+5142  07af 4b01          	push	#1
+5143  07b1 b603          	ld	a,_time_date
+5144  07b3 5f            	clrw	x
+5145  07b4 97            	ld	xl,a
+5146  07b5 cd0000        	call	_int2indI_slkuf
+5148  07b8 5b05          	addw	sp,#5
+5149                     ; 683 		int2indII_slkuf(time_month,0, 2, 0, 1, 0);
+5151  07ba 4b00          	push	#0
+5152  07bc 4b01          	push	#1
+5153  07be 4b00          	push	#0
+5154  07c0 4b02          	push	#2
+5155  07c2 4b00          	push	#0
+5156  07c4 b60d          	ld	a,_time_month
+5157  07c6 5f            	clrw	x
+5158  07c7 97            	ld	xl,a
+5159  07c8 cd0000        	call	_int2indII_slkuf
+5161  07cb 5b05          	addw	sp,#5
+5163  07cd acf716f7      	jpf	L1162
+5164  07d1               L5162:
+5165                     ; 686 	else if(sub_ind==1)
+5167  07d1 b662          	ld	a,_a_ind+1
+5168  07d3 a101          	cp	a,#1
+5169  07d5 2703          	jreq	L053
+5170  07d7 cc16f7        	jp	L1162
+5171  07da               L053:
+5172                     ; 689 		int2indI_slkuf(time_year,1, 2, 0, 1, 0);
+5174  07da 4b00          	push	#0
+5175  07dc 4b01          	push	#1
+5176  07de 4b00          	push	#0
+5177  07e0 4b02          	push	#2
+5178  07e2 4b01          	push	#1
+5179  07e4 b60c          	ld	a,_time_year
+5180  07e6 5f            	clrw	x
+5181  07e7 97            	ld	xl,a
+5182  07e8 cd0000        	call	_int2indI_slkuf
+5184  07eb 5b05          	addw	sp,#5
+5185                     ; 690 		int2indII_slkuf(time_day_of_week,0, 2, 0, 1, 0);		
+5187  07ed 4b00          	push	#0
+5188  07ef 4b01          	push	#1
+5189  07f1 4b00          	push	#0
+5190  07f3 4b02          	push	#2
+5191  07f5 4b00          	push	#0
+5192  07f7 b60e          	ld	a,_time_day_of_week
+5193  07f9 5f            	clrw	x
+5194  07fa 97            	ld	xl,a
+5195  07fb cd0000        	call	_int2indII_slkuf
+5197  07fe 5b05          	addw	sp,#5
+5198  0800 acf716f7      	jpf	L1162
+5199  0804               L3162:
+5200                     ; 694 else if(ind==iSet)
+5202  0804 b661          	ld	a,_a_ind
+5203  0806 a101          	cp	a,#1
+5204  0808 2703          	jreq	L253
+5205  080a cc095b        	jp	L5262
+5206  080d               L253:
+5207                     ; 696 	int2indI_slkuf(sub_ind+1,1, 2, 0, 1, 1);
+5209  080d 4b01          	push	#1
+5210  080f 4b01          	push	#1
+5211  0811 4b00          	push	#0
+5212  0813 4b02          	push	#2
+5213  0815 4b01          	push	#1
+5214  0817 5f            	clrw	x
+5215  0818 b662          	ld	a,_a_ind+1
+5216  081a 2a01          	jrpl	L26
+5217  081c 53            	cplw	x
+5218  081d               L26:
+5219  081d 97            	ld	xl,a
+5220  081e 5c            	incw	x
+5221  081f cd0000        	call	_int2indI_slkuf
+5223  0822 5b05          	addw	sp,#5
+5224                     ; 697 	ind_outB[3]=0b10010001;	
+5226  0824 35910078      	mov	_ind_outB+3,#145
+5227                     ; 699 	if(sub_ind==0)
+5229  0828 3d62          	tnz	_a_ind+1
+5230  082a 261b          	jrne	L7262
+5231                     ; 701 		int2indII_slkuf(MODE_EE,0, 2, 0, 1, 0);
+5233  082c 4b00          	push	#0
+5234  082e 4b01          	push	#1
+5235  0830 4b00          	push	#0
+5236  0832 4b02          	push	#2
+5237  0834 4b00          	push	#0
+5238  0836 5f            	clrw	x
+5239  0837 c64046        	ld	a,_MODE_EE
+5240  083a 2a01          	jrpl	L46
+5241  083c 53            	cplw	x
+5242  083d               L46:
+5243  083d 97            	ld	xl,a
+5244  083e cd0000        	call	_int2indII_slkuf
+5246  0841 5b05          	addw	sp,#5
+5248  0843 acf716f7      	jpf	L1162
+5249  0847               L7262:
+5250                     ; 703 	else if(sub_ind==1)
+5252  0847 b662          	ld	a,_a_ind+1
+5253  0849 a101          	cp	a,#1
+5254  084b 261b          	jrne	L3362
+5255                     ; 705 		int2indII_slkuf(NECC_TEMPER_WATER_EE,0, 2, 0, 1, 0);
+5257  084d 4b00          	push	#0
+5258  084f 4b01          	push	#1
+5259  0851 4b00          	push	#0
+5260  0853 4b02          	push	#2
+5261  0855 4b00          	push	#0
+5262  0857 5f            	clrw	x
+5263  0858 c64045        	ld	a,_NECC_TEMPER_WATER_EE
+5264  085b 2a01          	jrpl	L66
+5265  085d 53            	cplw	x
+5266  085e               L66:
+5267  085e 97            	ld	xl,a
+5268  085f cd0000        	call	_int2indII_slkuf
+5270  0862 5b05          	addw	sp,#5
+5272  0864 acf716f7      	jpf	L1162
+5273  0868               L3362:
+5274                     ; 707 	else if(sub_ind==2)
+5276  0868 b662          	ld	a,_a_ind+1
+5277  086a a102          	cp	a,#2
+5278  086c 261b          	jrne	L7362
+5279                     ; 709 		int2indII_slkuf(NECC_TEMPER_AIR_EE,0, 2, 0, 1, 0);
+5281  086e 4b00          	push	#0
+5282  0870 4b01          	push	#1
+5283  0872 4b00          	push	#0
+5284  0874 4b02          	push	#2
+5285  0876 4b00          	push	#0
+5286  0878 5f            	clrw	x
+5287  0879 c64044        	ld	a,_NECC_TEMPER_AIR_EE
+5288  087c 2a01          	jrpl	L07
+5289  087e 53            	cplw	x
+5290  087f               L07:
+5291  087f 97            	ld	xl,a
+5292  0880 cd0000        	call	_int2indII_slkuf
+5294  0883 5b05          	addw	sp,#5
+5296  0885 acf716f7      	jpf	L1162
+5297  0889               L7362:
+5298                     ; 711 	else if(sub_ind==3)
+5300  0889 b662          	ld	a,_a_ind+1
+5301  088b a103          	cp	a,#3
+5302  088d 261b          	jrne	L3462
+5303                     ; 713 		int2indII_slkuf(MAX_POWER_EE,0, 2, 0, 1, 0);
+5305  088f 4b00          	push	#0
+5306  0891 4b01          	push	#1
+5307  0893 4b00          	push	#0
+5308  0895 4b02          	push	#2
+5309  0897 4b00          	push	#0
+5310  0899 5f            	clrw	x
+5311  089a c64047        	ld	a,_MAX_POWER_EE
+5312  089d 2a01          	jrpl	L27
+5313  089f 53            	cplw	x
+5314  08a0               L27:
+5315  08a0 97            	ld	xl,a
+5316  08a1 cd0000        	call	_int2indII_slkuf
+5318  08a4 5b05          	addw	sp,#5
+5320  08a6 acf716f7      	jpf	L1162
+5321  08aa               L3462:
+5322                     ; 715 	else if(sub_ind==4)
+5324  08aa b662          	ld	a,_a_ind+1
+5325  08ac a104          	cp	a,#4
+5326  08ae 2617          	jrne	L7462
+5327                     ; 717 		int2indII_slkuf(time_year,0, 2, 0, 1, 0);
+5329  08b0 4b00          	push	#0
+5330  08b2 4b01          	push	#1
+5331  08b4 4b00          	push	#0
+5332  08b6 4b02          	push	#2
+5333  08b8 4b00          	push	#0
+5334  08ba b60c          	ld	a,_time_year
+5335  08bc 5f            	clrw	x
+5336  08bd 97            	ld	xl,a
+5337  08be cd0000        	call	_int2indII_slkuf
+5339  08c1 5b05          	addw	sp,#5
+5341  08c3 acf716f7      	jpf	L1162
+5342  08c7               L7462:
+5343                     ; 719 	else if(sub_ind==5)
+5345  08c7 b662          	ld	a,_a_ind+1
+5346  08c9 a105          	cp	a,#5
+5347  08cb 2617          	jrne	L3562
+5348                     ; 721 		int2indII_slkuf(time_month,0, 2, 0, 1, 0);
+5350  08cd 4b00          	push	#0
+5351  08cf 4b01          	push	#1
+5352  08d1 4b00          	push	#0
+5353  08d3 4b02          	push	#2
+5354  08d5 4b00          	push	#0
+5355  08d7 b60d          	ld	a,_time_month
+5356  08d9 5f            	clrw	x
+5357  08da 97            	ld	xl,a
+5358  08db cd0000        	call	_int2indII_slkuf
+5360  08de 5b05          	addw	sp,#5
+5362  08e0 acf716f7      	jpf	L1162
+5363  08e4               L3562:
+5364                     ; 723 	else if(sub_ind==6)
+5366  08e4 b662          	ld	a,_a_ind+1
+5367  08e6 a106          	cp	a,#6
+5368  08e8 2617          	jrne	L7562
+5369                     ; 725 		int2indII_slkuf(time_date,0, 2, 0, 1, 0);
+5371  08ea 4b00          	push	#0
+5372  08ec 4b01          	push	#1
+5373  08ee 4b00          	push	#0
+5374  08f0 4b02          	push	#2
+5375  08f2 4b00          	push	#0
+5376  08f4 b603          	ld	a,_time_date
+5377  08f6 5f            	clrw	x
+5378  08f7 97            	ld	xl,a
+5379  08f8 cd0000        	call	_int2indII_slkuf
+5381  08fb 5b05          	addw	sp,#5
+5383  08fd acf716f7      	jpf	L1162
+5384  0901               L7562:
+5385                     ; 728 	else if(sub_ind==7)
+5387  0901 b662          	ld	a,_a_ind+1
+5388  0903 a107          	cp	a,#7
+5389  0905 2617          	jrne	L3662
+5390                     ; 730 		int2indII_slkuf(time_hour,0, 2, 0, 1, 0);
+5392  0907 4b00          	push	#0
+5393  0909 4b01          	push	#1
+5394  090b 4b00          	push	#0
+5395  090d 4b02          	push	#2
+5396  090f 4b00          	push	#0
+5397  0911 b60f          	ld	a,_time_hour
+5398  0913 5f            	clrw	x
+5399  0914 97            	ld	xl,a
+5400  0915 cd0000        	call	_int2indII_slkuf
+5402  0918 5b05          	addw	sp,#5
+5404  091a acf716f7      	jpf	L1162
+5405  091e               L3662:
+5406                     ; 732 	else if(sub_ind==8)
+5408  091e b662          	ld	a,_a_ind+1
+5409  0920 a108          	cp	a,#8
+5410  0922 2617          	jrne	L7662
+5411                     ; 734 		int2indII_slkuf(time_min,0, 2, 0, 1, 0);
+5413  0924 4b00          	push	#0
+5414  0926 4b01          	push	#1
+5415  0928 4b00          	push	#0
+5416  092a 4b02          	push	#2
+5417  092c 4b00          	push	#0
+5418  092e b610          	ld	a,_time_min
+5419  0930 5f            	clrw	x
+5420  0931 97            	ld	xl,a
+5421  0932 cd0000        	call	_int2indII_slkuf
+5423  0935 5b05          	addw	sp,#5
+5425  0937 acf716f7      	jpf	L1162
+5426  093b               L7662:
+5427                     ; 736 	else if(sub_ind==9)
+5429  093b b662          	ld	a,_a_ind+1
+5430  093d a109          	cp	a,#9
+5431  093f 2703          	jreq	L453
+5432  0941 cc16f7        	jp	L1162
+5433  0944               L453:
+5434                     ; 738 		int2indII_slkuf(time_day_of_week,0, 2, 0, 1, 0);
+5436  0944 4b00          	push	#0
+5437  0946 4b01          	push	#1
+5438  0948 4b00          	push	#0
+5439  094a 4b02          	push	#2
+5440  094c 4b00          	push	#0
+5441  094e b60e          	ld	a,_time_day_of_week
+5442  0950 5f            	clrw	x
+5443  0951 97            	ld	xl,a
+5444  0952 cd0000        	call	_int2indII_slkuf
+5446  0955 5b05          	addw	sp,#5
+5447  0957 acf716f7      	jpf	L1162
+5448  095b               L5262:
+5449                     ; 742 else if(ind==iSet_)
+5451  095b b661          	ld	a,_a_ind
+5452  095d a102          	cp	a,#2
+5453  095f 2703          	jreq	L653
+5454  0961 cc0ab2        	jp	L7762
+5455  0964               L653:
+5456                     ; 744 	int2indI_slkuf(sub_ind+1,1, 2, 0, 1, 0);
+5458  0964 4b00          	push	#0
+5459  0966 4b01          	push	#1
+5460  0968 4b00          	push	#0
+5461  096a 4b02          	push	#2
+5462  096c 4b01          	push	#1
+5463  096e 5f            	clrw	x
+5464  096f b662          	ld	a,_a_ind+1
+5465  0971 2a01          	jrpl	L47
+5466  0973 53            	cplw	x
+5467  0974               L47:
+5468  0974 97            	ld	xl,a
+5469  0975 5c            	incw	x
+5470  0976 cd0000        	call	_int2indI_slkuf
+5472  0979 5b05          	addw	sp,#5
+5473                     ; 745 	ind_outB[3]=0b10010001;	
+5475  097b 35910078      	mov	_ind_outB+3,#145
+5476                     ; 747 	if(sub_ind==0)
+5478  097f 3d62          	tnz	_a_ind+1
+5479  0981 261b          	jrne	L1072
+5480                     ; 749 		int2indII_slkuf(MODE_EE,0, 2, 0, 1, 1);
+5482  0983 4b01          	push	#1
+5483  0985 4b01          	push	#1
+5484  0987 4b00          	push	#0
+5485  0989 4b02          	push	#2
+5486  098b 4b00          	push	#0
+5487  098d 5f            	clrw	x
+5488  098e c64046        	ld	a,_MODE_EE
+5489  0991 2a01          	jrpl	L67
+5490  0993 53            	cplw	x
+5491  0994               L67:
+5492  0994 97            	ld	xl,a
+5493  0995 cd0000        	call	_int2indII_slkuf
+5495  0998 5b05          	addw	sp,#5
+5497  099a acf716f7      	jpf	L1162
+5498  099e               L1072:
+5499                     ; 751 	else if(sub_ind==1)
+5501  099e b662          	ld	a,_a_ind+1
+5502  09a0 a101          	cp	a,#1
+5503  09a2 261b          	jrne	L5072
+5504                     ; 753 		int2indII_slkuf(NECC_TEMPER_WATER_EE,0, 2, 0, 1, 1);
+5506  09a4 4b01          	push	#1
+5507  09a6 4b01          	push	#1
+5508  09a8 4b00          	push	#0
+5509  09aa 4b02          	push	#2
+5510  09ac 4b00          	push	#0
+5511  09ae 5f            	clrw	x
+5512  09af c64045        	ld	a,_NECC_TEMPER_WATER_EE
+5513  09b2 2a01          	jrpl	L001
+5514  09b4 53            	cplw	x
+5515  09b5               L001:
+5516  09b5 97            	ld	xl,a
+5517  09b6 cd0000        	call	_int2indII_slkuf
+5519  09b9 5b05          	addw	sp,#5
+5521  09bb acf716f7      	jpf	L1162
+5522  09bf               L5072:
+5523                     ; 755 	else if(sub_ind==2)
+5525  09bf b662          	ld	a,_a_ind+1
+5526  09c1 a102          	cp	a,#2
+5527  09c3 261b          	jrne	L1172
+5528                     ; 757 		int2indII_slkuf(NECC_TEMPER_AIR_EE,0, 2, 0, 1, 1);
+5530  09c5 4b01          	push	#1
+5531  09c7 4b01          	push	#1
+5532  09c9 4b00          	push	#0
+5533  09cb 4b02          	push	#2
+5534  09cd 4b00          	push	#0
+5535  09cf 5f            	clrw	x
+5536  09d0 c64044        	ld	a,_NECC_TEMPER_AIR_EE
+5537  09d3 2a01          	jrpl	L201
+5538  09d5 53            	cplw	x
+5539  09d6               L201:
+5540  09d6 97            	ld	xl,a
+5541  09d7 cd0000        	call	_int2indII_slkuf
+5543  09da 5b05          	addw	sp,#5
+5545  09dc acf716f7      	jpf	L1162
+5546  09e0               L1172:
+5547                     ; 759 	else if(sub_ind==3)
+5549  09e0 b662          	ld	a,_a_ind+1
+5550  09e2 a103          	cp	a,#3
+5551  09e4 261b          	jrne	L5172
+5552                     ; 761 		int2indII_slkuf(MAX_POWER_EE,0, 2, 0, 1, 1);
+5554  09e6 4b01          	push	#1
+5555  09e8 4b01          	push	#1
+5556  09ea 4b00          	push	#0
+5557  09ec 4b02          	push	#2
+5558  09ee 4b00          	push	#0
+5559  09f0 5f            	clrw	x
+5560  09f1 c64047        	ld	a,_MAX_POWER_EE
+5561  09f4 2a01          	jrpl	L401
+5562  09f6 53            	cplw	x
+5563  09f7               L401:
+5564  09f7 97            	ld	xl,a
+5565  09f8 cd0000        	call	_int2indII_slkuf
+5567  09fb 5b05          	addw	sp,#5
+5569  09fd acf716f7      	jpf	L1162
+5570  0a01               L5172:
+5571                     ; 763 	else if(sub_ind==4)
+5573  0a01 b662          	ld	a,_a_ind+1
+5574  0a03 a104          	cp	a,#4
+5575  0a05 2617          	jrne	L1272
+5576                     ; 765 		int2indII_slkuf(time_year,0, 2, 0, 1, 1);
+5578  0a07 4b01          	push	#1
+5579  0a09 4b01          	push	#1
+5580  0a0b 4b00          	push	#0
+5581  0a0d 4b02          	push	#2
+5582  0a0f 4b00          	push	#0
+5583  0a11 b60c          	ld	a,_time_year
+5584  0a13 5f            	clrw	x
+5585  0a14 97            	ld	xl,a
+5586  0a15 cd0000        	call	_int2indII_slkuf
+5588  0a18 5b05          	addw	sp,#5
+5590  0a1a acf716f7      	jpf	L1162
+5591  0a1e               L1272:
+5592                     ; 767 	else if(sub_ind==5)
+5594  0a1e b662          	ld	a,_a_ind+1
+5595  0a20 a105          	cp	a,#5
+5596  0a22 2617          	jrne	L5272
+5597                     ; 769 		int2indII_slkuf(time_month,0, 2, 0, 1, 1);
+5599  0a24 4b01          	push	#1
+5600  0a26 4b01          	push	#1
+5601  0a28 4b00          	push	#0
+5602  0a2a 4b02          	push	#2
+5603  0a2c 4b00          	push	#0
+5604  0a2e b60d          	ld	a,_time_month
+5605  0a30 5f            	clrw	x
+5606  0a31 97            	ld	xl,a
+5607  0a32 cd0000        	call	_int2indII_slkuf
+5609  0a35 5b05          	addw	sp,#5
+5611  0a37 acf716f7      	jpf	L1162
+5612  0a3b               L5272:
+5613                     ; 771 	else if(sub_ind==6)
+5615  0a3b b662          	ld	a,_a_ind+1
+5616  0a3d a106          	cp	a,#6
+5617  0a3f 2617          	jrne	L1372
+5618                     ; 773 		int2indII_slkuf(time_date,0, 2, 0, 1, 1);
+5620  0a41 4b01          	push	#1
+5621  0a43 4b01          	push	#1
+5622  0a45 4b00          	push	#0
+5623  0a47 4b02          	push	#2
+5624  0a49 4b00          	push	#0
+5625  0a4b b603          	ld	a,_time_date
+5626  0a4d 5f            	clrw	x
+5627  0a4e 97            	ld	xl,a
+5628  0a4f cd0000        	call	_int2indII_slkuf
+5630  0a52 5b05          	addw	sp,#5
+5632  0a54 acf716f7      	jpf	L1162
+5633  0a58               L1372:
+5634                     ; 776 	else if(sub_ind==7)
+5636  0a58 b662          	ld	a,_a_ind+1
+5637  0a5a a107          	cp	a,#7
+5638  0a5c 2617          	jrne	L5372
+5639                     ; 778 		int2indII_slkuf(time_hour,0, 2, 0, 1, 1);
+5641  0a5e 4b01          	push	#1
+5642  0a60 4b01          	push	#1
+5643  0a62 4b00          	push	#0
+5644  0a64 4b02          	push	#2
+5645  0a66 4b00          	push	#0
+5646  0a68 b60f          	ld	a,_time_hour
+5647  0a6a 5f            	clrw	x
+5648  0a6b 97            	ld	xl,a
+5649  0a6c cd0000        	call	_int2indII_slkuf
+5651  0a6f 5b05          	addw	sp,#5
+5653  0a71 acf716f7      	jpf	L1162
+5654  0a75               L5372:
+5655                     ; 780 	else if(sub_ind==8)
+5657  0a75 b662          	ld	a,_a_ind+1
+5658  0a77 a108          	cp	a,#8
+5659  0a79 2617          	jrne	L1472
+5660                     ; 782 		int2indII_slkuf(time_min,0, 2, 0, 1, 1);
+5662  0a7b 4b01          	push	#1
+5663  0a7d 4b01          	push	#1
+5664  0a7f 4b00          	push	#0
+5665  0a81 4b02          	push	#2
+5666  0a83 4b00          	push	#0
+5667  0a85 b610          	ld	a,_time_min
+5668  0a87 5f            	clrw	x
+5669  0a88 97            	ld	xl,a
+5670  0a89 cd0000        	call	_int2indII_slkuf
+5672  0a8c 5b05          	addw	sp,#5
+5674  0a8e acf716f7      	jpf	L1162
+5675  0a92               L1472:
+5676                     ; 784 	else if(sub_ind==9)
+5678  0a92 b662          	ld	a,_a_ind+1
+5679  0a94 a109          	cp	a,#9
+5680  0a96 2703          	jreq	L063
+5681  0a98 cc16f7        	jp	L1162
+5682  0a9b               L063:
+5683                     ; 786 		int2indII_slkuf(time_day_of_week,0, 2, 0, 1, 1);
+5685  0a9b 4b01          	push	#1
+5686  0a9d 4b01          	push	#1
+5687  0a9f 4b00          	push	#0
+5688  0aa1 4b02          	push	#2
+5689  0aa3 4b00          	push	#0
+5690  0aa5 b60e          	ld	a,_time_day_of_week
+5691  0aa7 5f            	clrw	x
+5692  0aa8 97            	ld	xl,a
+5693  0aa9 cd0000        	call	_int2indII_slkuf
+5695  0aac 5b05          	addw	sp,#5
+5696  0aae acf716f7      	jpf	L1162
+5697  0ab2               L7762:
+5698                     ; 790 else if(ind==iSetTable)
+5700  0ab2 b661          	ld	a,_a_ind
+5701  0ab4 a105          	cp	a,#5
+5702  0ab6 2703cc0b45    	jrne	L1572
+5703                     ; 792 	ind_outB[3]=0b11001110;
+5705  0abb 35ce0078      	mov	_ind_outB+3,#206
+5706                     ; 793 	int2indI_slkuf(((sub_ind/5)+1)*10 + ((sub_ind)%5)+1,1, 2, 1, 0, 1);
+5708  0abf 4b01          	push	#1
+5709  0ac1 4b00          	push	#0
+5710  0ac3 4b01          	push	#1
+5711  0ac5 4b02          	push	#2
+5712  0ac7 4b01          	push	#1
+5713  0ac9 5f            	clrw	x
+5714  0aca b662          	ld	a,_a_ind+1
+5715  0acc 2a01          	jrpl	L601
+5716  0ace 53            	cplw	x
+5717  0acf               L601:
+5718  0acf 97            	ld	xl,a
+5719  0ad0 a605          	ld	a,#5
+5720  0ad2 cd0000        	call	c_smodx
+5722  0ad5 1f06          	ldw	(OFST+4,sp),x
+5723  0ad7 5f            	clrw	x
+5724  0ad8 b662          	ld	a,_a_ind+1
+5725  0ada 2a01          	jrpl	L011
+5726  0adc 53            	cplw	x
+5727  0add               L011:
+5728  0add 97            	ld	xl,a
+5729  0ade a605          	ld	a,#5
+5730  0ae0 cd0000        	call	c_sdivx
+5732  0ae3 90ae000a      	ldw	y,#10
+5733  0ae7 cd0000        	call	c_imul
+5735  0aea 72fb06        	addw	x,(OFST+4,sp)
+5736  0aed 1c000b        	addw	x,#11
+5737  0af0 cd0000        	call	_int2indI_slkuf
+5739  0af3 5b05          	addw	sp,#5
+5740                     ; 795 	if(sub_ind1==0) 
+5742  0af5 3d63          	tnz	_a_ind+2
+5743  0af7 2608          	jrne	L3572
+5744                     ; 799 		ind_outG[2]&=0b11111110;
+5746  0af9 72110018      	bres	_ind_outG+2,#0
+5748  0afd acf716f7      	jpf	L1162
+5749  0b01               L3572:
+5750                     ; 803 		int2indII_slkuf(TABLE_TEMPER_EE[sub_ind/5][sub_ind%5],1, 2, 0, 1, 0);
+5752  0b01 4b00          	push	#0
+5753  0b03 4b01          	push	#1
+5754  0b05 4b00          	push	#0
+5755  0b07 4b02          	push	#2
+5756  0b09 4b01          	push	#1
+5757  0b0b 5f            	clrw	x
+5758  0b0c b662          	ld	a,_a_ind+1
+5759  0b0e 2a01          	jrpl	L211
+5760  0b10 53            	cplw	x
+5761  0b11               L211:
+5762  0b11 97            	ld	xl,a
+5763  0b12 a605          	ld	a,#5
+5764  0b14 cd0000        	call	c_smodx
+5766  0b17 1f06          	ldw	(OFST+4,sp),x
+5767  0b19 5f            	clrw	x
+5768  0b1a b662          	ld	a,_a_ind+1
+5769  0b1c 2a01          	jrpl	L411
+5770  0b1e 53            	cplw	x
+5771  0b1f               L411:
+5772  0b1f 97            	ld	xl,a
+5773  0b20 a605          	ld	a,#5
+5774  0b22 cd0000        	call	c_sdivx
+5776  0b25 90ae0005      	ldw	y,#5
+5777  0b29 cd0000        	call	c_imul
+5779  0b2c 72fb06        	addw	x,(OFST+4,sp)
+5780  0b2f d64048        	ld	a,(_TABLE_TEMPER_EE,x)
+5781  0b32 5f            	clrw	x
+5782  0b33 4d            	tnz	a
+5783  0b34 2a01          	jrpl	L611
+5784  0b36 53            	cplw	x
+5785  0b37               L611:
+5786  0b37 97            	ld	xl,a
+5787  0b38 cd0000        	call	_int2indII_slkuf
+5789  0b3b 5b05          	addw	sp,#5
+5790                     ; 804 		ind_outC[0]=0b00111000;
+5792  0b3d 3538000a      	mov	_ind_outC,#56
+5793  0b41 acf716f7      	jpf	L1162
+5794  0b45               L1572:
+5795                     ; 809 else if(ind==iSetTable_)
+5797  0b45 b661          	ld	a,_a_ind
+5798  0b47 a106          	cp	a,#6
+5799  0b49 2703          	jreq	L263
+5800  0b4b cc0be4        	jp	L1672
+5801  0b4e               L263:
+5802                     ; 811 	ind_outB[3]=0b11001110;
+5804  0b4e 35ce0078      	mov	_ind_outB+3,#206
+5805                     ; 812 	int2indI_slkuf(((sub_ind/5)+1)*10 + ((sub_ind)%5)+1,1, 2, 1, 0, 0);
+5807  0b52 4b00          	push	#0
+5808  0b54 4b00          	push	#0
+5809  0b56 4b01          	push	#1
+5810  0b58 4b02          	push	#2
+5811  0b5a 4b01          	push	#1
+5812  0b5c 5f            	clrw	x
+5813  0b5d b662          	ld	a,_a_ind+1
+5814  0b5f 2a01          	jrpl	L021
+5815  0b61 53            	cplw	x
+5816  0b62               L021:
+5817  0b62 97            	ld	xl,a
+5818  0b63 a605          	ld	a,#5
+5819  0b65 cd0000        	call	c_smodx
+5821  0b68 1f06          	ldw	(OFST+4,sp),x
+5822  0b6a 5f            	clrw	x
+5823  0b6b b662          	ld	a,_a_ind+1
+5824  0b6d 2a01          	jrpl	L221
+5825  0b6f 53            	cplw	x
+5826  0b70               L221:
+5827  0b70 97            	ld	xl,a
+5828  0b71 a605          	ld	a,#5
+5829  0b73 cd0000        	call	c_sdivx
+5831  0b76 90ae000a      	ldw	y,#10
+5832  0b7a cd0000        	call	c_imul
+5834  0b7d 72fb06        	addw	x,(OFST+4,sp)
+5835  0b80 1c000b        	addw	x,#11
+5836  0b83 cd0000        	call	_int2indI_slkuf
+5838  0b86 5b05          	addw	sp,#5
+5839                     ; 814 	if(sub_ind1==0) 
+5841  0b88 3d63          	tnz	_a_ind+2
+5842  0b8a 2614          	jrne	L3672
+5843                     ; 818 		if(!bFL2)	ind_outG[2]&=0b11111110;
+5845  0b8c 3d27          	tnz	_bFL2
+5846  0b8e 2608          	jrne	L5672
+5849  0b90 72110018      	bres	_ind_outG+2,#0
+5851  0b94 acf716f7      	jpf	L1162
+5852  0b98               L5672:
+5853                     ; 819 		else 		ind_outG[2]|=0b00000001;
+5855  0b98 72100018      	bset	_ind_outG+2,#0
+5856  0b9c acf716f7      	jpf	L1162
+5857  0ba0               L3672:
+5858                     ; 823 		int2indII_slkuf(TABLE_TEMPER_EE[sub_ind/5][sub_ind%5],1, 2, 0, 1, 1);
+5860  0ba0 4b01          	push	#1
+5861  0ba2 4b01          	push	#1
+5862  0ba4 4b00          	push	#0
+5863  0ba6 4b02          	push	#2
+5864  0ba8 4b01          	push	#1
+5865  0baa 5f            	clrw	x
+5866  0bab b662          	ld	a,_a_ind+1
+5867  0bad 2a01          	jrpl	L421
+5868  0baf 53            	cplw	x
+5869  0bb0               L421:
+5870  0bb0 97            	ld	xl,a
+5871  0bb1 a605          	ld	a,#5
+5872  0bb3 cd0000        	call	c_smodx
+5874  0bb6 1f06          	ldw	(OFST+4,sp),x
+5875  0bb8 5f            	clrw	x
+5876  0bb9 b662          	ld	a,_a_ind+1
+5877  0bbb 2a01          	jrpl	L621
+5878  0bbd 53            	cplw	x
+5879  0bbe               L621:
+5880  0bbe 97            	ld	xl,a
+5881  0bbf a605          	ld	a,#5
+5882  0bc1 cd0000        	call	c_sdivx
+5884  0bc4 90ae0005      	ldw	y,#5
+5885  0bc8 cd0000        	call	c_imul
+5887  0bcb 72fb06        	addw	x,(OFST+4,sp)
+5888  0bce d64048        	ld	a,(_TABLE_TEMPER_EE,x)
+5889  0bd1 5f            	clrw	x
+5890  0bd2 4d            	tnz	a
+5891  0bd3 2a01          	jrpl	L031
+5892  0bd5 53            	cplw	x
+5893  0bd6               L031:
+5894  0bd6 97            	ld	xl,a
+5895  0bd7 cd0000        	call	_int2indII_slkuf
+5897  0bda 5b05          	addw	sp,#5
+5898                     ; 824 		ind_outC[0]=0b00111000;
+5900  0bdc 3538000a      	mov	_ind_outC,#56
+5901  0be0 acf716f7      	jpf	L1162
+5902  0be4               L1672:
+5903                     ; 829 else if(ind==iDeb)
+5905  0be4 b661          	ld	a,_a_ind
+5906  0be6 a107          	cp	a,#7
+5907  0be8 2703          	jreq	L463
+5908  0bea cc110f        	jp	L5772
+5909  0bed               L463:
+5910                     ; 831 	led_mask_off(0x00);
+5912  0bed 4f            	clr	a
+5913  0bee cd0000        	call	_led_mask_off
+5915                     ; 832 	led_on(sub_ind+1);
+5917  0bf1 b662          	ld	a,_a_ind+1
+5918  0bf3 4c            	inc	a
+5919  0bf4 cd0000        	call	_led_on
+5921                     ; 834 	if(sub_ind==0)
+5923  0bf7 3d62          	tnz	_a_ind+1
+5924  0bf9 2630          	jrne	L7772
+5925                     ; 836 		int2indI_slkuf(targetTemper,1, 2, 0, 0, 0);
+5927  0bfb 4b00          	push	#0
+5928  0bfd 4b00          	push	#0
+5929  0bff 4b00          	push	#0
+5930  0c01 4b02          	push	#2
+5931  0c03 4b01          	push	#1
+5932  0c05 5f            	clrw	x
+5933  0c06 b61c          	ld	a,_targetTemper
+5934  0c08 2a01          	jrpl	L231
+5935  0c0a 53            	cplw	x
+5936  0c0b               L231:
+5937  0c0b 97            	ld	xl,a
+5938  0c0c cd0000        	call	_int2indI_slkuf
+5940  0c0f 5b05          	addw	sp,#5
+5941                     ; 837 		int2indII_slkuf(aktualTemper,0, 2, 0, 0, 0);
+5943  0c11 4b00          	push	#0
+5944  0c13 4b00          	push	#0
+5945  0c15 4b00          	push	#0
+5946  0c17 4b02          	push	#2
+5947  0c19 4b00          	push	#0
+5948  0c1b 5f            	clrw	x
+5949  0c1c b61d          	ld	a,_aktualTemper
+5950  0c1e 2a01          	jrpl	L431
+5951  0c20 53            	cplw	x
+5952  0c21               L431:
+5953  0c21 97            	ld	xl,a
+5954  0c22 cd0000        	call	_int2indII_slkuf
+5956  0c25 5b05          	addw	sp,#5
+5958  0c27 acf716f7      	jpf	L1162
+5959  0c2b               L7772:
+5960                     ; 840 	else if(sub_ind==1)
+5962  0c2b b662          	ld	a,_a_ind+1
+5963  0c2d a101          	cp	a,#1
+5964  0c2f 2630          	jrne	L3003
+5965                     ; 842 		int2indI_slkuf(temperOfWater,1, 2, 0, 0, 0);
+5967  0c31 4b00          	push	#0
+5968  0c33 4b00          	push	#0
+5969  0c35 4b00          	push	#0
+5970  0c37 4b02          	push	#2
+5971  0c39 4b01          	push	#1
+5972  0c3b 5f            	clrw	x
+5973  0c3c b61f          	ld	a,_temperOfWater
+5974  0c3e 2a01          	jrpl	L631
+5975  0c40 53            	cplw	x
+5976  0c41               L631:
+5977  0c41 97            	ld	xl,a
+5978  0c42 cd0000        	call	_int2indI_slkuf
+5980  0c45 5b05          	addw	sp,#5
+5981                     ; 843 		int2indII_slkuf(temperOfAir,0, 2, 0, 0, 0);
+5983  0c47 4b00          	push	#0
+5984  0c49 4b00          	push	#0
+5985  0c4b 4b00          	push	#0
+5986  0c4d 4b02          	push	#2
+5987  0c4f 4b00          	push	#0
+5988  0c51 5f            	clrw	x
+5989  0c52 b61e          	ld	a,_temperOfAir
+5990  0c54 2a01          	jrpl	L041
+5991  0c56 53            	cplw	x
+5992  0c57               L041:
+5993  0c57 97            	ld	xl,a
+5994  0c58 cd0000        	call	_int2indII_slkuf
+5996  0c5b 5b05          	addw	sp,#5
+5998  0c5d acf716f7      	jpf	L1162
+5999  0c61               L3003:
+6000                     ; 846 	else if(sub_ind==2)
+6002  0c61 b662          	ld	a,_a_ind+1
+6003  0c63 a102          	cp	a,#2
+6004  0c65 2647          	jrne	L7003
+6005                     ; 848 		int2indI_slkuf(MAX_POWER_EE,1, 2, 0, 0, 0);
+6007  0c67 4b00          	push	#0
+6008  0c69 4b00          	push	#0
+6009  0c6b 4b00          	push	#0
+6010  0c6d 4b02          	push	#2
+6011  0c6f 4b01          	push	#1
+6012  0c71 5f            	clrw	x
+6013  0c72 c64047        	ld	a,_MAX_POWER_EE
+6014  0c75 2a01          	jrpl	L241
+6015  0c77 53            	cplw	x
+6016  0c78               L241:
+6017  0c78 97            	ld	xl,a
+6018  0c79 cd0000        	call	_int2indI_slkuf
+6020  0c7c 5b05          	addw	sp,#5
+6021                     ; 849 		int2indII_slkuf(powerNeccDelta,2, 2, 0, 0, 0);
+6023  0c7e 4b00          	push	#0
+6024  0c80 4b00          	push	#0
+6025  0c82 4b00          	push	#0
+6026  0c84 4b02          	push	#2
+6027  0c86 4b02          	push	#2
+6028  0c88 5f            	clrw	x
+6029  0c89 b60b          	ld	a,_powerNeccDelta
+6030  0c8b 2a01          	jrpl	L441
+6031  0c8d 53            	cplw	x
+6032  0c8e               L441:
+6033  0c8e 97            	ld	xl,a
+6034  0c8f cd0000        	call	_int2indII_slkuf
+6036  0c92 5b05          	addw	sp,#5
+6037                     ; 850 		int2indII_slkuf(powerNecc,0, 2, 0, 0, 0);
+6039  0c94 4b00          	push	#0
+6040  0c96 4b00          	push	#0
+6041  0c98 4b00          	push	#0
+6042  0c9a 4b02          	push	#2
+6043  0c9c 4b00          	push	#0
+6044  0c9e 5f            	clrw	x
+6045  0c9f b625          	ld	a,_powerNecc
+6046  0ca1 2a01          	jrpl	L641
+6047  0ca3 53            	cplw	x
+6048  0ca4               L641:
+6049  0ca4 97            	ld	xl,a
+6050  0ca5 cd0000        	call	_int2indII_slkuf
+6052  0ca8 5b05          	addw	sp,#5
+6054  0caa acf716f7      	jpf	L1162
+6055  0cae               L7003:
+6056                     ; 852 	else if(sub_ind==3)
+6058  0cae b662          	ld	a,_a_ind+1
+6059  0cb0 a103          	cp	a,#3
+6060  0cb2 267c          	jrne	L3103
+6061                     ; 854 		int2indI_slkuf(aktualTemper,2, 2, 0, 0, 0);	
+6063  0cb4 4b00          	push	#0
+6064  0cb6 4b00          	push	#0
+6065  0cb8 4b00          	push	#0
+6066  0cba 4b02          	push	#2
+6067  0cbc 4b02          	push	#2
+6068  0cbe 5f            	clrw	x
+6069  0cbf b61d          	ld	a,_aktualTemper
+6070  0cc1 2a01          	jrpl	L051
+6071  0cc3 53            	cplw	x
+6072  0cc4               L051:
+6073  0cc4 97            	ld	xl,a
+6074  0cc5 cd0000        	call	_int2indI_slkuf
+6076  0cc8 5b05          	addw	sp,#5
+6077                     ; 855 		int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
+6079  0cca 4b00          	push	#0
+6080  0ccc 4b00          	push	#0
+6081  0cce 4b00          	push	#0
+6082  0cd0 4b01          	push	#1
+6083  0cd2 4b01          	push	#1
+6084  0cd4 5f            	clrw	x
+6085  0cd5 b625          	ld	a,_powerNecc
+6086  0cd7 2a01          	jrpl	L251
+6087  0cd9 53            	cplw	x
+6088  0cda               L251:
+6089  0cda 97            	ld	xl,a
+6090  0cdb cd0000        	call	_int2indI_slkuf
+6092  0cde 5b05          	addw	sp,#5
+6093                     ; 856 		int2indII_slkuf(out_stat[0],3, 1, 0, 0, 0);
+6095  0ce0 4b00          	push	#0
+6096  0ce2 4b00          	push	#0
+6097  0ce4 4b00          	push	#0
+6098  0ce6 4b01          	push	#1
+6099  0ce8 4b03          	push	#3
+6100  0cea b620          	ld	a,_out_stat
+6101  0cec 5f            	clrw	x
+6102  0ced 97            	ld	xl,a
+6103  0cee cd0000        	call	_int2indII_slkuf
+6105  0cf1 5b05          	addw	sp,#5
+6106                     ; 857 		int2indII_slkuf(out_stat[1],2, 1, 0, 0, 0);
+6108  0cf3 4b00          	push	#0
+6109  0cf5 4b00          	push	#0
+6110  0cf7 4b00          	push	#0
+6111  0cf9 4b01          	push	#1
+6112  0cfb 4b02          	push	#2
+6113  0cfd b621          	ld	a,_out_stat+1
+6114  0cff 5f            	clrw	x
+6115  0d00 97            	ld	xl,a
+6116  0d01 cd0000        	call	_int2indII_slkuf
+6118  0d04 5b05          	addw	sp,#5
+6119                     ; 858 		int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
+6121  0d06 4b00          	push	#0
+6122  0d08 4b00          	push	#0
+6123  0d0a 4b00          	push	#0
+6124  0d0c 4b01          	push	#1
+6125  0d0e 4b01          	push	#1
+6126  0d10 b622          	ld	a,_out_stat+2
+6127  0d12 5f            	clrw	x
+6128  0d13 97            	ld	xl,a
+6129  0d14 cd0000        	call	_int2indII_slkuf
+6131  0d17 5b05          	addw	sp,#5
+6132                     ; 859 		int2indII_slkuf(fiksRandom,0, 1, 0, 0, 0);
+6134  0d19 4b00          	push	#0
+6135  0d1b 4b00          	push	#0
+6136  0d1d 4b00          	push	#0
+6137  0d1f 4b01          	push	#1
+6138  0d21 4b00          	push	#0
+6139  0d23 b684          	ld	a,_fiksRandom
+6140  0d25 5f            	clrw	x
+6141  0d26 97            	ld	xl,a
+6142  0d27 cd0000        	call	_int2indII_slkuf
+6144  0d2a 5b05          	addw	sp,#5
+6146  0d2c acf716f7      	jpf	L1162
+6147  0d30               L3103:
+6148                     ; 861 	else if(sub_ind==4)
+6150  0d30 b662          	ld	a,_a_ind+1
+6151  0d32 a104          	cp	a,#4
+6152  0d34 2640          	jrne	L7103
+6153                     ; 863 		int2indI_slkuf(temperRegToSheduler,1, 2, 0, 0, 0);	
+6155  0d36 4b00          	push	#0
+6156  0d38 4b00          	push	#0
+6157  0d3a 4b00          	push	#0
+6158  0d3c 4b02          	push	#2
+6159  0d3e 4b01          	push	#1
+6160  0d40 5f            	clrw	x
+6161  0d41 b604          	ld	a,_temperRegToSheduler
+6162  0d43 2a01          	jrpl	L451
+6163  0d45 53            	cplw	x
+6164  0d46               L451:
+6165  0d46 97            	ld	xl,a
+6166  0d47 cd0000        	call	_int2indI_slkuf
+6168  0d4a 5b05          	addw	sp,#5
+6169                     ; 865 		int2indII_slkuf(time_day_of_week,3, 1, 0, 0, 0);
+6171  0d4c 4b00          	push	#0
+6172  0d4e 4b00          	push	#0
+6173  0d50 4b00          	push	#0
+6174  0d52 4b01          	push	#1
+6175  0d54 4b03          	push	#3
+6176  0d56 b60e          	ld	a,_time_day_of_week
+6177  0d58 5f            	clrw	x
+6178  0d59 97            	ld	xl,a
+6179  0d5a cd0000        	call	_int2indII_slkuf
+6181  0d5d 5b05          	addw	sp,#5
+6182                     ; 868 		int2indII_slkuf(day_sheduler_time,0, 3, 0, 0, 0);
+6184  0d5f 4b00          	push	#0
+6185  0d61 4b00          	push	#0
+6186  0d63 4b00          	push	#0
+6187  0d65 4b03          	push	#3
+6188  0d67 4b00          	push	#0
+6189  0d69 b602          	ld	a,_day_sheduler_time
+6190  0d6b 5f            	clrw	x
+6191  0d6c 97            	ld	xl,a
+6192  0d6d cd0000        	call	_int2indII_slkuf
+6194  0d70 5b05          	addw	sp,#5
+6196  0d72 acf716f7      	jpf	L1162
+6197  0d76               L7103:
+6198                     ; 871 	else if(sub_ind==5)
+6200  0d76 b662          	ld	a,_a_ind+1
+6201  0d78 a105          	cp	a,#5
+6202  0d7a 2638          	jrne	L3203
+6203                     ; 873 		int2indI_slkuf(modemDrvPDUSMSSendStepCnt,1, 3, 0, 0, 0);	
+6205  0d7c 4b00          	push	#0
+6206  0d7e 4b00          	push	#0
+6207  0d80 4b00          	push	#0
+6208  0d82 4b03          	push	#3
+6209  0d84 4b01          	push	#1
+6210  0d86 be00          	ldw	x,_modemDrvPDUSMSSendStepCnt
+6211  0d88 cd0000        	call	_int2indI_slkuf
+6213  0d8b 5b05          	addw	sp,#5
+6214                     ; 875 		int2indII_slkuf(modemDrvWatchDogCnt,0, 3, 0, 0, 0);
+6216  0d8d 4b00          	push	#0
+6217  0d8f 4b00          	push	#0
+6218  0d91 4b00          	push	#0
+6219  0d93 4b03          	push	#3
+6220  0d95 4b00          	push	#0
+6221  0d97 be00          	ldw	x,_modemDrvWatchDogCnt
+6222  0d99 cd0000        	call	_int2indII_slkuf
+6224  0d9c 5b05          	addw	sp,#5
+6225                     ; 878 		int2indII_slkuf(4,3, 1, 0, 0, 1);
+6227  0d9e 4b01          	push	#1
+6228  0da0 4b00          	push	#0
+6229  0da2 4b00          	push	#0
+6230  0da4 4b01          	push	#1
+6231  0da6 4b03          	push	#3
+6232  0da8 ae0004        	ldw	x,#4
+6233  0dab cd0000        	call	_int2indII_slkuf
+6235  0dae 5b05          	addw	sp,#5
+6237  0db0 acf716f7      	jpf	L1162
+6238  0db4               L3203:
+6239                     ; 880 	else if(sub_ind==6)
+6241  0db4 b662          	ld	a,_a_ind+1
+6242  0db6 a106          	cp	a,#6
+6243  0db8 263b          	jrne	L7203
+6244                     ; 882 		int2indI_slkuf(main_power_off_hndl_cnt,1, 3, 0, 0, 0);	
+6246  0dba 4b00          	push	#0
+6247  0dbc 4b00          	push	#0
+6248  0dbe 4b00          	push	#0
+6249  0dc0 4b03          	push	#3
+6250  0dc2 4b01          	push	#1
+6251  0dc4 ce0028        	ldw	x,_main_power_off_hndl_cnt
+6252  0dc7 cd0000        	call	_int2indI_slkuf
+6254  0dca 5b05          	addw	sp,#5
+6255                     ; 884 		int2indII_slkuf(cbcSystemRequ,0, 1, 0, 0, 0);
+6257  0dcc 4b00          	push	#0
+6258  0dce 4b00          	push	#0
+6259  0dd0 4b00          	push	#0
+6260  0dd2 4b01          	push	#1
+6261  0dd4 4b00          	push	#0
+6262  0dd6 c60027        	ld	a,_cbcSystemRequ
+6263  0dd9 5f            	clrw	x
+6264  0dda 97            	ld	xl,a
+6265  0ddb cd0000        	call	_int2indII_slkuf
+6267  0dde 5b05          	addw	sp,#5
+6268                     ; 885 		int2indII_slkuf(modemDrvPowerDownStepCnt,2, 2, 0, 0, 0);
+6270  0de0 4b00          	push	#0
+6271  0de2 4b00          	push	#0
+6272  0de4 4b00          	push	#0
+6273  0de6 4b02          	push	#2
+6274  0de8 4b02          	push	#2
+6275  0dea be00          	ldw	x,_modemDrvPowerDownStepCnt
+6276  0dec cd0000        	call	_int2indII_slkuf
+6278  0def 5b05          	addw	sp,#5
+6280  0df1 acf716f7      	jpf	L1162
+6281  0df5               L7203:
+6282                     ; 890 	else if(sub_ind==7)
+6284  0df5 b662          	ld	a,_a_ind+1
+6285  0df7 a107          	cp	a,#7
+6286  0df9 2628          	jrne	L3303
+6287                     ; 892 		int2indI_slkuf(tx_counter1,1, 3, 0, 0, 0);	
+6289  0dfb 4b00          	push	#0
+6290  0dfd 4b00          	push	#0
+6291  0dff 4b00          	push	#0
+6292  0e01 4b03          	push	#3
+6293  0e03 4b01          	push	#1
+6294  0e05 ce0000        	ldw	x,_tx_counter1
+6295  0e08 cd0000        	call	_int2indI_slkuf
+6297  0e0b 5b05          	addw	sp,#5
+6298                     ; 894 		int2indII_slkuf(tx_wr_index1,0, 3, 0, 0, 0);
+6300  0e0d 4b00          	push	#0
+6301  0e0f 4b00          	push	#0
+6302  0e11 4b00          	push	#0
+6303  0e13 4b03          	push	#3
+6304  0e15 4b00          	push	#0
+6305  0e17 ce0000        	ldw	x,_tx_wr_index1
+6306  0e1a cd0000        	call	_int2indII_slkuf
+6308  0e1d 5b05          	addw	sp,#5
+6310  0e1f acf716f7      	jpf	L1162
+6311  0e23               L3303:
+6312                     ; 899 	else if(sub_ind==8)
+6314  0e23 b662          	ld	a,_a_ind+1
+6315  0e25 a108          	cp	a,#8
+6316  0e27 2703          	jreq	L663
+6317  0e29 cc0fe5        	jp	L7303
+6318  0e2c               L663:
+6319                     ; 905 		if(++ind_check_cnt1>=5)
+6321  0e2c 9c            	rvf
+6322  0e2d ce0001        	ldw	x,_ind_check_cnt1
+6323  0e30 1c0001        	addw	x,#1
+6324  0e33 cf0001        	ldw	_ind_check_cnt1,x
+6325  0e36 a30005        	cpw	x,#5
+6326  0e39 2f17          	jrslt	L1403
+6327                     ; 907 			ind_check_cnt1=0;
+6329  0e3b 5f            	clrw	x
+6330  0e3c cf0001        	ldw	_ind_check_cnt1,x
+6331                     ; 908 			if(++ind_check_cnt>=64)ind_check_cnt=0;
+6333  0e3f 9c            	rvf
+6334  0e40 ce0003        	ldw	x,_ind_check_cnt
+6335  0e43 1c0001        	addw	x,#1
+6336  0e46 cf0003        	ldw	_ind_check_cnt,x
+6337  0e49 a30040        	cpw	x,#64
+6338  0e4c 2f04          	jrslt	L1403
+6341  0e4e 5f            	clrw	x
+6342  0e4f cf0003        	ldw	_ind_check_cnt,x
+6343  0e52               L1403:
+6344                     ; 910 		ind_outB[0]=0xff;
+6346  0e52 35ff0075      	mov	_ind_outB,#255
+6347                     ; 911 		ind_outB[1]=0xff;
+6349  0e56 35ff0076      	mov	_ind_outB+1,#255
+6350                     ; 912 		ind_outB[2]=0xff;
+6352  0e5a 35ff0077      	mov	_ind_outB+2,#255
+6353                     ; 913 		ind_outB[3]=0xff;
+6355  0e5e 35ff0078      	mov	_ind_outB+3,#255
+6356                     ; 914 		ind_outC[0]=0xff;
+6358  0e62 35ff000a      	mov	_ind_outC,#255
+6359                     ; 915 		ind_outC[1]=0xff;
+6361  0e66 35ff000b      	mov	_ind_outC+1,#255
+6362                     ; 916 		ind_outC[2]=0xff;
+6364  0e6a 35ff000c      	mov	_ind_outC+2,#255
+6365                     ; 917 		ind_outC[3]=0xff;
+6367  0e6e 35ff000d      	mov	_ind_outC+3,#255
+6368                     ; 918 		ind_outG[0]=0xff;
+6370  0e72 35ff0016      	mov	_ind_outG,#255
+6371                     ; 919 		ind_outG[1]=0xff;
+6373  0e76 35ff0017      	mov	_ind_outG+1,#255
+6374                     ; 920 		ind_outG[2]=0xff;
+6376  0e7a 35ff0018      	mov	_ind_outG+2,#255
+6377                     ; 921 		ind_outG[3]=0xff;
+6379  0e7e 35ff0019      	mov	_ind_outG+3,#255
+6380                     ; 923 		if(ind_check_cnt<=7)
+6382  0e82 9c            	rvf
+6383  0e83 ce0003        	ldw	x,_ind_check_cnt
+6384  0e86 a30008        	cpw	x,#8
+6385  0e89 2e1a          	jrsge	L5403
+6386                     ; 925 			ind_outB[3]&=(~(1<<ind_check_cnt));	
+6388  0e8b 5f            	clrw	x
+6389  0e8c c60004        	ld	a,_ind_check_cnt+1
+6390  0e8f 2a01          	jrpl	L651
+6391  0e91 53            	cplw	x
+6392  0e92               L651:
+6393  0e92 97            	ld	xl,a
+6394  0e93 a601          	ld	a,#1
+6395  0e95 5d            	tnzw	x
+6396  0e96 2704          	jreq	L061
+6397  0e98               L261:
+6398  0e98 48            	sll	a
+6399  0e99 5a            	decw	x
+6400  0e9a 26fc          	jrne	L261
+6401  0e9c               L061:
+6402  0e9c 43            	cpl	a
+6403  0e9d b478          	and	a,_ind_outB+3
+6404  0e9f b778          	ld	_ind_outB+3,a
+6406  0ea1 acf716f7      	jpf	L1162
+6407  0ea5               L5403:
+6408                     ; 927 		else if(ind_check_cnt<=15)
+6410  0ea5 9c            	rvf
+6411  0ea6 ce0003        	ldw	x,_ind_check_cnt
+6412  0ea9 a30010        	cpw	x,#16
+6413  0eac 2e1d          	jrsge	L1503
+6414                     ; 929 			ind_outB[2]&=(~(1<<(ind_check_cnt-8)));	
+6416  0eae c60004        	ld	a,_ind_check_cnt+1
+6417  0eb1 a008          	sub	a,#8
+6418  0eb3 5f            	clrw	x
+6419  0eb4 4d            	tnz	a
+6420  0eb5 2a01          	jrpl	L461
+6421  0eb7 53            	cplw	x
+6422  0eb8               L461:
+6423  0eb8 97            	ld	xl,a
+6424  0eb9 a601          	ld	a,#1
+6425  0ebb 5d            	tnzw	x
+6426  0ebc 2704          	jreq	L661
+6427  0ebe               L071:
+6428  0ebe 48            	sll	a
+6429  0ebf 5a            	decw	x
+6430  0ec0 26fc          	jrne	L071
+6431  0ec2               L661:
+6432  0ec2 43            	cpl	a
+6433  0ec3 b477          	and	a,_ind_outB+2
+6434  0ec5 b777          	ld	_ind_outB+2,a
+6436  0ec7 acf716f7      	jpf	L1162
+6437  0ecb               L1503:
+6438                     ; 931 		else if(ind_check_cnt<=23)
+6440  0ecb 9c            	rvf
+6441  0ecc ce0003        	ldw	x,_ind_check_cnt
+6442  0ecf a30018        	cpw	x,#24
+6443  0ed2 2e1d          	jrsge	L5503
+6444                     ; 933 			ind_outB[1]&=(~(1<<(ind_check_cnt-16)));	
+6446  0ed4 c60004        	ld	a,_ind_check_cnt+1
+6447  0ed7 a010          	sub	a,#16
+6448  0ed9 5f            	clrw	x
+6449  0eda 4d            	tnz	a
+6450  0edb 2a01          	jrpl	L271
+6451  0edd 53            	cplw	x
+6452  0ede               L271:
+6453  0ede 97            	ld	xl,a
+6454  0edf a601          	ld	a,#1
+6455  0ee1 5d            	tnzw	x
+6456  0ee2 2704          	jreq	L471
+6457  0ee4               L671:
+6458  0ee4 48            	sll	a
+6459  0ee5 5a            	decw	x
+6460  0ee6 26fc          	jrne	L671
+6461  0ee8               L471:
+6462  0ee8 43            	cpl	a
+6463  0ee9 b476          	and	a,_ind_outB+1
+6464  0eeb b776          	ld	_ind_outB+1,a
+6466  0eed acf716f7      	jpf	L1162
+6467  0ef1               L5503:
+6468                     ; 935 		else if(ind_check_cnt<=30)
+6470  0ef1 9c            	rvf
+6471  0ef2 ce0003        	ldw	x,_ind_check_cnt
+6472  0ef5 a3001f        	cpw	x,#31
+6473  0ef8 2e1d          	jrsge	L1603
+6474                     ; 937 			ind_outC[3]&=(~(1<<(ind_check_cnt-23)));	
+6476  0efa c60004        	ld	a,_ind_check_cnt+1
+6477  0efd a017          	sub	a,#23
+6478  0eff 5f            	clrw	x
+6479  0f00 4d            	tnz	a
+6480  0f01 2a01          	jrpl	L002
+6481  0f03 53            	cplw	x
+6482  0f04               L002:
+6483  0f04 97            	ld	xl,a
+6484  0f05 a601          	ld	a,#1
+6485  0f07 5d            	tnzw	x
+6486  0f08 2704          	jreq	L202
+6487  0f0a               L402:
+6488  0f0a 48            	sll	a
+6489  0f0b 5a            	decw	x
+6490  0f0c 26fc          	jrne	L402
+6491  0f0e               L202:
+6492  0f0e 43            	cpl	a
+6493  0f0f b40d          	and	a,_ind_outC+3
+6494  0f11 b70d          	ld	_ind_outC+3,a
+6496  0f13 acf716f7      	jpf	L1162
+6497  0f17               L1603:
+6498                     ; 939 		else if(ind_check_cnt==31)
+6500  0f17 ce0003        	ldw	x,_ind_check_cnt
+6501  0f1a a3001f        	cpw	x,#31
+6502  0f1d 2608          	jrne	L5603
+6503                     ; 941 			ind_outG[3]&=0xfe;	
+6505  0f1f 72110019      	bres	_ind_outG+3,#0
+6507  0f23 acf716f7      	jpf	L1162
+6508  0f27               L5603:
+6509                     ; 943 		else if(ind_check_cnt<=38)
+6511  0f27 9c            	rvf
+6512  0f28 ce0003        	ldw	x,_ind_check_cnt
+6513  0f2b a30027        	cpw	x,#39
+6514  0f2e 2e1d          	jrsge	L1703
+6515                     ; 945 			ind_outC[2]&=(~(1<<(ind_check_cnt-31)));	
+6517  0f30 c60004        	ld	a,_ind_check_cnt+1
+6518  0f33 a01f          	sub	a,#31
+6519  0f35 5f            	clrw	x
+6520  0f36 4d            	tnz	a
+6521  0f37 2a01          	jrpl	L602
+6522  0f39 53            	cplw	x
+6523  0f3a               L602:
+6524  0f3a 97            	ld	xl,a
+6525  0f3b a601          	ld	a,#1
+6526  0f3d 5d            	tnzw	x
+6527  0f3e 2704          	jreq	L012
+6528  0f40               L212:
+6529  0f40 48            	sll	a
+6530  0f41 5a            	decw	x
+6531  0f42 26fc          	jrne	L212
+6532  0f44               L012:
+6533  0f44 43            	cpl	a
+6534  0f45 b40c          	and	a,_ind_outC+2
+6535  0f47 b70c          	ld	_ind_outC+2,a
+6537  0f49 acf716f7      	jpf	L1162
+6538  0f4d               L1703:
+6539                     ; 947 		else if(ind_check_cnt==39)
+6541  0f4d ce0003        	ldw	x,_ind_check_cnt
+6542  0f50 a30027        	cpw	x,#39
+6543  0f53 2608          	jrne	L5703
+6544                     ; 949 			ind_outG[2]&=0xfe;	
+6546  0f55 72110018      	bres	_ind_outG+2,#0
+6548  0f59 acf716f7      	jpf	L1162
+6549  0f5d               L5703:
+6550                     ; 951 		else if(ind_check_cnt<=46)
+6552  0f5d 9c            	rvf
+6553  0f5e ce0003        	ldw	x,_ind_check_cnt
+6554  0f61 a3002f        	cpw	x,#47
+6555  0f64 2e1d          	jrsge	L1013
+6556                     ; 953 			ind_outC[1]&=(~(1<<(ind_check_cnt-39)));	
+6558  0f66 c60004        	ld	a,_ind_check_cnt+1
+6559  0f69 a027          	sub	a,#39
+6560  0f6b 5f            	clrw	x
+6561  0f6c 4d            	tnz	a
+6562  0f6d 2a01          	jrpl	L412
+6563  0f6f 53            	cplw	x
+6564  0f70               L412:
+6565  0f70 97            	ld	xl,a
+6566  0f71 a601          	ld	a,#1
+6567  0f73 5d            	tnzw	x
+6568  0f74 2704          	jreq	L612
+6569  0f76               L022:
+6570  0f76 48            	sll	a
+6571  0f77 5a            	decw	x
+6572  0f78 26fc          	jrne	L022
+6573  0f7a               L612:
+6574  0f7a 43            	cpl	a
+6575  0f7b b40b          	and	a,_ind_outC+1
+6576  0f7d b70b          	ld	_ind_outC+1,a
+6578  0f7f acf716f7      	jpf	L1162
+6579  0f83               L1013:
+6580                     ; 955 		else if(ind_check_cnt==47)
+6582  0f83 ce0003        	ldw	x,_ind_check_cnt
+6583  0f86 a3002f        	cpw	x,#47
+6584  0f89 2608          	jrne	L5013
+6585                     ; 957 			ind_outG[1]&=0xfe;	
+6587  0f8b 72110017      	bres	_ind_outG+1,#0
+6589  0f8f acf716f7      	jpf	L1162
+6590  0f93               L5013:
+6591                     ; 959 		else if(ind_check_cnt<=54)
+6593  0f93 9c            	rvf
+6594  0f94 ce0003        	ldw	x,_ind_check_cnt
+6595  0f97 a30037        	cpw	x,#55
+6596  0f9a 2e1d          	jrsge	L1113
+6597                     ; 961 			ind_outC[0]&=(~(1<<(ind_check_cnt-47)));	
+6599  0f9c c60004        	ld	a,_ind_check_cnt+1
+6600  0f9f a02f          	sub	a,#47
+6601  0fa1 5f            	clrw	x
+6602  0fa2 4d            	tnz	a
+6603  0fa3 2a01          	jrpl	L222
+6604  0fa5 53            	cplw	x
+6605  0fa6               L222:
+6606  0fa6 97            	ld	xl,a
+6607  0fa7 a601          	ld	a,#1
+6608  0fa9 5d            	tnzw	x
+6609  0faa 2704          	jreq	L422
+6610  0fac               L622:
+6611  0fac 48            	sll	a
+6612  0fad 5a            	decw	x
+6613  0fae 26fc          	jrne	L622
+6614  0fb0               L422:
+6615  0fb0 43            	cpl	a
+6616  0fb1 b40a          	and	a,_ind_outC
+6617  0fb3 b70a          	ld	_ind_outC,a
+6619  0fb5 acf716f7      	jpf	L1162
+6620  0fb9               L1113:
+6621                     ; 963 		else if(ind_check_cnt==55)
+6623  0fb9 ce0003        	ldw	x,_ind_check_cnt
+6624  0fbc a30037        	cpw	x,#55
+6625  0fbf 2608          	jrne	L5113
+6626                     ; 965 			ind_outG[0]&=0xfe;	
+6628  0fc1 72110016      	bres	_ind_outG,#0
+6630  0fc5 acf716f7      	jpf	L1162
+6631  0fc9               L5113:
+6632                     ; 967 		else if(ind_check_cnt<=64)
+6634  0fc9 9c            	rvf
+6635  0fca ce0003        	ldw	x,_ind_check_cnt
+6636  0fcd a30041        	cpw	x,#65
+6637  0fd0 2f03          	jrslt	L073
+6638  0fd2 cc16f7        	jp	L1162
+6639  0fd5               L073:
+6640                     ; 969 			led_mask_off(0x00);
+6642  0fd5 4f            	clr	a
+6643  0fd6 cd0000        	call	_led_mask_off
+6645                     ; 970 			led_on(ind_check_cnt-55);	
+6647  0fd9 c60004        	ld	a,_ind_check_cnt+1
+6648  0fdc a037          	sub	a,#55
+6649  0fde cd0000        	call	_led_on
+6651  0fe1 acf716f7      	jpf	L1162
+6652  0fe5               L7303:
+6653                     ; 973 	else if(sub_ind==9)
+6655  0fe5 b662          	ld	a,_a_ind+1
+6656  0fe7 a109          	cp	a,#9
+6657  0fe9 2642          	jrne	L5213
+6658                     ; 975 		int2indI_slkuf(waterTemperAlarmCnt,1, 3, 0, 0, 0);
+6660  0feb 4b00          	push	#0
+6661  0fed 4b00          	push	#0
+6662  0fef 4b00          	push	#0
+6663  0ff1 4b03          	push	#3
+6664  0ff3 4b01          	push	#1
+6665  0ff5 5f            	clrw	x
+6666  0ff6 c60031        	ld	a,_waterTemperAlarmCnt
+6667  0ff9 2a01          	jrpl	L032
+6668  0ffb 53            	cplw	x
+6669  0ffc               L032:
+6670  0ffc 97            	ld	xl,a
+6671  0ffd cd0000        	call	_int2indI_slkuf
+6673  1000 5b05          	addw	sp,#5
+6674                     ; 976 		int2indII_slkuf(mainCnt,0, 2, 0, 0, 0);
+6676  1002 4b00          	push	#0
+6677  1004 4b00          	push	#0
+6678  1006 4b00          	push	#0
+6679  1008 4b02          	push	#2
+6680  100a 4b00          	push	#0
+6681  100c be82          	ldw	x,_mainCnt
+6682  100e cd0000        	call	_int2indII_slkuf
+6684  1011 5b05          	addw	sp,#5
+6685                     ; 977 		int2indII_slkuf(temperOfWater,2, 2, 0, 0, 0);
+6687  1013 4b00          	push	#0
+6688  1015 4b00          	push	#0
+6689  1017 4b00          	push	#0
+6690  1019 4b02          	push	#2
+6691  101b 4b02          	push	#2
+6692  101d 5f            	clrw	x
+6693  101e b61f          	ld	a,_temperOfWater
+6694  1020 2a01          	jrpl	L232
+6695  1022 53            	cplw	x
+6696  1023               L232:
+6697  1023 97            	ld	xl,a
+6698  1024 cd0000        	call	_int2indII_slkuf
+6700  1027 5b05          	addw	sp,#5
+6702  1029 acf716f7      	jpf	L1162
+6703  102d               L5213:
+6704                     ; 979 	else if(sub_ind==10)
+6706  102d b662          	ld	a,_a_ind+1
+6707  102f a10a          	cp	a,#10
+6708  1031 2651          	jrne	L1313
+6709                     ; 981 		int2indI_slkuf(waterTemperAlarm,1, 1, 0, 0, 0);
+6711  1033 4b00          	push	#0
+6712  1035 4b00          	push	#0
+6713  1037 4b00          	push	#0
+6714  1039 4b01          	push	#1
+6715  103b 4b01          	push	#1
+6716  103d b627          	ld	a,_waterTemperAlarm
+6717  103f 5f            	clrw	x
+6718  1040 97            	ld	xl,a
+6719  1041 cd0000        	call	_int2indI_slkuf
+6721  1044 5b05          	addw	sp,#5
+6722                     ; 982 		int2indI_slkuf(waterTemperAlarmOld,3, 1, 0, 0, 0);
+6724  1046 4b00          	push	#0
+6725  1048 4b00          	push	#0
+6726  104a 4b00          	push	#0
+6727  104c 4b01          	push	#1
+6728  104e 4b03          	push	#3
+6729  1050 b628          	ld	a,_waterTemperAlarmOld
+6730  1052 5f            	clrw	x
+6731  1053 97            	ld	xl,a
+6732  1054 cd0000        	call	_int2indI_slkuf
+6734  1057 5b05          	addw	sp,#5
+6735                     ; 983 		int2indII_slkuf(mainCnt,0, 2, 0, 0, 0);
+6737  1059 4b00          	push	#0
+6738  105b 4b00          	push	#0
+6739  105d 4b00          	push	#0
+6740  105f 4b02          	push	#2
+6741  1061 4b00          	push	#0
+6742  1063 be82          	ldw	x,_mainCnt
+6743  1065 cd0000        	call	_int2indII_slkuf
+6745  1068 5b05          	addw	sp,#5
+6746                     ; 984 		int2indII_slkuf(temperOfWater,2, 2, 0, 0, 0);
+6748  106a 4b00          	push	#0
+6749  106c 4b00          	push	#0
+6750  106e 4b00          	push	#0
+6751  1070 4b02          	push	#2
+6752  1072 4b02          	push	#2
+6753  1074 5f            	clrw	x
+6754  1075 b61f          	ld	a,_temperOfWater
+6755  1077 2a01          	jrpl	L432
+6756  1079 53            	cplw	x
+6757  107a               L432:
+6758  107a 97            	ld	xl,a
+6759  107b cd0000        	call	_int2indII_slkuf
+6761  107e 5b05          	addw	sp,#5
+6763  1080 acf716f7      	jpf	L1162
+6764  1084               L1313:
+6765                     ; 986 	else if(sub_ind==11)
+6767  1084 b662          	ld	a,_a_ind+1
+6768  1086 a10b          	cp	a,#11
+6769  1088 262c          	jrne	L5313
+6770                     ; 988 		int2indI_slkuf(optr_stat,1, 3, 0, 0, 0);
+6772  108a 4b00          	push	#0
+6773  108c 4b00          	push	#0
+6774  108e 4b00          	push	#0
+6775  1090 4b03          	push	#3
+6776  1092 4b01          	push	#1
+6777  1094 c60033        	ld	a,_optr_stat
+6778  1097 5f            	clrw	x
+6779  1098 97            	ld	xl,a
+6780  1099 cd0000        	call	_int2indI_slkuf
+6782  109c 5b05          	addw	sp,#5
+6783                     ; 989 		int2indII_slkuf(optr_kontr_cnt,0, 3, 0, 0, 0);
+6785  109e 4b00          	push	#0
+6786  10a0 4b00          	push	#0
+6787  10a2 4b00          	push	#0
+6788  10a4 4b03          	push	#3
+6789  10a6 4b00          	push	#0
+6790  10a8 c60032        	ld	a,_optr_kontr_cnt
+6791  10ab 5f            	clrw	x
+6792  10ac 97            	ld	xl,a
+6793  10ad cd0000        	call	_int2indII_slkuf
+6795  10b0 5b05          	addw	sp,#5
+6797  10b2 acf716f7      	jpf	L1162
+6798  10b6               L5313:
+6799                     ; 991 	else if(sub_ind==12)
+6801  10b6 b662          	ld	a,_a_ind+1
+6802  10b8 a10c          	cp	a,#12
+6803  10ba 2703          	jreq	L273
+6804  10bc cc16f7        	jp	L1162
+6805  10bf               L273:
+6806                     ; 993 		int2indI_slkuf(cntAirSensorLineErrorLo,1, 1, 0, 0, 0);
+6808  10bf 4b00          	push	#0
+6809  10c1 4b00          	push	#0
+6810  10c3 4b00          	push	#0
+6811  10c5 4b01          	push	#1
+6812  10c7 4b01          	push	#1
+6813  10c9 b606          	ld	a,_cntAirSensorLineErrorLo
+6814  10cb 5f            	clrw	x
+6815  10cc 97            	ld	xl,a
+6816  10cd cd0000        	call	_int2indI_slkuf
+6818  10d0 5b05          	addw	sp,#5
+6819                     ; 994 		int2indI_slkuf(cntAirSensorLineErrorHi,3, 1, 0, 0, 0);
+6821  10d2 4b00          	push	#0
+6822  10d4 4b00          	push	#0
+6823  10d6 4b00          	push	#0
+6824  10d8 4b01          	push	#1
+6825  10da 4b03          	push	#3
+6826  10dc b605          	ld	a,_cntAirSensorLineErrorHi
+6827  10de 5f            	clrw	x
+6828  10df 97            	ld	xl,a
+6829  10e0 cd0000        	call	_int2indI_slkuf
+6831  10e3 5b05          	addw	sp,#5
+6832                     ; 995 		int2indII_slkuf(airSensorErrorStat,0, 2, 0, 0, 0);
+6834  10e5 4b00          	push	#0
+6835  10e7 4b00          	push	#0
+6836  10e9 4b00          	push	#0
+6837  10eb 4b02          	push	#2
+6838  10ed 4b00          	push	#0
+6839  10ef b623          	ld	a,_airSensorErrorStat
+6840  10f1 5f            	clrw	x
+6841  10f2 97            	ld	xl,a
+6842  10f3 cd0000        	call	_int2indII_slkuf
+6844  10f6 5b05          	addw	sp,#5
+6845                     ; 996 		int2indII_slkuf(airSensorErrorStatOld,2, 2, 0, 0, 0);
+6847  10f8 4b00          	push	#0
+6848  10fa 4b00          	push	#0
+6849  10fc 4b00          	push	#0
+6850  10fe 4b02          	push	#2
+6851  1100 4b02          	push	#2
+6852  1102 b624          	ld	a,_airSensorErrorStatOld
+6853  1104 5f            	clrw	x
+6854  1105 97            	ld	xl,a
+6855  1106 cd0000        	call	_int2indII_slkuf
+6857  1109 5b05          	addw	sp,#5
+6858  110b acf716f7      	jpf	L1162
+6859  110f               L5772:
+6860                     ; 1001 else if(ind==iModem_deb)
+6862  110f b661          	ld	a,_a_ind
+6863  1111 a10a          	cp	a,#10
+6864  1113 2703          	jreq	L473
+6865  1115 cc12d9        	jp	L5413
+6866  1118               L473:
+6867                     ; 1003 	led_mask_off(0x00);
+6869  1118 4f            	clr	a
+6870  1119 cd0000        	call	_led_mask_off
+6872                     ; 1004 	led_on(1);
+6874  111c a601          	ld	a,#1
+6875  111e cd0000        	call	_led_on
+6877                     ; 1005 	led_on(2);
+6879  1121 a602          	ld	a,#2
+6880  1123 cd0000        	call	_led_on
+6882                     ; 1007 	if(sub_ind==0)
+6884  1126 3d62          	tnz	_a_ind+1
+6885  1128 2703cc11c1    	jrne	L7413
+6886                     ; 1009 		int2indI_slkuf(modemState,3, 1, 0, 0, 0);
+6888  112d 4b00          	push	#0
+6889  112f 4b00          	push	#0
+6890  1131 4b00          	push	#0
+6891  1133 4b01          	push	#1
+6892  1135 4b03          	push	#3
+6893  1137 b600          	ld	a,_modemState
+6894  1139 5f            	clrw	x
+6895  113a 97            	ld	xl,a
+6896  113b cd0000        	call	_int2indI_slkuf
+6898  113e 5b05          	addw	sp,#5
+6899                     ; 1010 		int2indI_slkuf(modem_plazma,1, 1, 0, 0, 0);
+6901  1140 4b00          	push	#0
+6902  1142 4b00          	push	#0
+6903  1144 4b00          	push	#0
+6904  1146 4b01          	push	#1
+6905  1148 4b01          	push	#1
+6906  114a c60000        	ld	a,_modem_plazma
+6907  114d 5f            	clrw	x
+6908  114e 97            	ld	xl,a
+6909  114f cd0000        	call	_int2indI_slkuf
+6911  1152 5b05          	addw	sp,#5
+6912                     ; 1011 		int2indI_slkuf(modem_plazma1,2, 1, 0, 0, 0);
+6914  1154 4b00          	push	#0
+6915  1156 4b00          	push	#0
+6916  1158 4b00          	push	#0
+6917  115a 4b01          	push	#1
+6918  115c 4b02          	push	#2
+6919  115e c60000        	ld	a,_modem_plazma1
+6920  1161 5f            	clrw	x
+6921  1162 97            	ld	xl,a
+6922  1163 cd0000        	call	_int2indI_slkuf
+6924  1166 5b05          	addw	sp,#5
+6925                     ; 1013 		int2indII_slkuf(modemDrvPDUSMSSendStepCnt,2, 2, 0, 0, 0);
+6927  1168 4b00          	push	#0
+6928  116a 4b00          	push	#0
+6929  116c 4b00          	push	#0
+6930  116e 4b02          	push	#2
+6931  1170 4b02          	push	#2
+6932  1172 be00          	ldw	x,_modemDrvPDUSMSSendStepCnt
+6933  1174 cd0000        	call	_int2indII_slkuf
+6935  1177 5b05          	addw	sp,#5
+6936                     ; 1014 		int2indII_slkuf(modemDrvInitStepCnt,0, 2, 0, 0, 0);
+6938  1179 4b00          	push	#0
+6939  117b 4b00          	push	#0
+6940  117d 4b00          	push	#0
+6941  117f 4b02          	push	#2
+6942  1181 4b00          	push	#0
+6943  1183 be00          	ldw	x,_modemDrvInitStepCnt
+6944  1185 cd0000        	call	_int2indII_slkuf
+6946  1188 5b05          	addw	sp,#5
+6947                     ; 1015 		if(AUTH_NUMBER_FLAGS&0x01)led_on(8);
+6949  118a c6407f        	ld	a,_AUTH_NUMBER_FLAGS
+6950  118d a501          	bcp	a,#1
+6951  118f 2705          	jreq	L1513
+6954  1191 a608          	ld	a,#8
+6955  1193 cd0000        	call	_led_on
+6957  1196               L1513:
+6958                     ; 1016 		if(AUTH_NUMBER_FLAGS&0x02)led_on(7);
+6960  1196 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
+6961  1199 a502          	bcp	a,#2
+6962  119b 2705          	jreq	L3513
+6965  119d a607          	ld	a,#7
+6966  119f cd0000        	call	_led_on
+6968  11a2               L3513:
+6969                     ; 1017 		if(AUTH_NUMBER_FLAGS&0x04)led_on(6);
+6971  11a2 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
+6972  11a5 a504          	bcp	a,#4
+6973  11a7 2705          	jreq	L5513
+6976  11a9 a606          	ld	a,#6
+6977  11ab cd0000        	call	_led_on
+6979  11ae               L5513:
+6980                     ; 1018 		if(AUTH_NUMBER_FLAGS&0x08)led_on(5);
+6982  11ae c6407f        	ld	a,_AUTH_NUMBER_FLAGS
+6983  11b1 a508          	bcp	a,#8
+6984  11b3 2603          	jrne	L673
+6985  11b5 cc16f7        	jp	L1162
+6986  11b8               L673:
+6989  11b8 a605          	ld	a,#5
+6990  11ba cd0000        	call	_led_on
+6992  11bd acf716f7      	jpf	L1162
+6993  11c1               L7413:
+6994                     ; 1021 	else if(sub_ind==1)
+6996  11c1 b662          	ld	a,_a_ind+1
+6997  11c3 a101          	cp	a,#1
+6998  11c5 2647          	jrne	L3613
+6999                     ; 1023 		int2indI_slkuf(MAX_POWER_EE,1, 2, 0, 0, 0);
+7001  11c7 4b00          	push	#0
+7002  11c9 4b00          	push	#0
+7003  11cb 4b00          	push	#0
+7004  11cd 4b02          	push	#2
+7005  11cf 4b01          	push	#1
+7006  11d1 5f            	clrw	x
+7007  11d2 c64047        	ld	a,_MAX_POWER_EE
+7008  11d5 2a01          	jrpl	L632
+7009  11d7 53            	cplw	x
+7010  11d8               L632:
+7011  11d8 97            	ld	xl,a
+7012  11d9 cd0000        	call	_int2indI_slkuf
+7014  11dc 5b05          	addw	sp,#5
+7015                     ; 1024 		int2indII_slkuf(powerNeccDelta,2, 2, 0, 0, 0);
+7017  11de 4b00          	push	#0
+7018  11e0 4b00          	push	#0
+7019  11e2 4b00          	push	#0
+7020  11e4 4b02          	push	#2
+7021  11e6 4b02          	push	#2
+7022  11e8 5f            	clrw	x
+7023  11e9 b60b          	ld	a,_powerNeccDelta
+7024  11eb 2a01          	jrpl	L042
+7025  11ed 53            	cplw	x
+7026  11ee               L042:
+7027  11ee 97            	ld	xl,a
+7028  11ef cd0000        	call	_int2indII_slkuf
+7030  11f2 5b05          	addw	sp,#5
+7031                     ; 1025 		int2indII_slkuf(powerNecc,0, 2, 0, 0, 0);
+7033  11f4 4b00          	push	#0
+7034  11f6 4b00          	push	#0
+7035  11f8 4b00          	push	#0
+7036  11fa 4b02          	push	#2
+7037  11fc 4b00          	push	#0
+7038  11fe 5f            	clrw	x
+7039  11ff b625          	ld	a,_powerNecc
+7040  1201 2a01          	jrpl	L242
+7041  1203 53            	cplw	x
+7042  1204               L242:
+7043  1204 97            	ld	xl,a
+7044  1205 cd0000        	call	_int2indII_slkuf
+7046  1208 5b05          	addw	sp,#5
+7048  120a acf716f7      	jpf	L1162
+7049  120e               L3613:
+7050                     ; 1027 	else if(sub_ind==2)
+7052  120e b662          	ld	a,_a_ind+1
+7053  1210 a102          	cp	a,#2
+7054  1212 267c          	jrne	L7613
+7055                     ; 1029 		int2indI_slkuf(aktualTemper,2, 2, 0, 0, 0);	
+7057  1214 4b00          	push	#0
+7058  1216 4b00          	push	#0
+7059  1218 4b00          	push	#0
+7060  121a 4b02          	push	#2
+7061  121c 4b02          	push	#2
+7062  121e 5f            	clrw	x
+7063  121f b61d          	ld	a,_aktualTemper
+7064  1221 2a01          	jrpl	L442
+7065  1223 53            	cplw	x
+7066  1224               L442:
+7067  1224 97            	ld	xl,a
+7068  1225 cd0000        	call	_int2indI_slkuf
+7070  1228 5b05          	addw	sp,#5
+7071                     ; 1030 		int2indI_slkuf(powerNecc,1, 1, 0, 0, 0);
+7073  122a 4b00          	push	#0
+7074  122c 4b00          	push	#0
+7075  122e 4b00          	push	#0
+7076  1230 4b01          	push	#1
+7077  1232 4b01          	push	#1
+7078  1234 5f            	clrw	x
+7079  1235 b625          	ld	a,_powerNecc
+7080  1237 2a01          	jrpl	L642
+7081  1239 53            	cplw	x
+7082  123a               L642:
+7083  123a 97            	ld	xl,a
+7084  123b cd0000        	call	_int2indI_slkuf
+7086  123e 5b05          	addw	sp,#5
+7087                     ; 1031 		int2indII_slkuf(out_stat[0],3, 1, 0, 0, 0);
+7089  1240 4b00          	push	#0
+7090  1242 4b00          	push	#0
+7091  1244 4b00          	push	#0
+7092  1246 4b01          	push	#1
+7093  1248 4b03          	push	#3
+7094  124a b620          	ld	a,_out_stat
+7095  124c 5f            	clrw	x
+7096  124d 97            	ld	xl,a
+7097  124e cd0000        	call	_int2indII_slkuf
+7099  1251 5b05          	addw	sp,#5
+7100                     ; 1032 		int2indII_slkuf(out_stat[1],2, 1, 0, 0, 0);
+7102  1253 4b00          	push	#0
+7103  1255 4b00          	push	#0
+7104  1257 4b00          	push	#0
+7105  1259 4b01          	push	#1
+7106  125b 4b02          	push	#2
+7107  125d b621          	ld	a,_out_stat+1
+7108  125f 5f            	clrw	x
+7109  1260 97            	ld	xl,a
+7110  1261 cd0000        	call	_int2indII_slkuf
+7112  1264 5b05          	addw	sp,#5
+7113                     ; 1033 		int2indII_slkuf(out_stat[2],1, 1, 0, 0, 0);
+7115  1266 4b00          	push	#0
+7116  1268 4b00          	push	#0
+7117  126a 4b00          	push	#0
+7118  126c 4b01          	push	#1
+7119  126e 4b01          	push	#1
+7120  1270 b622          	ld	a,_out_stat+2
+7121  1272 5f            	clrw	x
+7122  1273 97            	ld	xl,a
+7123  1274 cd0000        	call	_int2indII_slkuf
+7125  1277 5b05          	addw	sp,#5
+7126                     ; 1034 		int2indII_slkuf(fiksRandom,0, 1, 0, 0, 0);
+7128  1279 4b00          	push	#0
+7129  127b 4b00          	push	#0
+7130  127d 4b00          	push	#0
+7131  127f 4b01          	push	#1
+7132  1281 4b00          	push	#0
+7133  1283 b684          	ld	a,_fiksRandom
+7134  1285 5f            	clrw	x
+7135  1286 97            	ld	xl,a
+7136  1287 cd0000        	call	_int2indII_slkuf
+7138  128a 5b05          	addw	sp,#5
+7140  128c acf716f7      	jpf	L1162
+7141  1290               L7613:
+7142                     ; 1036 	else if(sub_ind==3)
+7144  1290 b662          	ld	a,_a_ind+1
+7145  1292 a103          	cp	a,#3
+7146  1294 2703          	jreq	L004
+7147  1296 cc16f7        	jp	L1162
+7148  1299               L004:
+7149                     ; 1038 		int2indI_slkuf(temperRegToSheduler,1, 2, 0, 0, 0);	
+7151  1299 4b00          	push	#0
+7152  129b 4b00          	push	#0
+7153  129d 4b00          	push	#0
+7154  129f 4b02          	push	#2
+7155  12a1 4b01          	push	#1
+7156  12a3 5f            	clrw	x
+7157  12a4 b604          	ld	a,_temperRegToSheduler
+7158  12a6 2a01          	jrpl	L052
+7159  12a8 53            	cplw	x
+7160  12a9               L052:
+7161  12a9 97            	ld	xl,a
+7162  12aa cd0000        	call	_int2indI_slkuf
+7164  12ad 5b05          	addw	sp,#5
+7165                     ; 1040 		int2indII_slkuf(time_day_of_week,3, 1, 0, 0, 0);
+7167  12af 4b00          	push	#0
+7168  12b1 4b00          	push	#0
+7169  12b3 4b00          	push	#0
+7170  12b5 4b01          	push	#1
+7171  12b7 4b03          	push	#3
+7172  12b9 b60e          	ld	a,_time_day_of_week
+7173  12bb 5f            	clrw	x
+7174  12bc 97            	ld	xl,a
+7175  12bd cd0000        	call	_int2indII_slkuf
+7177  12c0 5b05          	addw	sp,#5
+7178                     ; 1043 		int2indII_slkuf(day_sheduler_time,0, 3, 0, 0, 0);
+7180  12c2 4b00          	push	#0
+7181  12c4 4b00          	push	#0
+7182  12c6 4b00          	push	#0
+7183  12c8 4b03          	push	#3
+7184  12ca 4b00          	push	#0
+7185  12cc b602          	ld	a,_day_sheduler_time
+7186  12ce 5f            	clrw	x
+7187  12cf 97            	ld	xl,a
+7188  12d0 cd0000        	call	_int2indII_slkuf
+7190  12d3 5b05          	addw	sp,#5
+7191  12d5 acf716f7      	jpf	L1162
+7192  12d9               L5413:
+7193                     ; 1047 else if(ind==iTemperSet)
+7195  12d9 b661          	ld	a,_a_ind
+7196  12db a108          	cp	a,#8
+7197  12dd 2703          	jreq	L204
+7198  12df cc140d        	jp	L7713
+7199  12e2               L204:
+7200                     ; 1056 	led_mask_off(0x00);
+7202  12e2 4f            	clr	a
+7203  12e3 cd0000        	call	_led_mask_off
+7205                     ; 1057 	if(outMode==omON)
+7207  12e6 c6401d        	ld	a,_outMode
+7208  12e9 a101          	cp	a,#1
+7209  12eb 262d          	jrne	L1023
+7210                     ; 1059 		if(MODE_EE==1)led_on(1);
+7212  12ed c64046        	ld	a,_MODE_EE
+7213  12f0 a101          	cp	a,#1
+7214  12f2 2607          	jrne	L3023
+7217  12f4 a601          	ld	a,#1
+7218  12f6 cd0000        	call	_led_on
+7221  12f9 201f          	jra	L1023
+7222  12fb               L3023:
+7223                     ; 1060 		else if(MODE_EE==2) led_on(2);
+7225  12fb c64046        	ld	a,_MODE_EE
+7226  12fe a102          	cp	a,#2
+7227  1300 2607          	jrne	L7023
+7230  1302 a602          	ld	a,#2
+7231  1304 cd0000        	call	_led_on
+7234  1307 2011          	jra	L1023
+7235  1309               L7023:
+7236                     ; 1061 		else if(MODE_EE==3)
+7238  1309 c64046        	ld	a,_MODE_EE
+7239  130c a103          	cp	a,#3
+7240  130e 260a          	jrne	L1023
+7241                     ; 1063 			led_on(2);
+7243  1310 a602          	ld	a,#2
+7244  1312 cd0000        	call	_led_on
+7246                     ; 1064 			led_on(3);
+7248  1315 a603          	ld	a,#3
+7249  1317 cd0000        	call	_led_on
+7251  131a               L1023:
+7252                     ; 1067 	if((outMode==omON)&&(out_stat[0]==osON))led_on(4);
+7254  131a c6401d        	ld	a,_outMode
+7255  131d a101          	cp	a,#1
+7256  131f 260b          	jrne	L5123
+7258  1321 b620          	ld	a,_out_stat
+7259  1323 a101          	cp	a,#1
+7260  1325 2605          	jrne	L5123
+7263  1327 a604          	ld	a,#4
+7264  1329 cd0000        	call	_led_on
+7266  132c               L5123:
+7267                     ; 1068 	if((outMode==omON)&&(out_stat[1]==osON))led_on(5);
+7269  132c c6401d        	ld	a,_outMode
+7270  132f a101          	cp	a,#1
+7271  1331 260b          	jrne	L7123
+7273  1333 b621          	ld	a,_out_stat+1
+7274  1335 a101          	cp	a,#1
+7275  1337 2605          	jrne	L7123
+7278  1339 a605          	ld	a,#5
+7279  133b cd0000        	call	_led_on
+7281  133e               L7123:
+7282                     ; 1069 	if((outMode==omON)&&(out_stat[2]==osON))led_on(6);
+7284  133e c6401d        	ld	a,_outMode
+7285  1341 a101          	cp	a,#1
+7286  1343 260b          	jrne	L1223
+7288  1345 b622          	ld	a,_out_stat+2
+7289  1347 a101          	cp	a,#1
+7290  1349 2605          	jrne	L1223
+7293  134b a606          	ld	a,#6
+7294  134d cd0000        	call	_led_on
+7296  1350               L1223:
+7297                     ; 1071 	if(bERR)led_on(7);
+7299  1350 3d08          	tnz	_bERR
+7300  1352 2707          	jreq	L3223
+7303  1354 a607          	ld	a,#7
+7304  1356 cd0000        	call	_led_on
+7307  1359 2009          	jra	L5223
+7308  135b               L3223:
+7309                     ; 1072 	else if(bWARN)led_flash(7);
+7311  135b 3d07          	tnz	_bWARN
+7312  135d 2705          	jreq	L5223
+7315  135f a607          	ld	a,#7
+7316  1361 cd0000        	call	_led_flash
+7318  1364               L5223:
+7319                     ; 1074 	if(aktualTemper>=0)
+7321  1364 9c            	rvf
+7322  1365 b61d          	ld	a,_aktualTemper
+7323  1367 a100          	cp	a,#0
+7324  1369 2f1c          	jrslt	L1323
+7325                     ; 1076 		int2indI_slkuf(aktualTemper,2, 2, 0, 1, 0);
+7327  136b 4b00          	push	#0
+7328  136d 4b01          	push	#1
+7329  136f 4b00          	push	#0
+7330  1371 4b02          	push	#2
+7331  1373 4b02          	push	#2
+7332  1375 5f            	clrw	x
+7333  1376 b61d          	ld	a,_aktualTemper
+7334  1378 2a01          	jrpl	L252
+7335  137a 53            	cplw	x
+7336  137b               L252:
+7337  137b 97            	ld	xl,a
+7338  137c cd0000        	call	_int2indI_slkuf
+7340  137f 5b05          	addw	sp,#5
+7341                     ; 1077 		ind_outB[1]=0b10011100;
+7343  1381 359c0076      	mov	_ind_outB+1,#156
+7345  1385 204a          	jra	L3323
+7346  1387               L1323:
+7347                     ; 1081 		if(-aktualTemper<10)
+7349  1387 9c            	rvf
+7350  1388 5f            	clrw	x
+7351  1389 b61d          	ld	a,_aktualTemper
+7352  138b 2a01          	jrpl	L452
+7353  138d 53            	cplw	x
+7354  138e               L452:
+7355  138e 97            	ld	xl,a
+7356  138f 50            	negw	x
+7357  1390 a3000a        	cpw	x,#10
+7358  1393 2e21          	jrsge	L5323
+7359                     ; 1083 			ind_outB[3]=0b10111111;
+7361  1395 35bf0078      	mov	_ind_outB+3,#191
+7362                     ; 1084 			int2indI_slkuf(-aktualTemper,2, 1, 0, 1, 0);
+7364  1399 4b00          	push	#0
+7365  139b 4b01          	push	#1
+7366  139d 4b00          	push	#0
+7367  139f 4b01          	push	#1
+7368  13a1 4b02          	push	#2
+7369  13a3 5f            	clrw	x
+7370  13a4 b61d          	ld	a,_aktualTemper
+7371  13a6 2a01          	jrpl	L652
+7372  13a8 53            	cplw	x
+7373  13a9               L652:
+7374  13a9 97            	ld	xl,a
+7375  13aa 50            	negw	x
+7376  13ab cd0000        	call	_int2indI_slkuf
+7378  13ae 5b05          	addw	sp,#5
+7379                     ; 1085 			ind_outB[1]=0b10011100;
+7381  13b0 359c0076      	mov	_ind_outB+1,#156
+7383  13b4 201b          	jra	L3323
+7384  13b6               L5323:
+7385                     ; 1089 			ind_outB[3]=0b10111111;
+7387  13b6 35bf0078      	mov	_ind_outB+3,#191
+7388                     ; 1090 			int2indI_slkuf(-aktualTemper,1, 2, 0, 1, 0);
+7390  13ba 4b00          	push	#0
+7391  13bc 4b01          	push	#1
+7392  13be 4b00          	push	#0
+7393  13c0 4b02          	push	#2
+7394  13c2 4b01          	push	#1
+7395  13c4 5f            	clrw	x
+7396  13c5 b61d          	ld	a,_aktualTemper
+7397  13c7 2a01          	jrpl	L062
+7398  13c9 53            	cplw	x
+7399  13ca               L062:
+7400  13ca 97            	ld	xl,a
+7401  13cb 50            	negw	x
+7402  13cc cd0000        	call	_int2indI_slkuf
+7404  13cf 5b05          	addw	sp,#5
+7405  13d1               L3323:
+7406                     ; 1094 	int2indII_slkuf(targetTemper,1, 2, 0, 1, MODE_EE==3?0:1);
+7408  13d1 c64046        	ld	a,_MODE_EE
+7409  13d4 a103          	cp	a,#3
+7410  13d6 2603          	jrne	L262
+7411  13d8 4f            	clr	a
+7412  13d9 2002          	jra	L462
+7413  13db               L262:
+7414  13db a601          	ld	a,#1
+7415  13dd               L462:
+7416  13dd 88            	push	a
+7417  13de 4b01          	push	#1
+7418  13e0 4b00          	push	#0
+7419  13e2 4b02          	push	#2
+7420  13e4 4b01          	push	#1
+7421  13e6 5f            	clrw	x
+7422  13e7 b61c          	ld	a,_targetTemper
+7423  13e9 2a01          	jrpl	L662
+7424  13eb 53            	cplw	x
+7425  13ec               L662:
+7426  13ec 97            	ld	xl,a
+7427  13ed cd0000        	call	_int2indII_slkuf
+7429  13f0 5b05          	addw	sp,#5
+7430                     ; 1095 	if((bFL2)&&(MODE_EE!=3))	ind_outC[0]=0b11111111;
+7432  13f2 3d27          	tnz	_bFL2
+7433  13f4 270f          	jreq	L1423
+7435  13f6 c64046        	ld	a,_MODE_EE
+7436  13f9 a103          	cp	a,#3
+7437  13fb 2708          	jreq	L1423
+7440  13fd 35ff000a      	mov	_ind_outC,#255
+7442  1401 acf716f7      	jpf	L1162
+7443  1405               L1423:
+7444                     ; 1096 	else 						ind_outC[0]=0b00111000;
+7446  1405 3538000a      	mov	_ind_outC,#56
+7447  1409 acf716f7      	jpf	L1162
+7448  140d               L7713:
+7449                     ; 1100 else if(ind==iDefSet)
+7451  140d b661          	ld	a,_a_ind
+7452  140f a109          	cp	a,#9
+7453  1411 262c          	jrne	L7423
+7454                     ; 1102 	led_mask_off(0x00);
+7456  1413 4f            	clr	a
+7457  1414 cd0000        	call	_led_mask_off
+7459                     ; 1104 	int2indI_slkuf(123,1, 3, 0, 0, 0);
+7461  1417 4b00          	push	#0
+7462  1419 4b00          	push	#0
+7463  141b 4b00          	push	#0
+7464  141d 4b03          	push	#3
+7465  141f 4b01          	push	#1
+7466  1421 ae007b        	ldw	x,#123
+7467  1424 cd0000        	call	_int2indI_slkuf
+7469  1427 5b05          	addw	sp,#5
+7470                     ; 1105 	int2indII_slkuf(4567,0, 4, 0, 0, 0);
+7472  1429 4b00          	push	#0
+7473  142b 4b00          	push	#0
+7474  142d 4b00          	push	#0
+7475  142f 4b04          	push	#4
+7476  1431 4b00          	push	#0
+7477  1433 ae11d7        	ldw	x,#4567
+7478  1436 cd0000        	call	_int2indII_slkuf
+7480  1439 5b05          	addw	sp,#5
+7482  143b acf716f7      	jpf	L1162
+7483  143f               L7423:
+7484                     ; 1107 else if(ind==iMn_number)
+7486  143f b661          	ld	a,_a_ind
+7487  1441 a10b          	cp	a,#11
+7488  1443 2703cc14dc    	jrne	L3523
+7489                     ; 1109 	led_mask_off(0x00);
+7491  1448 4f            	clr	a
+7492  1449 cd0000        	call	_led_mask_off
+7494                     ; 1111 	int2indI_slkuf(rand_dig[0], 3, 1, 0, 0, 0);
+7496  144c 4b00          	push	#0
+7497  144e 4b00          	push	#0
+7498  1450 4b00          	push	#0
+7499  1452 4b01          	push	#1
+7500  1454 4b03          	push	#3
+7501  1456 c6002a        	ld	a,_rand_dig
+7502  1459 5f            	clrw	x
+7503  145a 97            	ld	xl,a
+7504  145b cd0000        	call	_int2indI_slkuf
+7506  145e 5b05          	addw	sp,#5
+7507                     ; 1112 	int2indI_slkuf(rand_dig[1], 2, 1, 0, 0, 0);
+7509  1460 4b00          	push	#0
+7510  1462 4b00          	push	#0
+7511  1464 4b00          	push	#0
+7512  1466 4b01          	push	#1
+7513  1468 4b02          	push	#2
+7514  146a c6002b        	ld	a,_rand_dig+1
+7515  146d 5f            	clrw	x
+7516  146e 97            	ld	xl,a
+7517  146f cd0000        	call	_int2indI_slkuf
+7519  1472 5b05          	addw	sp,#5
+7520                     ; 1113 	int2indI_slkuf(rand_dig[2], 1, 1, 0, 0, 0);
+7522  1474 4b00          	push	#0
+7523  1476 4b00          	push	#0
+7524  1478 4b00          	push	#0
+7525  147a 4b01          	push	#1
+7526  147c 4b01          	push	#1
+7527  147e c6002c        	ld	a,_rand_dig+2
+7528  1481 5f            	clrw	x
+7529  1482 97            	ld	xl,a
+7530  1483 cd0000        	call	_int2indI_slkuf
+7532  1486 5b05          	addw	sp,#5
+7533                     ; 1114 	int2indII_slkuf(rand_dig[3], 3, 1, 0, 0, 0);
+7535  1488 4b00          	push	#0
+7536  148a 4b00          	push	#0
+7537  148c 4b00          	push	#0
+7538  148e 4b01          	push	#1
+7539  1490 4b03          	push	#3
+7540  1492 c6002d        	ld	a,_rand_dig+3
+7541  1495 5f            	clrw	x
+7542  1496 97            	ld	xl,a
+7543  1497 cd0000        	call	_int2indII_slkuf
+7545  149a 5b05          	addw	sp,#5
+7546                     ; 1115 	int2indII_slkuf(rand_dig[4], 2, 1, 0, 0, 0);
+7548  149c 4b00          	push	#0
+7549  149e 4b00          	push	#0
+7550  14a0 4b00          	push	#0
+7551  14a2 4b01          	push	#1
+7552  14a4 4b02          	push	#2
+7553  14a6 c6002e        	ld	a,_rand_dig+4
+7554  14a9 5f            	clrw	x
+7555  14aa 97            	ld	xl,a
+7556  14ab cd0000        	call	_int2indII_slkuf
+7558  14ae 5b05          	addw	sp,#5
+7559                     ; 1116 	int2indII_slkuf(rand_dig[5], 1, 1, 0, 0, 0);
+7561  14b0 4b00          	push	#0
+7562  14b2 4b00          	push	#0
+7563  14b4 4b00          	push	#0
+7564  14b6 4b01          	push	#1
+7565  14b8 4b01          	push	#1
+7566  14ba c6002f        	ld	a,_rand_dig+5
+7567  14bd 5f            	clrw	x
+7568  14be 97            	ld	xl,a
+7569  14bf cd0000        	call	_int2indII_slkuf
+7571  14c2 5b05          	addw	sp,#5
+7572                     ; 1117 	int2indII_slkuf(rand_dig[6], 0, 1, 0, 0, 0);
+7574  14c4 4b00          	push	#0
+7575  14c6 4b00          	push	#0
+7576  14c8 4b00          	push	#0
+7577  14ca 4b01          	push	#1
+7578  14cc 4b00          	push	#0
+7579  14ce c60030        	ld	a,_rand_dig+6
+7580  14d1 5f            	clrw	x
+7581  14d2 97            	ld	xl,a
+7582  14d3 cd0000        	call	_int2indII_slkuf
+7584  14d6 5b05          	addw	sp,#5
+7586  14d8 acf716f7      	jpf	L1162
+7587  14dc               L3523:
+7588                     ; 1120 else if(ind==iAfterReset)
+7590  14dc b661          	ld	a,_a_ind
+7591  14de a10c          	cp	a,#12
+7592  14e0 2619          	jrne	L7523
+7593                     ; 1122 	led_mask_off(0x00);
+7595  14e2 4f            	clr	a
+7596  14e3 cd0000        	call	_led_mask_off
+7598                     ; 1124 	int2indI_slkuf(mainCnt, 1, 3, 0, 0, 0);
+7600  14e6 4b00          	push	#0
+7601  14e8 4b00          	push	#0
+7602  14ea 4b00          	push	#0
+7603  14ec 4b03          	push	#3
+7604  14ee 4b01          	push	#1
+7605  14f0 be82          	ldw	x,_mainCnt
+7606  14f2 cd0000        	call	_int2indI_slkuf
+7608  14f5 5b05          	addw	sp,#5
+7610  14f7 acf716f7      	jpf	L1162
+7611  14fb               L7523:
+7612                     ; 1127 else if(ind==iWater)
+7614  14fb b661          	ld	a,_a_ind
+7615  14fd a10d          	cp	a,#13
+7616  14ff 261e          	jrne	L3623
+7617                     ; 1129 	led_mask_off(0x00);
+7619  1501 4f            	clr	a
+7620  1502 cd0000        	call	_led_mask_off
+7622                     ; 1131 	int2indI_slkuf(temperOfWater,1, 3, 0, 0, 0);
+7624  1505 4b00          	push	#0
+7625  1507 4b00          	push	#0
+7626  1509 4b00          	push	#0
+7627  150b 4b03          	push	#3
+7628  150d 4b01          	push	#1
+7629  150f 5f            	clrw	x
+7630  1510 b61f          	ld	a,_temperOfWater
+7631  1512 2a01          	jrpl	L072
+7632  1514 53            	cplw	x
+7633  1515               L072:
+7634  1515 97            	ld	xl,a
+7635  1516 cd0000        	call	_int2indI_slkuf
+7637  1519 5b05          	addw	sp,#5
+7639  151b acf716f7      	jpf	L1162
+7640  151f               L3623:
+7641                     ; 1135 else if(ind==iAir)
+7643  151f b661          	ld	a,_a_ind
+7644  1521 a10e          	cp	a,#14
+7645  1523 261e          	jrne	L7623
+7646                     ; 1137 	led_mask_off(0x00);
+7648  1525 4f            	clr	a
+7649  1526 cd0000        	call	_led_mask_off
+7651                     ; 1139 	int2indI_slkuf(temperOfAir,1, 3, 0, 0, 0);
+7653  1529 4b00          	push	#0
+7654  152b 4b00          	push	#0
+7655  152d 4b00          	push	#0
+7656  152f 4b03          	push	#3
+7657  1531 4b01          	push	#1
+7658  1533 5f            	clrw	x
+7659  1534 b61e          	ld	a,_temperOfAir
+7660  1536 2a01          	jrpl	L272
+7661  1538 53            	cplw	x
+7662  1539               L272:
+7663  1539 97            	ld	xl,a
+7664  153a cd0000        	call	_int2indI_slkuf
+7666  153d 5b05          	addw	sp,#5
+7668  153f acf716f7      	jpf	L1162
+7669  1543               L7623:
+7670                     ; 1143 else if(ind==iInterf)
+7672  1543 b661          	ld	a,_a_ind
+7673  1545 a10f          	cp	a,#15
+7674  1547 2703          	jreq	L404
+7675  1549 cc16f7        	jp	L1162
+7676  154c               L404:
+7677                     ; 1149 	if(++ind_check_cnt1>=5)
+7679  154c 9c            	rvf
+7680  154d ce0001        	ldw	x,_ind_check_cnt1
+7681  1550 1c0001        	addw	x,#1
+7682  1553 cf0001        	ldw	_ind_check_cnt1,x
+7683  1556 a30005        	cpw	x,#5
+7684  1559 2f17          	jrslt	L5723
+7685                     ; 1151 		ind_check_cnt1=0;
+7687  155b 5f            	clrw	x
+7688  155c cf0001        	ldw	_ind_check_cnt1,x
+7689                     ; 1152 		if(++ind_check_cnt>=64)ind_check_cnt=0;
+7691  155f 9c            	rvf
+7692  1560 ce0003        	ldw	x,_ind_check_cnt
+7693  1563 1c0001        	addw	x,#1
+7694  1566 cf0003        	ldw	_ind_check_cnt,x
+7695  1569 a30040        	cpw	x,#64
+7696  156c 2f04          	jrslt	L5723
+7699  156e 5f            	clrw	x
+7700  156f cf0003        	ldw	_ind_check_cnt,x
+7701  1572               L5723:
+7702                     ; 1154 	ind_outB[0]=0xff;
+7704  1572 35ff0075      	mov	_ind_outB,#255
+7705                     ; 1155 	ind_outB[1]=0xff;
+7707  1576 35ff0076      	mov	_ind_outB+1,#255
+7708                     ; 1156 	ind_outB[2]=0xff;
+7710  157a 35ff0077      	mov	_ind_outB+2,#255
+7711                     ; 1157 	ind_outB[3]=0xff;
+7713  157e 35ff0078      	mov	_ind_outB+3,#255
+7714                     ; 1158 	ind_outC[0]=0xff;
+7716  1582 35ff000a      	mov	_ind_outC,#255
+7717                     ; 1159 	ind_outC[1]=0xff;
+7719  1586 35ff000b      	mov	_ind_outC+1,#255
+7720                     ; 1160 	ind_outC[2]=0xff;
+7722  158a 35ff000c      	mov	_ind_outC+2,#255
+7723                     ; 1161 	ind_outC[3]=0xff;
+7725  158e 35ff000d      	mov	_ind_outC+3,#255
+7726                     ; 1162 	ind_outG[0]=0xff;
+7728  1592 35ff0016      	mov	_ind_outG,#255
+7729                     ; 1163 	ind_outG[1]=0xff;
+7731  1596 35ff0017      	mov	_ind_outG+1,#255
+7732                     ; 1164 	ind_outG[2]=0xff;
+7734  159a 35ff0018      	mov	_ind_outG+2,#255
+7735                     ; 1165 	ind_outG[3]=0xff;
+7737  159e 35ff0019      	mov	_ind_outG+3,#255
+7738                     ; 1166 	led_mask_off(0x00);
+7740  15a2 4f            	clr	a
+7741  15a3 cd0000        	call	_led_mask_off
+7743                     ; 1168 	if(ind_check_cnt<=7)
+7745  15a6 9c            	rvf
+7746  15a7 ce0003        	ldw	x,_ind_check_cnt
+7747  15aa a30008        	cpw	x,#8
+7748  15ad 2e1a          	jrsge	L1033
+7749                     ; 1170 		ind_outB[3]&=(~(1<<ind_check_cnt));	
+7751  15af 5f            	clrw	x
+7752  15b0 c60004        	ld	a,_ind_check_cnt+1
+7753  15b3 2a01          	jrpl	L472
+7754  15b5 53            	cplw	x
+7755  15b6               L472:
+7756  15b6 97            	ld	xl,a
+7757  15b7 a601          	ld	a,#1
+7758  15b9 5d            	tnzw	x
+7759  15ba 2704          	jreq	L672
+7760  15bc               L003:
+7761  15bc 48            	sll	a
+7762  15bd 5a            	decw	x
+7763  15be 26fc          	jrne	L003
+7764  15c0               L672:
+7765  15c0 43            	cpl	a
+7766  15c1 b478          	and	a,_ind_outB+3
+7767  15c3 b778          	ld	_ind_outB+3,a
+7769  15c5 acf716f7      	jpf	L1162
+7770  15c9               L1033:
+7771                     ; 1172 	else if(ind_check_cnt<=15)
+7773  15c9 9c            	rvf
+7774  15ca ce0003        	ldw	x,_ind_check_cnt
+7775  15cd a30010        	cpw	x,#16
+7776  15d0 2e1d          	jrsge	L5033
+7777                     ; 1174 		ind_outB[2]&=(~(1<<(ind_check_cnt-8)));	
+7779  15d2 c60004        	ld	a,_ind_check_cnt+1
+7780  15d5 a008          	sub	a,#8
+7781  15d7 5f            	clrw	x
+7782  15d8 4d            	tnz	a
+7783  15d9 2a01          	jrpl	L203
+7784  15db 53            	cplw	x
+7785  15dc               L203:
+7786  15dc 97            	ld	xl,a
+7787  15dd a601          	ld	a,#1
+7788  15df 5d            	tnzw	x
+7789  15e0 2704          	jreq	L403
+7790  15e2               L603:
+7791  15e2 48            	sll	a
+7792  15e3 5a            	decw	x
+7793  15e4 26fc          	jrne	L603
+7794  15e6               L403:
+7795  15e6 43            	cpl	a
+7796  15e7 b477          	and	a,_ind_outB+2
+7797  15e9 b777          	ld	_ind_outB+2,a
+7799  15eb acf716f7      	jpf	L1162
+7800  15ef               L5033:
+7801                     ; 1176 	else if(ind_check_cnt<=23)
+7803  15ef 9c            	rvf
+7804  15f0 ce0003        	ldw	x,_ind_check_cnt
+7805  15f3 a30018        	cpw	x,#24
+7806  15f6 2e1d          	jrsge	L1133
+7807                     ; 1178 		ind_outB[1]&=(~(1<<(ind_check_cnt-16)));	
+7809  15f8 c60004        	ld	a,_ind_check_cnt+1
+7810  15fb a010          	sub	a,#16
+7811  15fd 5f            	clrw	x
+7812  15fe 4d            	tnz	a
+7813  15ff 2a01          	jrpl	L013
+7814  1601 53            	cplw	x
+7815  1602               L013:
+7816  1602 97            	ld	xl,a
+7817  1603 a601          	ld	a,#1
+7818  1605 5d            	tnzw	x
+7819  1606 2704          	jreq	L213
+7820  1608               L413:
+7821  1608 48            	sll	a
+7822  1609 5a            	decw	x
+7823  160a 26fc          	jrne	L413
+7824  160c               L213:
+7825  160c 43            	cpl	a
+7826  160d b476          	and	a,_ind_outB+1
+7827  160f b776          	ld	_ind_outB+1,a
+7829  1611 acf716f7      	jpf	L1162
+7830  1615               L1133:
+7831                     ; 1180 	else if(ind_check_cnt<=30)
+7833  1615 9c            	rvf
+7834  1616 ce0003        	ldw	x,_ind_check_cnt
+7835  1619 a3001f        	cpw	x,#31
+7836  161c 2e1d          	jrsge	L5133
+7837                     ; 1182 		ind_outC[3]&=(~(1<<(ind_check_cnt-23)));	
+7839  161e c60004        	ld	a,_ind_check_cnt+1
+7840  1621 a017          	sub	a,#23
+7841  1623 5f            	clrw	x
+7842  1624 4d            	tnz	a
+7843  1625 2a01          	jrpl	L613
+7844  1627 53            	cplw	x
+7845  1628               L613:
+7846  1628 97            	ld	xl,a
+7847  1629 a601          	ld	a,#1
+7848  162b 5d            	tnzw	x
+7849  162c 2704          	jreq	L023
+7850  162e               L223:
+7851  162e 48            	sll	a
+7852  162f 5a            	decw	x
+7853  1630 26fc          	jrne	L223
+7854  1632               L023:
+7855  1632 43            	cpl	a
+7856  1633 b40d          	and	a,_ind_outC+3
+7857  1635 b70d          	ld	_ind_outC+3,a
+7859  1637 acf716f7      	jpf	L1162
+7860  163b               L5133:
+7861                     ; 1184 	else if(ind_check_cnt==31)
+7863  163b ce0003        	ldw	x,_ind_check_cnt
+7864  163e a3001f        	cpw	x,#31
+7865  1641 2608          	jrne	L1233
+7866                     ; 1186 		ind_outG[3]&=0xfe;	
+7868  1643 72110019      	bres	_ind_outG+3,#0
+7870  1647 acf716f7      	jpf	L1162
+7871  164b               L1233:
+7872                     ; 1188 	else if(ind_check_cnt<=38)
+7874  164b 9c            	rvf
+7875  164c ce0003        	ldw	x,_ind_check_cnt
+7876  164f a30027        	cpw	x,#39
+7877  1652 2e1c          	jrsge	L5233
+7878                     ; 1190 		ind_outC[2]&=(~(1<<(ind_check_cnt-31)));	
+7880  1654 c60004        	ld	a,_ind_check_cnt+1
+7881  1657 a01f          	sub	a,#31
+7882  1659 5f            	clrw	x
+7883  165a 4d            	tnz	a
+7884  165b 2a01          	jrpl	L423
+7885  165d 53            	cplw	x
+7886  165e               L423:
+7887  165e 97            	ld	xl,a
+7888  165f a601          	ld	a,#1
+7889  1661 5d            	tnzw	x
+7890  1662 2704          	jreq	L623
+7891  1664               L033:
+7892  1664 48            	sll	a
+7893  1665 5a            	decw	x
+7894  1666 26fc          	jrne	L033
+7895  1668               L623:
+7896  1668 43            	cpl	a
+7897  1669 b40c          	and	a,_ind_outC+2
+7898  166b b70c          	ld	_ind_outC+2,a
+7900  166d cc16f7        	jra	L1162
+7901  1670               L5233:
+7902                     ; 1192 	else if(ind_check_cnt==39)
+7904  1670 ce0003        	ldw	x,_ind_check_cnt
+7905  1673 a30027        	cpw	x,#39
+7906  1676 2606          	jrne	L1333
+7907                     ; 1194 		ind_outG[2]&=0xfe;	
+7909  1678 72110018      	bres	_ind_outG+2,#0
+7911  167c 2079          	jra	L1162
+7912  167e               L1333:
+7913                     ; 1196 	else if(ind_check_cnt<=46)
+7915  167e 9c            	rvf
+7916  167f ce0003        	ldw	x,_ind_check_cnt
+7917  1682 a3002f        	cpw	x,#47
+7918  1685 2e1b          	jrsge	L5333
+7919                     ; 1198 		ind_outC[1]&=(~(1<<(ind_check_cnt-39)));	
+7921  1687 c60004        	ld	a,_ind_check_cnt+1
+7922  168a a027          	sub	a,#39
+7923  168c 5f            	clrw	x
+7924  168d 4d            	tnz	a
+7925  168e 2a01          	jrpl	L233
+7926  1690 53            	cplw	x
+7927  1691               L233:
+7928  1691 97            	ld	xl,a
+7929  1692 a601          	ld	a,#1
+7930  1694 5d            	tnzw	x
+7931  1695 2704          	jreq	L433
+7932  1697               L633:
+7933  1697 48            	sll	a
+7934  1698 5a            	decw	x
+7935  1699 26fc          	jrne	L633
+7936  169b               L433:
+7937  169b 43            	cpl	a
+7938  169c b40b          	and	a,_ind_outC+1
+7939  169e b70b          	ld	_ind_outC+1,a
+7941  16a0 2055          	jra	L1162
+7942  16a2               L5333:
+7943                     ; 1200 	else if(ind_check_cnt==47)
+7945  16a2 ce0003        	ldw	x,_ind_check_cnt
+7946  16a5 a3002f        	cpw	x,#47
+7947  16a8 2606          	jrne	L1433
+7948                     ; 1202 		ind_outG[1]&=0xfe;	
+7950  16aa 72110017      	bres	_ind_outG+1,#0
+7952  16ae 2047          	jra	L1162
+7953  16b0               L1433:
+7954                     ; 1204 	else if(ind_check_cnt<=54)
+7956  16b0 9c            	rvf
+7957  16b1 ce0003        	ldw	x,_ind_check_cnt
+7958  16b4 a30037        	cpw	x,#55
+7959  16b7 2e1b          	jrsge	L5433
+7960                     ; 1206 		ind_outC[0]&=(~(1<<(ind_check_cnt-47)));	
+7962  16b9 c60004        	ld	a,_ind_check_cnt+1
+7963  16bc a02f          	sub	a,#47
+7964  16be 5f            	clrw	x
+7965  16bf 4d            	tnz	a
+7966  16c0 2a01          	jrpl	L043
+7967  16c2 53            	cplw	x
+7968  16c3               L043:
+7969  16c3 97            	ld	xl,a
+7970  16c4 a601          	ld	a,#1
+7971  16c6 5d            	tnzw	x
+7972  16c7 2704          	jreq	L243
+7973  16c9               L443:
+7974  16c9 48            	sll	a
+7975  16ca 5a            	decw	x
+7976  16cb 26fc          	jrne	L443
+7977  16cd               L243:
+7978  16cd 43            	cpl	a
+7979  16ce b40a          	and	a,_ind_outC
+7980  16d0 b70a          	ld	_ind_outC,a
+7982  16d2 2023          	jra	L1162
+7983  16d4               L5433:
+7984                     ; 1208 	else if(ind_check_cnt==55)
+7986  16d4 ce0003        	ldw	x,_ind_check_cnt
+7987  16d7 a30037        	cpw	x,#55
+7988  16da 2606          	jrne	L1533
+7989                     ; 1210 		ind_outG[0]&=0xfe;	
+7991  16dc 72110016      	bres	_ind_outG,#0
+7993  16e0 2015          	jra	L1162
+7994  16e2               L1533:
+7995                     ; 1212 	else if(ind_check_cnt<=64)
+7997  16e2 9c            	rvf
+7998  16e3 ce0003        	ldw	x,_ind_check_cnt
+7999  16e6 a30041        	cpw	x,#65
+8000  16e9 2e0c          	jrsge	L1162
+8001                     ; 1214 		led_mask_off(0x00);
+8003  16eb 4f            	clr	a
+8004  16ec cd0000        	call	_led_mask_off
+8006                     ; 1215 		led_on(ind_check_cnt-55);	
+8008  16ef c60004        	ld	a,_ind_check_cnt+1
+8009  16f2 a037          	sub	a,#55
+8010  16f4 cd0000        	call	_led_on
+8012  16f7               L1162:
+8013                     ; 1219 if(powerStat==psOFF)
+8015  16f7 3d29          	tnz	_powerStat
+8016  16f9 263a          	jrne	L7533
+8017                     ; 1221 	led_set(1,0);
+8019  16fb 5f            	clrw	x
+8020  16fc a601          	ld	a,#1
+8021  16fe 95            	ld	xh,a
+8022  16ff cd0000        	call	_led_set
+8024                     ; 1222 	led_set(2,0);
+8026  1702 5f            	clrw	x
+8027  1703 a602          	ld	a,#2
+8028  1705 95            	ld	xh,a
+8029  1706 cd0000        	call	_led_set
+8031                     ; 1223 	led_set(3,0);
+8033  1709 5f            	clrw	x
+8034  170a a603          	ld	a,#3
+8035  170c 95            	ld	xh,a
+8036  170d cd0000        	call	_led_set
+8038                     ; 1224 	led_set(4,0);
+8040  1710 5f            	clrw	x
+8041  1711 a604          	ld	a,#4
+8042  1713 95            	ld	xh,a
+8043  1714 cd0000        	call	_led_set
+8045                     ; 1225 	led_set(5,0);
+8047  1717 5f            	clrw	x
+8048  1718 a605          	ld	a,#5
+8049  171a 95            	ld	xh,a
+8050  171b cd0000        	call	_led_set
+8052                     ; 1226 	led_set(6,0);
+8054  171e 5f            	clrw	x
+8055  171f a606          	ld	a,#6
+8056  1721 95            	ld	xh,a
+8057  1722 cd0000        	call	_led_set
+8059                     ; 1227 	led_set(7,0);
+8061  1725 5f            	clrw	x
+8062  1726 a607          	ld	a,#7
+8063  1728 95            	ld	xh,a
+8064  1729 cd0000        	call	_led_set
+8066                     ; 1228 	led_set(8,2);
+8068  172c ae0002        	ldw	x,#2
+8069  172f a608          	ld	a,#8
+8070  1731 95            	ld	xh,a
+8071  1732 cd0000        	call	_led_set
+8073  1735               L7533:
+8074                     ; 1231 if(bFL5)
+8076  1735 3d28          	tnz	_bFL5
+8077  1737 2717          	jreq	L1633
+8078                     ; 1233 	ind_outB[0]=led_ind_out1;
+8080  1739 452475        	mov	_ind_outB,_led_ind_out1
+8081                     ; 1234 	ind_outB[4]=led_ind_out1;
+8083  173c 452479        	mov	_ind_outB+4,_led_ind_out1
+8084                     ; 1235 	ind_outB[5]=led_ind_out1;
+8086  173f 45247a        	mov	_ind_outB+5,_led_ind_out1
+8087                     ; 1236 	ind_outB[6]=led_ind_out1;
+8089  1742 45247b        	mov	_ind_outB+6,_led_ind_out1
+8090                     ; 1237 	ind_outB[7]=led_ind_out1;
+8092  1745 45247c        	mov	_ind_outB+7,_led_ind_out1
+8093                     ; 1238 	ind_outB[8]=led_ind_out1;
+8095  1748 45247d        	mov	_ind_outB+8,_led_ind_out1
+8096                     ; 1239 	ind_outB[9]=led_ind_out1;
+8098  174b 45247e        	mov	_ind_outB+9,_led_ind_out1
+8100  174e 2015          	jra	L3633
+8101  1750               L1633:
+8102                     ; 1243 	ind_outB[0]=led_ind_out2;
+8104  1750 452375        	mov	_ind_outB,_led_ind_out2
+8105                     ; 1244 	ind_outB[4]=led_ind_out2;
+8107  1753 452379        	mov	_ind_outB+4,_led_ind_out2
+8108                     ; 1245 	ind_outB[5]=led_ind_out2;
+8110  1756 45237a        	mov	_ind_outB+5,_led_ind_out2
+8111                     ; 1246 	ind_outB[6]=led_ind_out2;
+8113  1759 45237b        	mov	_ind_outB+6,_led_ind_out2
+8114                     ; 1247 	ind_outB[7]=led_ind_out2;
+8116  175c 45237c        	mov	_ind_outB+7,_led_ind_out2
+8117                     ; 1248 	ind_outB[8]=led_ind_out2;
+8119  175f 45237d        	mov	_ind_outB+8,_led_ind_out2
+8120                     ; 1249 	ind_outB[9]=led_ind_out2;
+8122  1762 45237e        	mov	_ind_outB+9,_led_ind_out2
+8123  1765               L3633:
+8124                     ; 1251 }
+8127  1765 85            	popw	x
+8128  1766 81            	ret
+8288                     ; 1256 void but_an(void)
+8288                     ; 1257 {
+8289                     	switch	.text
+8290  1767               _but_an:
+8292  1767 5203          	subw	sp,#3
+8293       00000003      OFST:	set	3
+8296                     ; 1258 if(!n_but) return;
+8298  1769 3d00          	tnz	_n_but
+8299  176b 2603          	jrne	L225
+8300  176d cc2416        	jp	L025
+8301  1770               L225:
+8304                     ; 1259 n_but=0;
+8306  1770 3f00          	clr	_n_but
+8307                     ; 1261 if(ind==iMn)
+8309  1772 3d61          	tnz	_a_ind
+8310  1774 2703          	jreq	L425
+8311  1776 cc1814        	jp	L5543
+8312  1779               L425:
+8313                     ; 1263 	if(but==butM_)
+8315  1779 b600          	ld	a,_but
+8316  177b a17d          	cp	a,#125
+8317  177d 2610          	jrne	L7543
+8318                     ; 1265 		tree_up(iSet,0,0,0);
+8320  177f 4b00          	push	#0
+8321  1781 4b00          	push	#0
+8322  1783 5f            	clrw	x
+8323  1784 a601          	ld	a,#1
+8324  1786 95            	ld	xh,a
+8325  1787 cd0000        	call	_tree_up
+8327  178a 85            	popw	x
+8329  178b ac162416      	jpf	L5153
+8330  178f               L7543:
+8331                     ; 1267 	else if(but==butM)
+8333  178f b600          	ld	a,_but
+8334  1791 a1fd          	cp	a,#253
+8335  1793 2617          	jrne	L3643
+8336                     ; 1269 		tree_up(iTemperSet,0,0,0);
+8338  1795 4b00          	push	#0
+8339  1797 4b00          	push	#0
+8340  1799 5f            	clrw	x
+8341  179a a608          	ld	a,#8
+8342  179c 95            	ld	xh,a
+8343  179d cd0000        	call	_tree_up
+8345  17a0 85            	popw	x
+8346                     ; 1270 		ret_ind(5,0);
+8348  17a1 5f            	clrw	x
+8349  17a2 a605          	ld	a,#5
+8350  17a4 95            	ld	xh,a
+8351  17a5 cd0000        	call	_ret_ind
+8354  17a8 ac162416      	jpf	L5153
+8355  17ac               L3643:
+8356                     ; 1272 	else if(but==butU)
+8358  17ac b600          	ld	a,_but
+8359  17ae a1fb          	cp	a,#251
+8360  17b0 2617          	jrne	L7643
+8361                     ; 1274 		tree_up(iDate_W,0,0,0);
+8363  17b2 4b00          	push	#0
+8364  17b4 4b00          	push	#0
+8365  17b6 5f            	clrw	x
+8366  17b7 a604          	ld	a,#4
+8367  17b9 95            	ld	xh,a
+8368  17ba cd0000        	call	_tree_up
+8370  17bd 85            	popw	x
+8371                     ; 1275 		ret_ind(4,0);
+8373  17be 5f            	clrw	x
+8374  17bf a604          	ld	a,#4
+8375  17c1 95            	ld	xh,a
+8376  17c2 cd0000        	call	_ret_ind
+8379  17c5 ac162416      	jpf	L5153
+8380  17c9               L7643:
+8381                     ; 1277 	else if(but==butD_)
+8383  17c9 b600          	ld	a,_but
+8384  17cb a177          	cp	a,#119
+8385  17cd 2603          	jrne	L625
+8386  17cf cc2416        	jp	L5153
+8387  17d2               L625:
+8389                     ; 1285 	else if(but==butD)
+8391  17d2 b600          	ld	a,_but
+8392  17d4 a1f7          	cp	a,#247
+8393  17d6 2603          	jrne	L035
+8394  17d8 cc2416        	jp	L5153
+8395  17db               L035:
+8397                     ; 1294 	else if(but==butU_)
+8399  17db b600          	ld	a,_but
+8400  17dd a17b          	cp	a,#123
+8401  17df 2603          	jrne	L235
+8402  17e1 cc2416        	jp	L5153
+8403  17e4               L235:
+8405                     ; 1298 	else if(but==butON)
+8407  17e4 b600          	ld	a,_but
+8408  17e6 a1fe          	cp	a,#254
+8409  17e8 2703          	jreq	L435
+8410  17ea cc2416        	jp	L5153
+8411  17ed               L435:
+8412                     ; 1300 		if(outMode==omON)	outMode=omOFF;
+8414  17ed c6401d        	ld	a,_outMode
+8415  17f0 a101          	cp	a,#1
+8416  17f2 2609          	jrne	L1153
+8419  17f4 4f            	clr	a
+8420  17f5 ae401d        	ldw	x,#_outMode
+8421  17f8 cd0000        	call	c_eewrc
+8424  17fb 2008          	jra	L3153
+8425  17fd               L1153:
+8426                     ; 1301 		else 				outMode=omON;
+8428  17fd a601          	ld	a,#1
+8429  17ff ae401d        	ldw	x,#_outMode
+8430  1802 cd0000        	call	c_eewrc
+8432  1805               L3153:
+8433                     ; 1302 		HUMAN_SET_EE=1;
+8435  1805 ae0001        	ldw	x,#1
+8436  1808 89            	pushw	x
+8437  1809 ae401e        	ldw	x,#_HUMAN_SET_EE
+8438  180c cd0000        	call	c_eewrw
+8440  180f 85            	popw	x
+8441  1810 ac162416      	jpf	L5153
+8442  1814               L5543:
+8443                     ; 1306 else if(ind==iTemperSet)
+8445  1814 b661          	ld	a,_a_ind
+8446  1816 a108          	cp	a,#8
+8447  1818 2703          	jreq	L635
+8448  181a cc1920        	jp	L7153
+8449  181d               L635:
+8450                     ; 1308 	if(but==butM)
+8452  181d b600          	ld	a,_but
+8453  181f a1fd          	cp	a,#253
+8454  1821 2610          	jrne	L1253
+8455                     ; 1310 		tree_down(0,0);
+8457  1823 5f            	clrw	x
+8458  1824 4f            	clr	a
+8459  1825 95            	ld	xh,a
+8460  1826 cd0000        	call	_tree_down
+8462                     ; 1311 		ret_ind(0,0);
+8464  1829 5f            	clrw	x
+8465  182a 4f            	clr	a
+8466  182b 95            	ld	xh,a
+8467  182c cd0000        	call	_ret_ind
+8470  182f ac162416      	jpf	L5153
+8471  1833               L1253:
+8472                     ; 1313 	else if(MODE_EE==1)
+8474  1833 c64046        	ld	a,_MODE_EE
+8475  1836 a101          	cp	a,#1
+8476  1838 266e          	jrne	L5253
+8477                     ; 1315 		ret_ind(4,0);
+8479  183a 5f            	clrw	x
+8480  183b a604          	ld	a,#4
+8481  183d 95            	ld	xh,a
+8482  183e cd0000        	call	_ret_ind
+8484                     ; 1316 		if((but==butU)||(but==butU_))
+8486  1841 b600          	ld	a,_but
+8487  1843 a1fb          	cp	a,#251
+8488  1845 2706          	jreq	L1353
+8490  1847 b600          	ld	a,_but
+8491  1849 a17b          	cp	a,#123
+8492  184b 2624          	jrne	L7253
+8493  184d               L1353:
+8494                     ; 1318 			NECC_TEMPER_WATER_EE++;
+8496  184d c64045        	ld	a,_NECC_TEMPER_WATER_EE
+8497  1850 4c            	inc	a
+8498  1851 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+8499  1854 cd0000        	call	c_eewrc
+8501                     ; 1319 			gran_char(&NECC_TEMPER_WATER_EE,5,85);
+8503  1857 4b55          	push	#85
+8504  1859 4b05          	push	#5
+8505  185b ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+8506  185e cd0000        	call	_gran_char
+8508  1861 85            	popw	x
+8509                     ; 1320 			speed=1;
+8511  1862 35010000      	mov	_speed,#1
+8512                     ; 1321 			HUMAN_SET_EE=1;
+8514  1866 ae0001        	ldw	x,#1
+8515  1869 89            	pushw	x
+8516  186a ae401e        	ldw	x,#_HUMAN_SET_EE
+8517  186d cd0000        	call	c_eewrw
+8519  1870 85            	popw	x
+8520  1871               L7253:
+8521                     ; 1323 		if((but==butD)||(but==butD_))
+8523  1871 b600          	ld	a,_but
+8524  1873 a1f7          	cp	a,#247
+8525  1875 2709          	jreq	L5353
+8527  1877 b600          	ld	a,_but
+8528  1879 a177          	cp	a,#119
+8529  187b 2703          	jreq	L045
+8530  187d cc2416        	jp	L5153
+8531  1880               L045:
+8532  1880               L5353:
+8533                     ; 1325 			NECC_TEMPER_WATER_EE--;
+8535  1880 c64045        	ld	a,_NECC_TEMPER_WATER_EE
+8536  1883 4a            	dec	a
+8537  1884 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+8538  1887 cd0000        	call	c_eewrc
+8540                     ; 1326 			gran_char(&NECC_TEMPER_WATER_EE,5,85);
+8542  188a 4b55          	push	#85
+8543  188c 4b05          	push	#5
+8544  188e ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+8545  1891 cd0000        	call	_gran_char
+8547  1894 85            	popw	x
+8548                     ; 1327 			speed=1;
+8550  1895 35010000      	mov	_speed,#1
+8551                     ; 1328 			HUMAN_SET_EE=1;
+8553  1899 ae0001        	ldw	x,#1
+8554  189c 89            	pushw	x
+8555  189d ae401e        	ldw	x,#_HUMAN_SET_EE
+8556  18a0 cd0000        	call	c_eewrw
+8558  18a3 85            	popw	x
+8559  18a4 ac162416      	jpf	L5153
+8560  18a8               L5253:
+8561                     ; 1331 	else if(MODE_EE==2)
+8563  18a8 c64046        	ld	a,_MODE_EE
+8564  18ab a102          	cp	a,#2
+8565  18ad 2703          	jreq	L245
+8566  18af cc2416        	jp	L5153
+8567  18b2               L245:
+8568                     ; 1333 		ret_ind(4,0);
+8570  18b2 5f            	clrw	x
+8571  18b3 a604          	ld	a,#4
+8572  18b5 95            	ld	xh,a
+8573  18b6 cd0000        	call	_ret_ind
+8575                     ; 1334 		if((but==butU)||(but==butU_))
+8577  18b9 b600          	ld	a,_but
+8578  18bb a1fb          	cp	a,#251
+8579  18bd 2706          	jreq	L5453
+8581  18bf b600          	ld	a,_but
+8582  18c1 a17b          	cp	a,#123
+8583  18c3 2624          	jrne	L3453
+8584  18c5               L5453:
+8585                     ; 1336 			NECC_TEMPER_AIR_EE++;
+8587  18c5 c64044        	ld	a,_NECC_TEMPER_AIR_EE
+8588  18c8 4c            	inc	a
+8589  18c9 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+8590  18cc cd0000        	call	c_eewrc
+8592                     ; 1337 			gran_char(&NECC_TEMPER_AIR_EE,5,35);
+8594  18cf 4b23          	push	#35
+8595  18d1 4b05          	push	#5
+8596  18d3 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+8597  18d6 cd0000        	call	_gran_char
+8599  18d9 85            	popw	x
+8600                     ; 1338 			speed=1;
+8602  18da 35010000      	mov	_speed,#1
+8603                     ; 1339 			HUMAN_SET_EE=1;
+8605  18de ae0001        	ldw	x,#1
+8606  18e1 89            	pushw	x
+8607  18e2 ae401e        	ldw	x,#_HUMAN_SET_EE
+8608  18e5 cd0000        	call	c_eewrw
+8610  18e8 85            	popw	x
+8611  18e9               L3453:
+8612                     ; 1341 		if((but==butD)||(but==butD_))
+8614  18e9 b600          	ld	a,_but
+8615  18eb a1f7          	cp	a,#247
+8616  18ed 2709          	jreq	L1553
+8618  18ef b600          	ld	a,_but
+8619  18f1 a177          	cp	a,#119
+8620  18f3 2703          	jreq	L445
+8621  18f5 cc2416        	jp	L5153
+8622  18f8               L445:
+8623  18f8               L1553:
+8624                     ; 1343 			NECC_TEMPER_AIR_EE--;
+8626  18f8 c64044        	ld	a,_NECC_TEMPER_AIR_EE
+8627  18fb 4a            	dec	a
+8628  18fc ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+8629  18ff cd0000        	call	c_eewrc
+8631                     ; 1344 			gran_char(&NECC_TEMPER_AIR_EE,5,35);
+8633  1902 4b23          	push	#35
+8634  1904 4b05          	push	#5
+8635  1906 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+8636  1909 cd0000        	call	_gran_char
+8638  190c 85            	popw	x
+8639                     ; 1345 			speed=1;
+8641  190d 35010000      	mov	_speed,#1
+8642                     ; 1346 			HUMAN_SET_EE=1;
+8644  1911 ae0001        	ldw	x,#1
+8645  1914 89            	pushw	x
+8646  1915 ae401e        	ldw	x,#_HUMAN_SET_EE
+8647  1918 cd0000        	call	c_eewrw
+8649  191b 85            	popw	x
+8650  191c ac162416      	jpf	L5153
+8651  1920               L7153:
+8652                     ; 1350 else if(ind==iDate_W)
+8654  1920 b661          	ld	a,_a_ind
+8655  1922 a104          	cp	a,#4
+8656  1924 2635          	jrne	L5553
+8657                     ; 1352 	if(but==butU)
+8659  1926 b600          	ld	a,_but
+8660  1928 a1fb          	cp	a,#251
+8661  192a 2703          	jreq	L645
+8662  192c cc2416        	jp	L5153
+8663  192f               L645:
+8664                     ; 1354 		if(sub_ind==0)
+8666  192f 3d62          	tnz	_a_ind+1
+8667  1931 2615          	jrne	L1653
+8668                     ; 1356 			sub_ind=1;
+8670  1933 35010062      	mov	_a_ind+1,#1
+8671                     ; 1357 			ret_ind(4,0);
+8673  1937 5f            	clrw	x
+8674  1938 a604          	ld	a,#4
+8675  193a 95            	ld	xh,a
+8676  193b cd0000        	call	_ret_ind
+8678                     ; 1358 			clear_ind();
+8680  193e cd0000        	call	_clear_ind
+8682                     ; 1359 			ind_hndl();			
+8684  1941 cd0683        	call	_ind_hndl
+8687  1944 ac162416      	jpf	L5153
+8688  1948               L1653:
+8689                     ; 1361 		else if(sub_ind==1)
+8691  1948 b662          	ld	a,_a_ind+1
+8692  194a a101          	cp	a,#1
+8693  194c 2703          	jreq	L055
+8694  194e cc2416        	jp	L5153
+8695  1951               L055:
+8696                     ; 1363 			tree_down(0,0);	
+8698  1951 5f            	clrw	x
+8699  1952 4f            	clr	a
+8700  1953 95            	ld	xh,a
+8701  1954 cd0000        	call	_tree_down
+8703  1957 ac162416      	jpf	L5153
+8704  195b               L5553:
+8705                     ; 1367 else if(ind==iSet)
+8707  195b b661          	ld	a,_a_ind
+8708  195d a101          	cp	a,#1
+8709  195f 2703          	jreq	L255
+8710  1961 cc1a08        	jp	L1753
+8711  1964               L255:
+8712                     ; 1369 	if((but==butU)||(but==butU_))
+8714  1964 b600          	ld	a,_but
+8715  1966 a1fb          	cp	a,#251
+8716  1968 2706          	jreq	L5753
+8718  196a b600          	ld	a,_but
+8719  196c a17b          	cp	a,#123
+8720  196e 2617          	jrne	L3753
+8721  1970               L5753:
+8722                     ; 1371 		sub_ind++;
+8724  1970 3c62          	inc	_a_ind+1
+8725                     ; 1372 		gran_char(&sub_ind,0,11);
+8727  1972 4b0b          	push	#11
+8728  1974 4b00          	push	#0
+8729  1976 ae0062        	ldw	x,#_a_ind+1
+8730  1979 cd0000        	call	_gran_char
+8732  197c 85            	popw	x
+8733                     ; 1373 		clear_ind();
+8735  197d cd0000        	call	_clear_ind
+8737                     ; 1374 		ind_hndl();
+8739  1980 cd0683        	call	_ind_hndl
+8742  1983 ac162416      	jpf	L5153
+8743  1987               L3753:
+8744                     ; 1376 	else if((but==butD)||(but==butD_))
+8746  1987 b600          	ld	a,_but
+8747  1989 a1f7          	cp	a,#247
+8748  198b 2706          	jreq	L3063
+8750  198d b600          	ld	a,_but
+8751  198f a177          	cp	a,#119
+8752  1991 2617          	jrne	L1063
+8753  1993               L3063:
+8754                     ; 1378 		sub_ind--;
+8756  1993 3a62          	dec	_a_ind+1
+8757                     ; 1379 		gran_char(&sub_ind,0,11);
+8759  1995 4b0b          	push	#11
+8760  1997 4b00          	push	#0
+8761  1999 ae0062        	ldw	x,#_a_ind+1
+8762  199c cd0000        	call	_gran_char
+8764  199f 85            	popw	x
+8765                     ; 1380 		clear_ind();
+8767  19a0 cd0000        	call	_clear_ind
+8769                     ; 1381 		ind_hndl();
+8771  19a3 cd0683        	call	_ind_hndl
+8774  19a6 ac162416      	jpf	L5153
+8775  19aa               L1063:
+8776                     ; 1383 	else if(but==butM_)
+8778  19aa b600          	ld	a,_but
+8779  19ac a17d          	cp	a,#125
+8780  19ae 2638          	jrne	L7063
+8781                     ; 1385 		if(sub_ind==11) //Выход 
+8783  19b0 b662          	ld	a,_a_ind+1
+8784  19b2 a10b          	cp	a,#11
+8785  19b4 260a          	jrne	L1163
+8786                     ; 1387 			tree_down(0,0);
+8788  19b6 5f            	clrw	x
+8789  19b7 4f            	clr	a
+8790  19b8 95            	ld	xh,a
+8791  19b9 cd0000        	call	_tree_down
+8794  19bc ac162416      	jpf	L5153
+8795  19c0               L1163:
+8796                     ; 1389 		else if(sub_ind==10) //Вход в установку графика
+8798  19c0 b662          	ld	a,_a_ind+1
+8799  19c2 a10a          	cp	a,#10
+8800  19c4 2610          	jrne	L5163
+8801                     ; 1391 			tree_up(iSetTable,0,0,0);
+8803  19c6 4b00          	push	#0
+8804  19c8 4b00          	push	#0
+8805  19ca 5f            	clrw	x
+8806  19cb a605          	ld	a,#5
+8807  19cd 95            	ld	xh,a
+8808  19ce cd0000        	call	_tree_up
+8810  19d1 85            	popw	x
+8812  19d2 ac162416      	jpf	L5153
+8813  19d6               L5163:
+8814                     ; 1395 			tree_up(iSet_,sub_ind,0,0);
+8816  19d6 4b00          	push	#0
+8817  19d8 4b00          	push	#0
+8818  19da b662          	ld	a,_a_ind+1
+8819  19dc 97            	ld	xl,a
+8820  19dd a602          	ld	a,#2
+8821  19df 95            	ld	xh,a
+8822  19e0 cd0000        	call	_tree_up
+8824  19e3 85            	popw	x
+8825  19e4 ac162416      	jpf	L5153
+8826  19e8               L7063:
+8827                     ; 1398 	else if(but==butOND_)
+8829  19e8 b600          	ld	a,_but
+8830  19ea a176          	cp	a,#118
+8831  19ec 2703          	jreq	L455
+8832  19ee cc2416        	jp	L5153
+8833  19f1               L455:
+8834                     ; 1400 		tree_up(iDefSet,0,0,0);
+8836  19f1 4b00          	push	#0
+8837  19f3 4b00          	push	#0
+8838  19f5 5f            	clrw	x
+8839  19f6 a609          	ld	a,#9
+8840  19f8 95            	ld	xh,a
+8841  19f9 cd0000        	call	_tree_up
+8843  19fc 85            	popw	x
+8844                     ; 1401 		ret_ind(5,0);
+8846  19fd 5f            	clrw	x
+8847  19fe a605          	ld	a,#5
+8848  1a00 95            	ld	xh,a
+8849  1a01 cd0000        	call	_ret_ind
+8851  1a04 ac162416      	jpf	L5153
+8852  1a08               L1753:
+8853                     ; 1404 else if(ind==iSet_)
+8855  1a08 b661          	ld	a,_a_ind
+8856  1a0a a102          	cp	a,#2
+8857  1a0c 2703          	jreq	L655
+8858  1a0e cc1fb3        	jp	L7263
+8859  1a11               L655:
+8860                     ; 1406 	if(but==butM_)
+8862  1a11 b600          	ld	a,_but
+8863  1a13 a17d          	cp	a,#125
+8864  1a15 260a          	jrne	L1363
+8865                     ; 1408 		tree_down(0,0);
+8867  1a17 5f            	clrw	x
+8868  1a18 4f            	clr	a
+8869  1a19 95            	ld	xh,a
+8870  1a1a cd0000        	call	_tree_down
+8873  1a1d ac162416      	jpf	L5153
+8874  1a21               L1363:
+8875                     ; 1412 		if(sub_ind==0)
+8877  1a21 3d62          	tnz	_a_ind+1
+8878  1a23 265f          	jrne	L5363
+8879                     ; 1414 			if((but==butU)||(but==butU_))
+8881  1a25 b600          	ld	a,_but
+8882  1a27 a1fb          	cp	a,#251
+8883  1a29 2706          	jreq	L1463
+8885  1a2b b600          	ld	a,_but
+8886  1a2d a17b          	cp	a,#123
+8887  1a2f 2620          	jrne	L7363
+8888  1a31               L1463:
+8889                     ; 1416 				MODE_EE++;
+8891  1a31 c64046        	ld	a,_MODE_EE
+8892  1a34 4c            	inc	a
+8893  1a35 ae4046        	ldw	x,#_MODE_EE
+8894  1a38 cd0000        	call	c_eewrc
+8896                     ; 1417 				gran_char(&MODE_EE,1,3);
+8898  1a3b 4b03          	push	#3
+8899  1a3d 4b01          	push	#1
+8900  1a3f ae4046        	ldw	x,#_MODE_EE
+8901  1a42 cd0000        	call	_gran_char
+8903  1a45 85            	popw	x
+8904                     ; 1418 				HUMAN_SET_EE=1;
+8906  1a46 ae0001        	ldw	x,#1
+8907  1a49 89            	pushw	x
+8908  1a4a ae401e        	ldw	x,#_HUMAN_SET_EE
+8909  1a4d cd0000        	call	c_eewrw
+8911  1a50 85            	popw	x
+8912  1a51               L7363:
+8913                     ; 1420 			if((but==butD)||(but==butD_))
+8915  1a51 b600          	ld	a,_but
+8916  1a53 a1f7          	cp	a,#247
+8917  1a55 2709          	jreq	L5463
+8919  1a57 b600          	ld	a,_but
+8920  1a59 a177          	cp	a,#119
+8921  1a5b 2703          	jreq	L065
+8922  1a5d cc2416        	jp	L5153
+8923  1a60               L065:
+8924  1a60               L5463:
+8925                     ; 1422 				MODE_EE--;
+8927  1a60 c64046        	ld	a,_MODE_EE
+8928  1a63 4a            	dec	a
+8929  1a64 ae4046        	ldw	x,#_MODE_EE
+8930  1a67 cd0000        	call	c_eewrc
+8932                     ; 1423 				gran_char(&MODE_EE,1,3);
+8934  1a6a 4b03          	push	#3
+8935  1a6c 4b01          	push	#1
+8936  1a6e ae4046        	ldw	x,#_MODE_EE
+8937  1a71 cd0000        	call	_gran_char
+8939  1a74 85            	popw	x
+8940                     ; 1424 				HUMAN_SET_EE=1;
+8942  1a75 ae0001        	ldw	x,#1
+8943  1a78 89            	pushw	x
+8944  1a79 ae401e        	ldw	x,#_HUMAN_SET_EE
+8945  1a7c cd0000        	call	c_eewrw
+8947  1a7f 85            	popw	x
+8948  1a80 ac162416      	jpf	L5153
+8949  1a84               L5363:
+8950                     ; 1427 		else if(sub_ind==1)
+8952  1a84 b662          	ld	a,_a_ind+1
+8953  1a86 a101          	cp	a,#1
+8954  1a88 2667          	jrne	L1563
+8955                     ; 1429 			if((but==butU)||(but==butU_))
+8957  1a8a b600          	ld	a,_but
+8958  1a8c a1fb          	cp	a,#251
+8959  1a8e 2706          	jreq	L5563
+8961  1a90 b600          	ld	a,_but
+8962  1a92 a17b          	cp	a,#123
+8963  1a94 2624          	jrne	L3563
+8964  1a96               L5563:
+8965                     ; 1431 				NECC_TEMPER_WATER_EE++;
+8967  1a96 c64045        	ld	a,_NECC_TEMPER_WATER_EE
+8968  1a99 4c            	inc	a
+8969  1a9a ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+8970  1a9d cd0000        	call	c_eewrc
+8972                     ; 1432 				gran_char(&NECC_TEMPER_WATER_EE,5,85);
+8974  1aa0 4b55          	push	#85
+8975  1aa2 4b05          	push	#5
+8976  1aa4 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+8977  1aa7 cd0000        	call	_gran_char
+8979  1aaa 85            	popw	x
+8980                     ; 1433 				speed=1;
+8982  1aab 35010000      	mov	_speed,#1
+8983                     ; 1434 				HUMAN_SET_EE=1;
+8985  1aaf ae0001        	ldw	x,#1
+8986  1ab2 89            	pushw	x
+8987  1ab3 ae401e        	ldw	x,#_HUMAN_SET_EE
+8988  1ab6 cd0000        	call	c_eewrw
+8990  1ab9 85            	popw	x
+8991  1aba               L3563:
+8992                     ; 1436 			if((but==butD)||(but==butD_))
+8994  1aba b600          	ld	a,_but
+8995  1abc a1f7          	cp	a,#247
+8996  1abe 2709          	jreq	L1663
+8998  1ac0 b600          	ld	a,_but
+8999  1ac2 a177          	cp	a,#119
+9000  1ac4 2703          	jreq	L265
+9001  1ac6 cc2416        	jp	L5153
+9002  1ac9               L265:
+9003  1ac9               L1663:
+9004                     ; 1438 				NECC_TEMPER_WATER_EE--;
+9006  1ac9 c64045        	ld	a,_NECC_TEMPER_WATER_EE
+9007  1acc 4a            	dec	a
+9008  1acd ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+9009  1ad0 cd0000        	call	c_eewrc
+9011                     ; 1439 				gran_char(&NECC_TEMPER_WATER_EE,5,85);
+9013  1ad3 4b55          	push	#85
+9014  1ad5 4b05          	push	#5
+9015  1ad7 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+9016  1ada cd0000        	call	_gran_char
+9018  1add 85            	popw	x
+9019                     ; 1440 				speed=1;
+9021  1ade 35010000      	mov	_speed,#1
+9022                     ; 1441 				HUMAN_SET_EE=1;
+9024  1ae2 ae0001        	ldw	x,#1
+9025  1ae5 89            	pushw	x
+9026  1ae6 ae401e        	ldw	x,#_HUMAN_SET_EE
+9027  1ae9 cd0000        	call	c_eewrw
+9029  1aec 85            	popw	x
+9030  1aed ac162416      	jpf	L5153
+9031  1af1               L1563:
+9032                     ; 1444 		else if(sub_ind==2)
+9034  1af1 b662          	ld	a,_a_ind+1
+9035  1af3 a102          	cp	a,#2
+9036  1af5 2667          	jrne	L5663
+9037                     ; 1446 			if((but==butU)||(but==butU_))
+9039  1af7 b600          	ld	a,_but
+9040  1af9 a1fb          	cp	a,#251
+9041  1afb 2706          	jreq	L1763
+9043  1afd b600          	ld	a,_but
+9044  1aff a17b          	cp	a,#123
+9045  1b01 2624          	jrne	L7663
+9046  1b03               L1763:
+9047                     ; 1448 				NECC_TEMPER_AIR_EE++;
+9049  1b03 c64044        	ld	a,_NECC_TEMPER_AIR_EE
+9050  1b06 4c            	inc	a
+9051  1b07 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+9052  1b0a cd0000        	call	c_eewrc
+9054                     ; 1449 				gran_char(&NECC_TEMPER_AIR_EE,5,35);
+9056  1b0d 4b23          	push	#35
+9057  1b0f 4b05          	push	#5
+9058  1b11 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+9059  1b14 cd0000        	call	_gran_char
+9061  1b17 85            	popw	x
+9062                     ; 1450 				speed=1;
+9064  1b18 35010000      	mov	_speed,#1
+9065                     ; 1451 				HUMAN_SET_EE=1;
+9067  1b1c ae0001        	ldw	x,#1
+9068  1b1f 89            	pushw	x
+9069  1b20 ae401e        	ldw	x,#_HUMAN_SET_EE
+9070  1b23 cd0000        	call	c_eewrw
+9072  1b26 85            	popw	x
+9073  1b27               L7663:
+9074                     ; 1453 			if((but==butD)||(but==butD_))
+9076  1b27 b600          	ld	a,_but
+9077  1b29 a1f7          	cp	a,#247
+9078  1b2b 2709          	jreq	L5763
+9080  1b2d b600          	ld	a,_but
+9081  1b2f a177          	cp	a,#119
+9082  1b31 2703          	jreq	L465
+9083  1b33 cc2416        	jp	L5153
+9084  1b36               L465:
+9085  1b36               L5763:
+9086                     ; 1455 				NECC_TEMPER_AIR_EE--;
+9088  1b36 c64044        	ld	a,_NECC_TEMPER_AIR_EE
+9089  1b39 4a            	dec	a
+9090  1b3a ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+9091  1b3d cd0000        	call	c_eewrc
+9093                     ; 1456 				gran_char(&NECC_TEMPER_AIR_EE,5,35);
+9095  1b40 4b23          	push	#35
+9096  1b42 4b05          	push	#5
+9097  1b44 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+9098  1b47 cd0000        	call	_gran_char
+9100  1b4a 85            	popw	x
+9101                     ; 1457 				speed=1;
+9103  1b4b 35010000      	mov	_speed,#1
+9104                     ; 1458 				HUMAN_SET_EE=1;
+9106  1b4f ae0001        	ldw	x,#1
+9107  1b52 89            	pushw	x
+9108  1b53 ae401e        	ldw	x,#_HUMAN_SET_EE
+9109  1b56 cd0000        	call	c_eewrw
+9111  1b59 85            	popw	x
+9112  1b5a ac162416      	jpf	L5153
+9113  1b5e               L5663:
+9114                     ; 1462 		else if(sub_ind==3)
+9116  1b5e b662          	ld	a,_a_ind+1
+9117  1b60 a103          	cp	a,#3
+9118  1b62 2667          	jrne	L1073
+9119                     ; 1464 			if((but==butU)||(but==butU_))
+9121  1b64 b600          	ld	a,_but
+9122  1b66 a1fb          	cp	a,#251
+9123  1b68 2706          	jreq	L5073
+9125  1b6a b600          	ld	a,_but
+9126  1b6c a17b          	cp	a,#123
+9127  1b6e 2624          	jrne	L3073
+9128  1b70               L5073:
+9129                     ; 1466 				MAX_POWER_EE++;
+9131  1b70 c64047        	ld	a,_MAX_POWER_EE
+9132  1b73 4c            	inc	a
+9133  1b74 ae4047        	ldw	x,#_MAX_POWER_EE
+9134  1b77 cd0000        	call	c_eewrc
+9136                     ; 1467 				gran_char(&MAX_POWER_EE,1,3);
+9138  1b7a 4b03          	push	#3
+9139  1b7c 4b01          	push	#1
+9140  1b7e ae4047        	ldw	x,#_MAX_POWER_EE
+9141  1b81 cd0000        	call	_gran_char
+9143  1b84 85            	popw	x
+9144                     ; 1468 				speed=1;
+9146  1b85 35010000      	mov	_speed,#1
+9147                     ; 1469 				HUMAN_SET_EE=1;
+9149  1b89 ae0001        	ldw	x,#1
+9150  1b8c 89            	pushw	x
+9151  1b8d ae401e        	ldw	x,#_HUMAN_SET_EE
+9152  1b90 cd0000        	call	c_eewrw
+9154  1b93 85            	popw	x
+9155  1b94               L3073:
+9156                     ; 1471 			if((but==butD)||(but==butD_))
+9158  1b94 b600          	ld	a,_but
+9159  1b96 a1f7          	cp	a,#247
+9160  1b98 2709          	jreq	L1173
+9162  1b9a b600          	ld	a,_but
+9163  1b9c a177          	cp	a,#119
+9164  1b9e 2703          	jreq	L665
+9165  1ba0 cc2416        	jp	L5153
+9166  1ba3               L665:
+9167  1ba3               L1173:
+9168                     ; 1473 				MAX_POWER_EE--;
+9170  1ba3 c64047        	ld	a,_MAX_POWER_EE
+9171  1ba6 4a            	dec	a
+9172  1ba7 ae4047        	ldw	x,#_MAX_POWER_EE
+9173  1baa cd0000        	call	c_eewrc
+9175                     ; 1474 				gran_char(&MAX_POWER_EE,1,3);
+9177  1bad 4b03          	push	#3
+9178  1baf 4b01          	push	#1
+9179  1bb1 ae4047        	ldw	x,#_MAX_POWER_EE
+9180  1bb4 cd0000        	call	_gran_char
+9182  1bb7 85            	popw	x
+9183                     ; 1475 				speed=1;
+9185  1bb8 35010000      	mov	_speed,#1
+9186                     ; 1476 				HUMAN_SET_EE=1;
+9188  1bbc ae0001        	ldw	x,#1
+9189  1bbf 89            	pushw	x
+9190  1bc0 ae401e        	ldw	x,#_HUMAN_SET_EE
+9191  1bc3 cd0000        	call	c_eewrw
+9193  1bc6 85            	popw	x
+9194  1bc7 ac162416      	jpf	L5153
+9195  1bcb               L1073:
+9196                     ; 1479 		else if(sub_ind==4)
+9198  1bcb b662          	ld	a,_a_ind+1
+9199  1bcd a104          	cp	a,#4
+9200  1bcf 2703          	jreq	L075
+9201  1bd1 cc1c71        	jp	L5173
+9202  1bd4               L075:
+9203                     ; 1482 			temp=time_year;
+9205  1bd4 b60c          	ld	a,_time_year
+9206  1bd6 6b03          	ld	(OFST+0,sp),a
+9207                     ; 1484 			if((but==butU)||(but==butU_))
+9209  1bd8 b600          	ld	a,_but
+9210  1bda a1fb          	cp	a,#251
+9211  1bdc 2706          	jreq	L1273
+9213  1bde b600          	ld	a,_but
+9214  1be0 a17b          	cp	a,#123
+9215  1be2 263d          	jrne	L7173
+9216  1be4               L1273:
+9217                     ; 1486 				temp++;
+9219  1be4 0c03          	inc	(OFST+0,sp)
+9220                     ; 1487 				gran_char(&temp,0,99);
+9222  1be6 4b63          	push	#99
+9223  1be8 4b00          	push	#0
+9224  1bea 96            	ldw	x,sp
+9225  1beb 1c0005        	addw	x,#OFST+2
+9226  1bee cd0000        	call	_gran_char
+9228  1bf1 85            	popw	x
+9229                     ; 1488 				_ds1307_write_byte(6,((temp/10)<<4)+(temp%10));
+9231  1bf2 7b03          	ld	a,(OFST+0,sp)
+9232  1bf4 ae000a        	ldw	x,#10
+9233  1bf7 51            	exgw	x,y
+9234  1bf8 5f            	clrw	x
+9235  1bf9 4d            	tnz	a
+9236  1bfa 2a01          	jrpl	L014
+9237  1bfc 5a            	decw	x
+9238  1bfd               L014:
+9239  1bfd 02            	rlwa	x,a
+9240  1bfe cd0000        	call	c_idiv
+9242  1c01 909f          	ld	a,yl
+9243  1c03 6b01          	ld	(OFST-2,sp),a
+9244  1c05 7b03          	ld	a,(OFST+0,sp)
+9245  1c07 ae000a        	ldw	x,#10
+9246  1c0a 51            	exgw	x,y
+9247  1c0b 5f            	clrw	x
+9248  1c0c 4d            	tnz	a
+9249  1c0d 2a01          	jrpl	L214
+9250  1c0f 5a            	decw	x
+9251  1c10               L214:
+9252  1c10 02            	rlwa	x,a
+9253  1c11 cd0000        	call	c_idiv
+9255  1c14 9f            	ld	a,xl
+9256  1c15 4e            	swap	a
+9257  1c16 a4f0          	and	a,#240
+9258  1c18 1b01          	add	a,(OFST-2,sp)
+9259  1c1a 97            	ld	xl,a
+9260  1c1b a606          	ld	a,#6
+9261  1c1d 95            	ld	xh,a
+9262  1c1e cd0000        	call	__ds1307_write_byte
+9264  1c21               L7173:
+9265                     ; 1491 			if((but==butD)||(but==butD_))
+9267  1c21 b600          	ld	a,_but
+9268  1c23 a1f7          	cp	a,#247
+9269  1c25 2709          	jreq	L5273
+9271  1c27 b600          	ld	a,_but
+9272  1c29 a177          	cp	a,#119
+9273  1c2b 2703          	jreq	L275
+9274  1c2d cc2416        	jp	L5153
+9275  1c30               L275:
+9276  1c30               L5273:
+9277                     ; 1493 				temp--;
+9279  1c30 0a03          	dec	(OFST+0,sp)
+9280                     ; 1494 				gran_char(&temp,0,99);
+9282  1c32 4b63          	push	#99
+9283  1c34 4b00          	push	#0
+9284  1c36 96            	ldw	x,sp
+9285  1c37 1c0005        	addw	x,#OFST+2
+9286  1c3a cd0000        	call	_gran_char
+9288  1c3d 85            	popw	x
+9289                     ; 1495 				_ds1307_write_byte(6,((temp/10)<<4)+(temp%10));
+9291  1c3e 7b03          	ld	a,(OFST+0,sp)
+9292  1c40 ae000a        	ldw	x,#10
+9293  1c43 51            	exgw	x,y
+9294  1c44 5f            	clrw	x
+9295  1c45 4d            	tnz	a
+9296  1c46 2a01          	jrpl	L414
+9297  1c48 5a            	decw	x
+9298  1c49               L414:
+9299  1c49 02            	rlwa	x,a
+9300  1c4a cd0000        	call	c_idiv
+9302  1c4d 909f          	ld	a,yl
+9303  1c4f 6b01          	ld	(OFST-2,sp),a
+9304  1c51 7b03          	ld	a,(OFST+0,sp)
+9305  1c53 ae000a        	ldw	x,#10
+9306  1c56 51            	exgw	x,y
+9307  1c57 5f            	clrw	x
+9308  1c58 4d            	tnz	a
+9309  1c59 2a01          	jrpl	L614
+9310  1c5b 5a            	decw	x
+9311  1c5c               L614:
+9312  1c5c 02            	rlwa	x,a
+9313  1c5d cd0000        	call	c_idiv
+9315  1c60 9f            	ld	a,xl
+9316  1c61 4e            	swap	a
+9317  1c62 a4f0          	and	a,#240
+9318  1c64 1b01          	add	a,(OFST-2,sp)
+9319  1c66 97            	ld	xl,a
+9320  1c67 a606          	ld	a,#6
+9321  1c69 95            	ld	xh,a
+9322  1c6a cd0000        	call	__ds1307_write_byte
+9324  1c6d ac162416      	jpf	L5153
+9325  1c71               L5173:
+9326                     ; 1498 		else if(sub_ind==5)
+9328  1c71 b662          	ld	a,_a_ind+1
+9329  1c73 a105          	cp	a,#5
+9330  1c75 2703          	jreq	L475
+9331  1c77 cc1d17        	jp	L1373
+9332  1c7a               L475:
+9333                     ; 1501 			temp=time_month;
+9335  1c7a b60d          	ld	a,_time_month
+9336  1c7c 6b03          	ld	(OFST+0,sp),a
+9337                     ; 1503 			if((but==butU)||(but==butU_))
+9339  1c7e b600          	ld	a,_but
+9340  1c80 a1fb          	cp	a,#251
+9341  1c82 2706          	jreq	L5373
+9343  1c84 b600          	ld	a,_but
+9344  1c86 a17b          	cp	a,#123
+9345  1c88 263d          	jrne	L3373
+9346  1c8a               L5373:
+9347                     ; 1505 				temp++;
+9349  1c8a 0c03          	inc	(OFST+0,sp)
+9350                     ; 1506 				gran_ring_char(&temp,1,12);
+9352  1c8c 4b0c          	push	#12
+9353  1c8e 4b01          	push	#1
+9354  1c90 96            	ldw	x,sp
+9355  1c91 1c0005        	addw	x,#OFST+2
+9356  1c94 cd0000        	call	_gran_ring_char
+9358  1c97 85            	popw	x
+9359                     ; 1507 				_ds1307_write_byte(5,((temp/10)<<4)+(temp%10));
+9361  1c98 7b03          	ld	a,(OFST+0,sp)
+9362  1c9a ae000a        	ldw	x,#10
+9363  1c9d 51            	exgw	x,y
+9364  1c9e 5f            	clrw	x
+9365  1c9f 4d            	tnz	a
+9366  1ca0 2a01          	jrpl	L024
+9367  1ca2 5a            	decw	x
+9368  1ca3               L024:
+9369  1ca3 02            	rlwa	x,a
+9370  1ca4 cd0000        	call	c_idiv
+9372  1ca7 909f          	ld	a,yl
+9373  1ca9 6b01          	ld	(OFST-2,sp),a
+9374  1cab 7b03          	ld	a,(OFST+0,sp)
+9375  1cad ae000a        	ldw	x,#10
+9376  1cb0 51            	exgw	x,y
+9377  1cb1 5f            	clrw	x
+9378  1cb2 4d            	tnz	a
+9379  1cb3 2a01          	jrpl	L224
+9380  1cb5 5a            	decw	x
+9381  1cb6               L224:
+9382  1cb6 02            	rlwa	x,a
+9383  1cb7 cd0000        	call	c_idiv
+9385  1cba 9f            	ld	a,xl
+9386  1cbb 4e            	swap	a
+9387  1cbc a4f0          	and	a,#240
+9388  1cbe 1b01          	add	a,(OFST-2,sp)
+9389  1cc0 97            	ld	xl,a
+9390  1cc1 a605          	ld	a,#5
+9391  1cc3 95            	ld	xh,a
+9392  1cc4 cd0000        	call	__ds1307_write_byte
+9394  1cc7               L3373:
+9395                     ; 1510 			if((but==butD)||(but==butD_))
+9397  1cc7 b600          	ld	a,_but
+9398  1cc9 a1f7          	cp	a,#247
+9399  1ccb 2709          	jreq	L1473
+9401  1ccd b600          	ld	a,_but
+9402  1ccf a177          	cp	a,#119
+9403  1cd1 2703          	jreq	L675
+9404  1cd3 cc2416        	jp	L5153
+9405  1cd6               L675:
+9406  1cd6               L1473:
+9407                     ; 1512 				temp--;
+9409  1cd6 0a03          	dec	(OFST+0,sp)
+9410                     ; 1513 				gran_ring_char(&temp,1,12);
+9412  1cd8 4b0c          	push	#12
+9413  1cda 4b01          	push	#1
+9414  1cdc 96            	ldw	x,sp
+9415  1cdd 1c0005        	addw	x,#OFST+2
+9416  1ce0 cd0000        	call	_gran_ring_char
+9418  1ce3 85            	popw	x
+9419                     ; 1514 				_ds1307_write_byte(5,((temp/10)<<4)+(temp%10));
+9421  1ce4 7b03          	ld	a,(OFST+0,sp)
+9422  1ce6 ae000a        	ldw	x,#10
+9423  1ce9 51            	exgw	x,y
+9424  1cea 5f            	clrw	x
+9425  1ceb 4d            	tnz	a
+9426  1cec 2a01          	jrpl	L424
+9427  1cee 5a            	decw	x
+9428  1cef               L424:
+9429  1cef 02            	rlwa	x,a
+9430  1cf0 cd0000        	call	c_idiv
+9432  1cf3 909f          	ld	a,yl
+9433  1cf5 6b01          	ld	(OFST-2,sp),a
+9434  1cf7 7b03          	ld	a,(OFST+0,sp)
+9435  1cf9 ae000a        	ldw	x,#10
+9436  1cfc 51            	exgw	x,y
+9437  1cfd 5f            	clrw	x
+9438  1cfe 4d            	tnz	a
+9439  1cff 2a01          	jrpl	L624
+9440  1d01 5a            	decw	x
+9441  1d02               L624:
+9442  1d02 02            	rlwa	x,a
+9443  1d03 cd0000        	call	c_idiv
+9445  1d06 9f            	ld	a,xl
+9446  1d07 4e            	swap	a
+9447  1d08 a4f0          	and	a,#240
+9448  1d0a 1b01          	add	a,(OFST-2,sp)
+9449  1d0c 97            	ld	xl,a
+9450  1d0d a605          	ld	a,#5
+9451  1d0f 95            	ld	xh,a
+9452  1d10 cd0000        	call	__ds1307_write_byte
+9454  1d13 ac162416      	jpf	L5153
+9455  1d17               L1373:
+9456                     ; 1517 		else if(sub_ind==6)
+9458  1d17 b662          	ld	a,_a_ind+1
+9459  1d19 a106          	cp	a,#6
+9460  1d1b 2703          	jreq	L006
+9461  1d1d cc1df9        	jp	L5473
+9462  1d20               L006:
+9463                     ; 1520 			temp=time_date;
+9465  1d20 b603          	ld	a,_time_date
+9466  1d22 6b03          	ld	(OFST+0,sp),a
+9467                     ; 1521 			max_day=31;
+9469  1d24 a61f          	ld	a,#31
+9470  1d26 6b02          	ld	(OFST-1,sp),a
+9471                     ; 1522 			if((time_month==4)||(time_month==6)||(time_month==9)||(time_month==11))max_day=30;
+9473  1d28 b60d          	ld	a,_time_month
+9474  1d2a a104          	cp	a,#4
+9475  1d2c 2712          	jreq	L1573
+9477  1d2e b60d          	ld	a,_time_month
+9478  1d30 a106          	cp	a,#6
+9479  1d32 270c          	jreq	L1573
+9481  1d34 b60d          	ld	a,_time_month
+9482  1d36 a109          	cp	a,#9
+9483  1d38 2706          	jreq	L1573
+9485  1d3a b60d          	ld	a,_time_month
+9486  1d3c a10b          	cp	a,#11
+9487  1d3e 2612          	jrne	L7473
+9488  1d40               L1573:
+9491  1d40 a61e          	ld	a,#30
+9492  1d42 6b02          	ld	(OFST-1,sp),a
+9494  1d44               L7573:
+9495                     ; 1528 			if((but==butU)||(but==butU_))
+9497  1d44 b600          	ld	a,_but
+9498  1d46 a1fb          	cp	a,#251
+9499  1d48 2720          	jreq	L1773
+9501  1d4a b600          	ld	a,_but
+9502  1d4c a17b          	cp	a,#123
+9503  1d4e 2658          	jrne	L7673
+9504  1d50 2018          	jra	L1773
+9505  1d52               L7473:
+9506                     ; 1523 			else if(time_month==2)
+9508  1d52 b60d          	ld	a,_time_month
+9509  1d54 a102          	cp	a,#2
+9510  1d56 26ec          	jrne	L7573
+9511                     ; 1525 				if((time_year%4)==0)max_day=29;
+9513  1d58 b60c          	ld	a,_time_year
+9514  1d5a a503          	bcp	a,#3
+9515  1d5c 2606          	jrne	L3673
+9518  1d5e a61d          	ld	a,#29
+9519  1d60 6b02          	ld	(OFST-1,sp),a
+9521  1d62 20e0          	jra	L7573
+9522  1d64               L3673:
+9523                     ; 1526 				else max_day=28;
+9525  1d64 a61c          	ld	a,#28
+9526  1d66 6b02          	ld	(OFST-1,sp),a
+9527  1d68 20da          	jra	L7573
+9528  1d6a               L1773:
+9529                     ; 1530 				temp++;
+9531  1d6a 0c03          	inc	(OFST+0,sp)
+9532                     ; 1531 				gran_ring_char(&temp,1,max_day);
+9534  1d6c 7b02          	ld	a,(OFST-1,sp)
+9535  1d6e 88            	push	a
+9536  1d6f 4b01          	push	#1
+9537  1d71 96            	ldw	x,sp
+9538  1d72 1c0005        	addw	x,#OFST+2
+9539  1d75 cd0000        	call	_gran_ring_char
+9541  1d78 85            	popw	x
+9542                     ; 1532 				_ds1307_write_byte(4,((temp/10)<<4)+(temp%10));
+9544  1d79 7b03          	ld	a,(OFST+0,sp)
+9545  1d7b ae000a        	ldw	x,#10
+9546  1d7e 51            	exgw	x,y
+9547  1d7f 5f            	clrw	x
+9548  1d80 4d            	tnz	a
+9549  1d81 2a01          	jrpl	L034
+9550  1d83 5a            	decw	x
+9551  1d84               L034:
+9552  1d84 02            	rlwa	x,a
+9553  1d85 cd0000        	call	c_idiv
+9555  1d88 909f          	ld	a,yl
+9556  1d8a 6b01          	ld	(OFST-2,sp),a
+9557  1d8c 7b03          	ld	a,(OFST+0,sp)
+9558  1d8e ae000a        	ldw	x,#10
+9559  1d91 51            	exgw	x,y
+9560  1d92 5f            	clrw	x
+9561  1d93 4d            	tnz	a
+9562  1d94 2a01          	jrpl	L234
+9563  1d96 5a            	decw	x
+9564  1d97               L234:
+9565  1d97 02            	rlwa	x,a
+9566  1d98 cd0000        	call	c_idiv
+9568  1d9b 9f            	ld	a,xl
+9569  1d9c 4e            	swap	a
+9570  1d9d a4f0          	and	a,#240
+9571  1d9f 1b01          	add	a,(OFST-2,sp)
+9572  1da1 97            	ld	xl,a
+9573  1da2 a604          	ld	a,#4
+9574  1da4 95            	ld	xh,a
+9575  1da5 cd0000        	call	__ds1307_write_byte
+9577  1da8               L7673:
+9578                     ; 1535 			if((but==butD)||(but==butD_))
+9580  1da8 b600          	ld	a,_but
+9581  1daa a1f7          	cp	a,#247
+9582  1dac 2709          	jreq	L5773
+9584  1dae b600          	ld	a,_but
+9585  1db0 a177          	cp	a,#119
+9586  1db2 2703          	jreq	L206
+9587  1db4 cc2416        	jp	L5153
+9588  1db7               L206:
+9589  1db7               L5773:
+9590                     ; 1537 				temp--;
+9592  1db7 0a03          	dec	(OFST+0,sp)
+9593                     ; 1538 				gran_ring_char(&temp,1,max_day);
+9595  1db9 7b02          	ld	a,(OFST-1,sp)
+9596  1dbb 88            	push	a
+9597  1dbc 4b01          	push	#1
+9598  1dbe 96            	ldw	x,sp
+9599  1dbf 1c0005        	addw	x,#OFST+2
+9600  1dc2 cd0000        	call	_gran_ring_char
+9602  1dc5 85            	popw	x
+9603                     ; 1539 				_ds1307_write_byte(4,((temp/10)<<4)+(temp%10));
+9605  1dc6 7b03          	ld	a,(OFST+0,sp)
+9606  1dc8 ae000a        	ldw	x,#10
+9607  1dcb 51            	exgw	x,y
+9608  1dcc 5f            	clrw	x
+9609  1dcd 4d            	tnz	a
+9610  1dce 2a01          	jrpl	L434
+9611  1dd0 5a            	decw	x
+9612  1dd1               L434:
+9613  1dd1 02            	rlwa	x,a
+9614  1dd2 cd0000        	call	c_idiv
+9616  1dd5 909f          	ld	a,yl
+9617  1dd7 6b01          	ld	(OFST-2,sp),a
+9618  1dd9 7b03          	ld	a,(OFST+0,sp)
+9619  1ddb ae000a        	ldw	x,#10
+9620  1dde 51            	exgw	x,y
+9621  1ddf 5f            	clrw	x
+9622  1de0 4d            	tnz	a
+9623  1de1 2a01          	jrpl	L634
+9624  1de3 5a            	decw	x
+9625  1de4               L634:
+9626  1de4 02            	rlwa	x,a
+9627  1de5 cd0000        	call	c_idiv
+9629  1de8 9f            	ld	a,xl
+9630  1de9 4e            	swap	a
+9631  1dea a4f0          	and	a,#240
+9632  1dec 1b01          	add	a,(OFST-2,sp)
+9633  1dee 97            	ld	xl,a
+9634  1def a604          	ld	a,#4
+9635  1df1 95            	ld	xh,a
+9636  1df2 cd0000        	call	__ds1307_write_byte
+9638  1df5 ac162416      	jpf	L5153
+9639  1df9               L5473:
+9640                     ; 1542 		else if(sub_ind==7)
+9642  1df9 b662          	ld	a,_a_ind+1
+9643  1dfb a107          	cp	a,#7
+9644  1dfd 2703          	jreq	L406
+9645  1dff cc1ea3        	jp	L1004
+9646  1e02               L406:
+9647                     ; 1545 			temp=time_hour;
+9649  1e02 b60f          	ld	a,_time_hour
+9650  1e04 6b03          	ld	(OFST+0,sp),a
+9651                     ; 1547 			if((but==butU)||(but==butU_))
+9653  1e06 b600          	ld	a,_but
+9654  1e08 a1fb          	cp	a,#251
+9655  1e0a 2706          	jreq	L5004
+9657  1e0c b600          	ld	a,_but
+9658  1e0e a17b          	cp	a,#123
+9659  1e10 263f          	jrne	L3004
+9660  1e12               L5004:
+9661                     ; 1549 				temp++;
+9663  1e12 0c03          	inc	(OFST+0,sp)
+9664                     ; 1550 				gran_ring_char(&temp,0,23);
+9666  1e14 4b17          	push	#23
+9667  1e16 4b00          	push	#0
+9668  1e18 96            	ldw	x,sp
+9669  1e19 1c0005        	addw	x,#OFST+2
+9670  1e1c cd0000        	call	_gran_ring_char
+9672  1e1f 85            	popw	x
+9673                     ; 1551 				_ds1307_write_byte(2,(((temp/10)<<4)+(temp%10))&0b10111111);
+9675  1e20 7b03          	ld	a,(OFST+0,sp)
+9676  1e22 ae000a        	ldw	x,#10
+9677  1e25 51            	exgw	x,y
+9678  1e26 5f            	clrw	x
+9679  1e27 4d            	tnz	a
+9680  1e28 2a01          	jrpl	L044
+9681  1e2a 5a            	decw	x
+9682  1e2b               L044:
+9683  1e2b 02            	rlwa	x,a
+9684  1e2c cd0000        	call	c_idiv
+9686  1e2f 909f          	ld	a,yl
+9687  1e31 6b01          	ld	(OFST-2,sp),a
+9688  1e33 7b03          	ld	a,(OFST+0,sp)
+9689  1e35 ae000a        	ldw	x,#10
+9690  1e38 51            	exgw	x,y
+9691  1e39 5f            	clrw	x
+9692  1e3a 4d            	tnz	a
+9693  1e3b 2a01          	jrpl	L244
+9694  1e3d 5a            	decw	x
+9695  1e3e               L244:
+9696  1e3e 02            	rlwa	x,a
+9697  1e3f cd0000        	call	c_idiv
+9699  1e42 9f            	ld	a,xl
+9700  1e43 4e            	swap	a
+9701  1e44 a4f0          	and	a,#240
+9702  1e46 1b01          	add	a,(OFST-2,sp)
+9703  1e48 a4bf          	and	a,#191
+9704  1e4a 97            	ld	xl,a
+9705  1e4b a602          	ld	a,#2
+9706  1e4d 95            	ld	xh,a
+9707  1e4e cd0000        	call	__ds1307_write_byte
+9709  1e51               L3004:
+9710                     ; 1554 			if((but==butD)||(but==butD_))
+9712  1e51 b600          	ld	a,_but
+9713  1e53 a1f7          	cp	a,#247
+9714  1e55 2709          	jreq	L1104
+9716  1e57 b600          	ld	a,_but
+9717  1e59 a177          	cp	a,#119
+9718  1e5b 2703          	jreq	L606
+9719  1e5d cc2416        	jp	L5153
+9720  1e60               L606:
+9721  1e60               L1104:
+9722                     ; 1556 				temp--;
+9724  1e60 0a03          	dec	(OFST+0,sp)
+9725                     ; 1557 				gran_ring_char(&temp,0,23);
+9727  1e62 4b17          	push	#23
+9728  1e64 4b00          	push	#0
+9729  1e66 96            	ldw	x,sp
+9730  1e67 1c0005        	addw	x,#OFST+2
+9731  1e6a cd0000        	call	_gran_ring_char
+9733  1e6d 85            	popw	x
+9734                     ; 1558 				_ds1307_write_byte(2,(((temp/10)<<4)+(temp%10))&0b10111111);
+9736  1e6e 7b03          	ld	a,(OFST+0,sp)
+9737  1e70 ae000a        	ldw	x,#10
+9738  1e73 51            	exgw	x,y
+9739  1e74 5f            	clrw	x
+9740  1e75 4d            	tnz	a
+9741  1e76 2a01          	jrpl	L444
+9742  1e78 5a            	decw	x
+9743  1e79               L444:
+9744  1e79 02            	rlwa	x,a
+9745  1e7a cd0000        	call	c_idiv
+9747  1e7d 909f          	ld	a,yl
+9748  1e7f 6b01          	ld	(OFST-2,sp),a
+9749  1e81 7b03          	ld	a,(OFST+0,sp)
+9750  1e83 ae000a        	ldw	x,#10
+9751  1e86 51            	exgw	x,y
+9752  1e87 5f            	clrw	x
+9753  1e88 4d            	tnz	a
+9754  1e89 2a01          	jrpl	L644
+9755  1e8b 5a            	decw	x
+9756  1e8c               L644:
+9757  1e8c 02            	rlwa	x,a
+9758  1e8d cd0000        	call	c_idiv
+9760  1e90 9f            	ld	a,xl
+9761  1e91 4e            	swap	a
+9762  1e92 a4f0          	and	a,#240
+9763  1e94 1b01          	add	a,(OFST-2,sp)
+9764  1e96 a4bf          	and	a,#191
+9765  1e98 97            	ld	xl,a
+9766  1e99 a602          	ld	a,#2
+9767  1e9b 95            	ld	xh,a
+9768  1e9c cd0000        	call	__ds1307_write_byte
+9770  1e9f ac162416      	jpf	L5153
+9771  1ea3               L1004:
+9772                     ; 1561 		else if(sub_ind==8)
+9774  1ea3 b662          	ld	a,_a_ind+1
+9775  1ea5 a108          	cp	a,#8
+9776  1ea7 2703          	jreq	L016
+9777  1ea9 cc1f55        	jp	L5104
+9778  1eac               L016:
+9779                     ; 1564 			temp=time_min;
+9781  1eac b610          	ld	a,_time_min
+9782  1eae 6b03          	ld	(OFST+0,sp),a
+9783                     ; 1566 			if((but==butU)||(but==butU_))
+9785  1eb0 b600          	ld	a,_but
+9786  1eb2 a1fb          	cp	a,#251
+9787  1eb4 2706          	jreq	L1204
+9789  1eb6 b600          	ld	a,_but
+9790  1eb8 a17b          	cp	a,#123
+9791  1eba 2643          	jrne	L7104
+9792  1ebc               L1204:
+9793                     ; 1568 				temp++;
+9795  1ebc 0c03          	inc	(OFST+0,sp)
+9796                     ; 1569 				gran_ring_char(&temp,0,59);
+9798  1ebe 4b3b          	push	#59
+9799  1ec0 4b00          	push	#0
+9800  1ec2 96            	ldw	x,sp
+9801  1ec3 1c0005        	addw	x,#OFST+2
+9802  1ec6 cd0000        	call	_gran_ring_char
+9804  1ec9 85            	popw	x
+9805                     ; 1570 				_ds1307_write_byte(1,((temp/10)<<4)+(temp%10));
+9807  1eca 7b03          	ld	a,(OFST+0,sp)
+9808  1ecc ae000a        	ldw	x,#10
+9809  1ecf 51            	exgw	x,y
+9810  1ed0 5f            	clrw	x
+9811  1ed1 4d            	tnz	a
+9812  1ed2 2a01          	jrpl	L054
+9813  1ed4 5a            	decw	x
+9814  1ed5               L054:
+9815  1ed5 02            	rlwa	x,a
+9816  1ed6 cd0000        	call	c_idiv
+9818  1ed9 909f          	ld	a,yl
+9819  1edb 6b01          	ld	(OFST-2,sp),a
+9820  1edd 7b03          	ld	a,(OFST+0,sp)
+9821  1edf ae000a        	ldw	x,#10
+9822  1ee2 51            	exgw	x,y
+9823  1ee3 5f            	clrw	x
+9824  1ee4 4d            	tnz	a
+9825  1ee5 2a01          	jrpl	L254
+9826  1ee7 5a            	decw	x
+9827  1ee8               L254:
+9828  1ee8 02            	rlwa	x,a
+9829  1ee9 cd0000        	call	c_idiv
+9831  1eec 9f            	ld	a,xl
+9832  1eed 4e            	swap	a
+9833  1eee a4f0          	and	a,#240
+9834  1ef0 1b01          	add	a,(OFST-2,sp)
+9835  1ef2 97            	ld	xl,a
+9836  1ef3 a601          	ld	a,#1
+9837  1ef5 95            	ld	xh,a
+9838  1ef6 cd0000        	call	__ds1307_write_byte
+9840                     ; 1571 				_ds1307_write_byte(0,0);
+9842  1ef9 5f            	clrw	x
+9843  1efa 4f            	clr	a
+9844  1efb 95            	ld	xh,a
+9845  1efc cd0000        	call	__ds1307_write_byte
+9847  1eff               L7104:
+9848                     ; 1573 			if((but==butD)||(but==butD_))
+9850  1eff b600          	ld	a,_but
+9851  1f01 a1f7          	cp	a,#247
+9852  1f03 2709          	jreq	L5204
+9854  1f05 b600          	ld	a,_but
+9855  1f07 a177          	cp	a,#119
+9856  1f09 2703          	jreq	L216
+9857  1f0b cc2416        	jp	L5153
+9858  1f0e               L216:
+9859  1f0e               L5204:
+9860                     ; 1575 				temp--;
+9862  1f0e 0a03          	dec	(OFST+0,sp)
+9863                     ; 1576 				gran_ring_char(&temp,0,59);
+9865  1f10 4b3b          	push	#59
+9866  1f12 4b00          	push	#0
+9867  1f14 96            	ldw	x,sp
+9868  1f15 1c0005        	addw	x,#OFST+2
+9869  1f18 cd0000        	call	_gran_ring_char
+9871  1f1b 85            	popw	x
+9872                     ; 1577 				_ds1307_write_byte(1,((temp/10)<<4)+(temp%10));
+9874  1f1c 7b03          	ld	a,(OFST+0,sp)
+9875  1f1e ae000a        	ldw	x,#10
+9876  1f21 51            	exgw	x,y
+9877  1f22 5f            	clrw	x
+9878  1f23 4d            	tnz	a
+9879  1f24 2a01          	jrpl	L454
+9880  1f26 5a            	decw	x
+9881  1f27               L454:
+9882  1f27 02            	rlwa	x,a
+9883  1f28 cd0000        	call	c_idiv
+9885  1f2b 909f          	ld	a,yl
+9886  1f2d 6b01          	ld	(OFST-2,sp),a
+9887  1f2f 7b03          	ld	a,(OFST+0,sp)
+9888  1f31 ae000a        	ldw	x,#10
+9889  1f34 51            	exgw	x,y
+9890  1f35 5f            	clrw	x
+9891  1f36 4d            	tnz	a
+9892  1f37 2a01          	jrpl	L654
+9893  1f39 5a            	decw	x
+9894  1f3a               L654:
+9895  1f3a 02            	rlwa	x,a
+9896  1f3b cd0000        	call	c_idiv
+9898  1f3e 9f            	ld	a,xl
+9899  1f3f 4e            	swap	a
+9900  1f40 a4f0          	and	a,#240
+9901  1f42 1b01          	add	a,(OFST-2,sp)
+9902  1f44 97            	ld	xl,a
+9903  1f45 a601          	ld	a,#1
+9904  1f47 95            	ld	xh,a
+9905  1f48 cd0000        	call	__ds1307_write_byte
+9907                     ; 1578 				_ds1307_write_byte(0,0);
+9909  1f4b 5f            	clrw	x
+9910  1f4c 4f            	clr	a
+9911  1f4d 95            	ld	xh,a
+9912  1f4e cd0000        	call	__ds1307_write_byte
+9914  1f51 ac162416      	jpf	L5153
+9915  1f55               L5104:
+9916                     ; 1581 		else if(sub_ind==9)
+9918  1f55 b662          	ld	a,_a_ind+1
+9919  1f57 a109          	cp	a,#9
+9920  1f59 2703          	jreq	L416
+9921  1f5b cc2416        	jp	L5153
+9922  1f5e               L416:
+9923                     ; 1584 			temp=time_day_of_week;
+9925  1f5e b60e          	ld	a,_time_day_of_week
+9926  1f60 6b03          	ld	(OFST+0,sp),a
+9927                     ; 1586 			if((but==butU)||(but==butU_))
+9929  1f62 b600          	ld	a,_but
+9930  1f64 a1fb          	cp	a,#251
+9931  1f66 2706          	jreq	L5304
+9933  1f68 b600          	ld	a,_but
+9934  1f6a a17b          	cp	a,#123
+9935  1f6c 2619          	jrne	L3304
+9936  1f6e               L5304:
+9937                     ; 1588 				temp++;
+9939  1f6e 0c03          	inc	(OFST+0,sp)
+9940                     ; 1589 				gran_ring_char(&temp,1,7);
+9942  1f70 4b07          	push	#7
+9943  1f72 4b01          	push	#1
+9944  1f74 96            	ldw	x,sp
+9945  1f75 1c0005        	addw	x,#OFST+2
+9946  1f78 cd0000        	call	_gran_ring_char
+9948  1f7b 85            	popw	x
+9949                     ; 1590 				_ds1307_write_byte(3,temp&0x07);
+9951  1f7c 7b03          	ld	a,(OFST+0,sp)
+9952  1f7e a407          	and	a,#7
+9953  1f80 97            	ld	xl,a
+9954  1f81 a603          	ld	a,#3
+9955  1f83 95            	ld	xh,a
+9956  1f84 cd0000        	call	__ds1307_write_byte
+9958  1f87               L3304:
+9959                     ; 1592 			if((but==butD)||(but==butD_))
+9961  1f87 b600          	ld	a,_but
+9962  1f89 a1f7          	cp	a,#247
+9963  1f8b 2709          	jreq	L1404
+9965  1f8d b600          	ld	a,_but
+9966  1f8f a177          	cp	a,#119
+9967  1f91 2703          	jreq	L616
+9968  1f93 cc2416        	jp	L5153
+9969  1f96               L616:
+9970  1f96               L1404:
+9971                     ; 1594 				temp--;
+9973  1f96 0a03          	dec	(OFST+0,sp)
+9974                     ; 1595 				gran_ring_char(&temp,1,7);
+9976  1f98 4b07          	push	#7
+9977  1f9a 4b01          	push	#1
+9978  1f9c 96            	ldw	x,sp
+9979  1f9d 1c0005        	addw	x,#OFST+2
+9980  1fa0 cd0000        	call	_gran_ring_char
+9982  1fa3 85            	popw	x
+9983                     ; 1596 				_ds1307_write_byte(3,temp&0x07);
+9985  1fa4 7b03          	ld	a,(OFST+0,sp)
+9986  1fa6 a407          	and	a,#7
+9987  1fa8 97            	ld	xl,a
+9988  1fa9 a603          	ld	a,#3
+9989  1fab 95            	ld	xh,a
+9990  1fac cd0000        	call	__ds1307_write_byte
+9992  1faf ac162416      	jpf	L5153
+9993  1fb3               L7263:
+9994                     ; 1601 else if(ind==iSetTable)
+9996  1fb3 b661          	ld	a,_a_ind
+9997  1fb5 a105          	cp	a,#5
+9998  1fb7 2703          	jreq	L026
+9999  1fb9 cc204d        	jp	L5404
+10000  1fbc               L026:
+10001                     ; 1603 	if((but==butU)/*||(but==butU_)*/)
+10003  1fbc b600          	ld	a,_but
+10004  1fbe a1fb          	cp	a,#251
+10005  1fc0 2617          	jrne	L7404
+10006                     ; 1605 		sub_ind++;
+10008  1fc2 3c62          	inc	_a_ind+1
+10009                     ; 1606 		gran_char(&sub_ind,0,34);
+10011  1fc4 4b22          	push	#34
+10012  1fc6 4b00          	push	#0
+10013  1fc8 ae0062        	ldw	x,#_a_ind+1
+10014  1fcb cd0000        	call	_gran_char
+10016  1fce 85            	popw	x
+10017                     ; 1607 		clear_ind();
+10019  1fcf cd0000        	call	_clear_ind
+10021                     ; 1608 		ind_hndl();
+10023  1fd2 cd0683        	call	_ind_hndl
+10026  1fd5 ac162416      	jpf	L5153
+10027  1fd9               L7404:
+10028                     ; 1610 	else if((but==butD)/*||(but==butD_)*/)
+10030  1fd9 b600          	ld	a,_but
+10031  1fdb a1f7          	cp	a,#247
+10032  1fdd 2617          	jrne	L3504
+10033                     ; 1612 		sub_ind--;
+10035  1fdf 3a62          	dec	_a_ind+1
+10036                     ; 1613 		gran_char(&sub_ind,0,34);
+10038  1fe1 4b22          	push	#34
+10039  1fe3 4b00          	push	#0
+10040  1fe5 ae0062        	ldw	x,#_a_ind+1
+10041  1fe8 cd0000        	call	_gran_char
+10043  1feb 85            	popw	x
+10044                     ; 1614 		clear_ind();
+10046  1fec cd0000        	call	_clear_ind
+10048                     ; 1615 		ind_hndl();
+10050  1fef cd0683        	call	_ind_hndl
+10053  1ff2 ac162416      	jpf	L5153
+10054  1ff6               L3504:
+10055                     ; 1617 	else if(but==butM)
+10057  1ff6 b600          	ld	a,_but
+10058  1ff8 a1fd          	cp	a,#253
+10059  1ffa 2616          	jrne	L7504
+10060                     ; 1619 		if(sub_ind1==0)sub_ind1=1;
+10062  1ffc 3d63          	tnz	_a_ind+2
+10063  1ffe 2606          	jrne	L1604
+10066  2000 35010063      	mov	_a_ind+2,#1
+10068  2004 2002          	jra	L3604
+10069  2006               L1604:
+10070                     ; 1620 		else sub_ind1=0;
+10072  2006 3f63          	clr	_a_ind+2
+10073  2008               L3604:
+10074                     ; 1621 		clear_ind();
+10076  2008 cd0000        	call	_clear_ind
+10078                     ; 1622 		ind_hndl();
+10080  200b cd0683        	call	_ind_hndl
+10083  200e ac162416      	jpf	L5153
+10084  2012               L7504:
+10085                     ; 1624 	else if((but==butD_)/*||(but==butD_)*/)
+10087  2012 b600          	ld	a,_but
+10088  2014 a177          	cp	a,#119
+10089  2016 2610          	jrne	L7604
+10090                     ; 1626 		tree_down(0,0);
+10092  2018 5f            	clrw	x
+10093  2019 4f            	clr	a
+10094  201a 95            	ld	xh,a
+10095  201b cd0000        	call	_tree_down
+10097                     ; 1627 		clear_ind();
+10099  201e cd0000        	call	_clear_ind
+10101                     ; 1628 		ind_hndl();
+10103  2021 cd0683        	call	_ind_hndl
+10106  2024 ac162416      	jpf	L5153
+10107  2028               L7604:
+10108                     ; 1630 	else if(but==butUD_)
+10110  2028 b600          	ld	a,_but
+10111  202a a173          	cp	a,#115
+10112  202c 2603          	jrne	L226
+10113  202e cc2416        	jp	L5153
+10114  2031               L226:
+10116                     ; 1711 	else if(but==butM_)
+10118  2031 b600          	ld	a,_but
+10119  2033 a17d          	cp	a,#125
+10120  2035 2703          	jreq	L426
+10121  2037 cc2416        	jp	L5153
+10122  203a               L426:
+10123                     ; 1713 		tree_up(iSetTable_,sub_ind,0,sub_ind1);
+10125  203a 3b0063        	push	_a_ind+2
+10126  203d 4b00          	push	#0
+10127  203f b662          	ld	a,_a_ind+1
+10128  2041 97            	ld	xl,a
+10129  2042 a606          	ld	a,#6
+10130  2044 95            	ld	xh,a
+10131  2045 cd0000        	call	_tree_up
+10133  2048 85            	popw	x
+10134  2049 ac162416      	jpf	L5153
+10135  204d               L5404:
+10136                     ; 1717 else if(ind==iSetTable_)
+10138  204d b661          	ld	a,_a_ind
+10139  204f a106          	cp	a,#6
+10140  2051 2703          	jreq	L626
+10141  2053 cc225c        	jp	L3014
+10142  2056               L626:
+10143                     ; 1719 	if(but==butM_)
+10145  2056 b600          	ld	a,_but
+10146  2058 a17d          	cp	a,#125
+10147  205a 260a          	jrne	L5014
+10148                     ; 1721 		tree_down(0,0);
+10150  205c 5f            	clrw	x
+10151  205d 4f            	clr	a
+10152  205e 95            	ld	xh,a
+10153  205f cd0000        	call	_tree_down
+10156  2062 ac162416      	jpf	L5153
+10157  2066               L5014:
+10158                     ; 1723 	else if(but==butM)
+10160  2066 b600          	ld	a,_but
+10161  2068 a1fd          	cp	a,#253
+10162  206a 2618          	jrne	L1114
+10163                     ; 1725 		if(sub_ind1==1)sub_ind1=0;
+10165  206c b663          	ld	a,_a_ind+2
+10166  206e a101          	cp	a,#1
+10167  2070 2604          	jrne	L3114
+10170  2072 3f63          	clr	_a_ind+2
+10172  2074 2004          	jra	L5114
+10173  2076               L3114:
+10174                     ; 1726 		else sub_ind1=1;
+10176  2076 35010063      	mov	_a_ind+2,#1
+10177  207a               L5114:
+10178                     ; 1727 		clear_ind();
+10180  207a cd0000        	call	_clear_ind
+10182                     ; 1728 		ind_hndl();
+10184  207d cd0683        	call	_ind_hndl
+10187  2080 ac162416      	jpf	L5153
+10188  2084               L1114:
+10189                     ; 1730 	else if(sub_ind1==0)
+10191  2084 3d63          	tnz	_a_ind+2
+10192  2086 2703          	jreq	L036
+10193  2088 cc213f        	jp	L1214
+10194  208b               L036:
+10195                     ; 1735 		num_of_day=sub_ind/5;
+10197  208b 5f            	clrw	x
+10198  208c b662          	ld	a,_a_ind+1
+10199  208e 2a01          	jrpl	L064
+10200  2090 53            	cplw	x
+10201  2091               L064:
+10202  2091 97            	ld	xl,a
+10203  2092 a605          	ld	a,#5
+10204  2094 cd0000        	call	c_sdivx
+10206                     ; 1736 		num_of_set=sub_ind%5;
+10208  2097 b662          	ld	a,_a_ind+1
+10209  2099 ae0005        	ldw	x,#5
+10210  209c 51            	exgw	x,y
+10211  209d 5f            	clrw	x
+10212  209e 4d            	tnz	a
+10213  209f 2a01          	jrpl	L264
+10214  20a1 5a            	decw	x
+10215  20a2               L264:
+10216  20a2 02            	rlwa	x,a
+10217  20a3 cd0000        	call	c_idiv
+10219  20a6 909f          	ld	a,yl
+10220  20a8 6b03          	ld	(OFST+0,sp),a
+10221                     ; 1738 		if((but==butU)||(but==butU_))
+10223  20aa b600          	ld	a,_but
+10224  20ac a1fb          	cp	a,#251
+10225  20ae 2706          	jreq	L5214
+10227  20b0 b600          	ld	a,_but
+10228  20b2 a17b          	cp	a,#123
+10229  20b4 2639          	jrne	L3214
+10230  20b6               L5214:
+10231                     ; 1741 			tempUC++;
+10233  20b6 3c01          	inc	_tempUC
+10234                     ; 1742 			if(tempUC>TABLE_TIME_EE_MAX[num_of_set])tempUC=TABLE_TIME_EE_MAX[num_of_set];
+10236  20b8 7b03          	ld	a,(OFST+0,sp)
+10237  20ba 5f            	clrw	x
+10238  20bb 97            	ld	xl,a
+10239  20bc d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
+10240  20bf b101          	cp	a,_tempUC
+10241  20c1 2409          	jruge	L7214
+10244  20c3 7b03          	ld	a,(OFST+0,sp)
+10245  20c5 5f            	clrw	x
+10246  20c6 97            	ld	xl,a
+10247  20c7 d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
+10248  20ca b701          	ld	_tempUC,a
+10249  20cc               L7214:
+10250                     ; 1743 			if(tempUC<TABLE_TIME_EE_MIN[num_of_set])tempUC=TABLE_TIME_EE_MIN[num_of_set];
+10252  20cc 7b03          	ld	a,(OFST+0,sp)
+10253  20ce 5f            	clrw	x
+10254  20cf 97            	ld	xl,a
+10255  20d0 d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
+10256  20d3 b101          	cp	a,_tempUC
+10257  20d5 2309          	jrule	L1314
+10260  20d7 7b03          	ld	a,(OFST+0,sp)
+10261  20d9 5f            	clrw	x
+10262  20da 97            	ld	xl,a
+10263  20db d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
+10264  20de b701          	ld	_tempUC,a
+10265  20e0               L1314:
+10266                     ; 1745 			speed=1;
+10268  20e0 35010000      	mov	_speed,#1
+10269                     ; 1746 			HUMAN_SET_EE=1;
+10271  20e4 ae0001        	ldw	x,#1
+10272  20e7 89            	pushw	x
+10273  20e8 ae401e        	ldw	x,#_HUMAN_SET_EE
+10274  20eb cd0000        	call	c_eewrw
+10276  20ee 85            	popw	x
+10277  20ef               L3214:
+10278                     ; 1748 		if((but==butD)||(but==butD_))
+10280  20ef b600          	ld	a,_but
+10281  20f1 a1f7          	cp	a,#247
+10282  20f3 2709          	jreq	L5314
+10284  20f5 b600          	ld	a,_but
+10285  20f7 a177          	cp	a,#119
+10286  20f9 2703          	jreq	L236
+10287  20fb cc2416        	jp	L5153
+10288  20fe               L236:
+10289  20fe               L5314:
+10290                     ; 1751 			if(tempUC)tempUC--;
+10292  20fe 3d01          	tnz	_tempUC
+10293  2100 2702          	jreq	L7314
+10296  2102 3a01          	dec	_tempUC
+10297  2104               L7314:
+10298                     ; 1752 			if(tempUC>TABLE_TIME_EE_MAX[num_of_set])tempUC=TABLE_TIME_EE_MAX[num_of_set];
+10300  2104 7b03          	ld	a,(OFST+0,sp)
+10301  2106 5f            	clrw	x
+10302  2107 97            	ld	xl,a
+10303  2108 d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
+10304  210b b101          	cp	a,_tempUC
+10305  210d 2409          	jruge	L1414
+10308  210f 7b03          	ld	a,(OFST+0,sp)
+10309  2111 5f            	clrw	x
+10310  2112 97            	ld	xl,a
+10311  2113 d60041        	ld	a,(_TABLE_TIME_EE_MAX,x)
+10312  2116 b701          	ld	_tempUC,a
+10313  2118               L1414:
+10314                     ; 1753 			if(tempUC<TABLE_TIME_EE_MIN[num_of_set])tempUC=TABLE_TIME_EE_MIN[num_of_set];
+10316  2118 7b03          	ld	a,(OFST+0,sp)
+10317  211a 5f            	clrw	x
+10318  211b 97            	ld	xl,a
+10319  211c d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
+10320  211f b101          	cp	a,_tempUC
+10321  2121 2309          	jrule	L3414
+10324  2123 7b03          	ld	a,(OFST+0,sp)
+10325  2125 5f            	clrw	x
+10326  2126 97            	ld	xl,a
+10327  2127 d6003c        	ld	a,(_TABLE_TIME_EE_MIN,x)
+10328  212a b701          	ld	_tempUC,a
+10329  212c               L3414:
+10330                     ; 1755 			speed=1;
+10332  212c 35010000      	mov	_speed,#1
+10333                     ; 1756 			HUMAN_SET_EE=1;
+10335  2130 ae0001        	ldw	x,#1
+10336  2133 89            	pushw	x
+10337  2134 ae401e        	ldw	x,#_HUMAN_SET_EE
+10338  2137 cd0000        	call	c_eewrw
+10340  213a 85            	popw	x
+10341  213b ac162416      	jpf	L5153
+10342  213f               L1214:
+10343                     ; 1759 	else if(sub_ind1==1)
+10345  213f b663          	ld	a,_a_ind+2
+10346  2141 a101          	cp	a,#1
+10347  2143 2703          	jreq	L436
+10348  2145 cc2416        	jp	L5153
+10349  2148               L436:
+10350                     ; 1764 		num_of_day=sub_ind/5;
+10352  2148 b662          	ld	a,_a_ind+1
+10353  214a ae0005        	ldw	x,#5
+10354  214d 51            	exgw	x,y
+10355  214e 5f            	clrw	x
+10356  214f 4d            	tnz	a
+10357  2150 2a01          	jrpl	L464
+10358  2152 5a            	decw	x
+10359  2153               L464:
+10360  2153 02            	rlwa	x,a
+10361  2154 cd0000        	call	c_idiv
+10363  2157 9f            	ld	a,xl
+10364  2158 6b02          	ld	(OFST-1,sp),a
+10365                     ; 1765 		num_of_set=sub_ind%5;
+10367  215a b662          	ld	a,_a_ind+1
+10368  215c ae0005        	ldw	x,#5
+10369  215f 51            	exgw	x,y
+10370  2160 5f            	clrw	x
+10371  2161 4d            	tnz	a
+10372  2162 2a01          	jrpl	L664
+10373  2164 5a            	decw	x
+10374  2165               L664:
+10375  2165 02            	rlwa	x,a
+10376  2166 cd0000        	call	c_idiv
+10378  2169 909f          	ld	a,yl
+10379  216b 6b03          	ld	(OFST+0,sp),a
+10380                     ; 1767 		if((but==butU)||(but==butU_))
+10382  216d b600          	ld	a,_but
+10383  216f a1fb          	cp	a,#251
+10384  2171 2706          	jreq	L3514
+10386  2173 b600          	ld	a,_but
+10387  2175 a17b          	cp	a,#123
+10388  2177 2668          	jrne	L1514
+10389  2179               L3514:
+10390                     ; 1769 			tempUC=TABLE_TEMPER_EE[num_of_day][num_of_set];
+10392  2179 7b02          	ld	a,(OFST-1,sp)
+10393  217b 97            	ld	xl,a
+10394  217c a605          	ld	a,#5
+10395  217e 42            	mul	x,a
+10396  217f 01            	rrwa	x,a
+10397  2180 1b03          	add	a,(OFST+0,sp)
+10398  2182 2401          	jrnc	L074
+10399  2184 5c            	incw	x
+10400  2185               L074:
+10401  2185 02            	rlwa	x,a
+10402  2186 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
+10403  2189 b701          	ld	_tempUC,a
+10404                     ; 1770 			if(tempUC)tempUC++;
+10406  218b 3d01          	tnz	_tempUC
+10407  218d 2702          	jreq	L5514
+10410  218f 3c01          	inc	_tempUC
+10411  2191               L5514:
+10412                     ; 1771 			if(tempUC>35)tempUC=35;
+10414  2191 b601          	ld	a,_tempUC
+10415  2193 a124          	cp	a,#36
+10416  2195 2504          	jrult	L7514
+10419  2197 35230001      	mov	_tempUC,#35
+10420  219b               L7514:
+10421                     ; 1772 			if(tempUC<5)tempUC=5;
+10423  219b b601          	ld	a,_tempUC
+10424  219d a105          	cp	a,#5
+10425  219f 2404          	jruge	L1614
+10428  21a1 35050001      	mov	_tempUC,#5
+10429  21a5               L1614:
+10430                     ; 1773 			if(TABLE_TEMPER_EE[num_of_day][num_of_set]!=tempUC)TABLE_TEMPER_EE[num_of_day][num_of_set]=tempUC;
+10432  21a5 7b02          	ld	a,(OFST-1,sp)
+10433  21a7 97            	ld	xl,a
+10434  21a8 a605          	ld	a,#5
+10435  21aa 42            	mul	x,a
+10436  21ab 01            	rrwa	x,a
+10437  21ac 1b03          	add	a,(OFST+0,sp)
+10438  21ae 2401          	jrnc	L274
+10439  21b0 5c            	incw	x
+10440  21b1               L274:
+10441  21b1 02            	rlwa	x,a
+10442  21b2 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
+10443  21b5 5f            	clrw	x
+10444  21b6 4d            	tnz	a
+10445  21b7 2a01          	jrpl	L474
+10446  21b9 53            	cplw	x
+10447  21ba               L474:
+10448  21ba 97            	ld	xl,a
+10449  21bb b601          	ld	a,_tempUC
+10450  21bd 905f          	clrw	y
+10451  21bf 9097          	ld	yl,a
+10452  21c1 90bf00        	ldw	c_y,y
+10453  21c4 b300          	cpw	x,c_y
+10454  21c6 2715          	jreq	L3614
+10457  21c8 7b02          	ld	a,(OFST-1,sp)
+10458  21ca 97            	ld	xl,a
+10459  21cb a605          	ld	a,#5
+10460  21cd 42            	mul	x,a
+10461  21ce 01            	rrwa	x,a
+10462  21cf 1b03          	add	a,(OFST+0,sp)
+10463  21d1 2401          	jrnc	L674
+10464  21d3 5c            	incw	x
+10465  21d4               L674:
+10466  21d4 02            	rlwa	x,a
+10467  21d5 b601          	ld	a,_tempUC
+10468  21d7 1c4048        	addw	x,#_TABLE_TEMPER_EE
+10469  21da cd0000        	call	c_eewrc
+10471  21dd               L3614:
+10472                     ; 1774 			speed=1;
+10474  21dd 35010000      	mov	_speed,#1
+10475  21e1               L1514:
+10476                     ; 1776 		if((but==butD)||(but==butD_))
+10478  21e1 b600          	ld	a,_but
+10479  21e3 a1f7          	cp	a,#247
+10480  21e5 2709          	jreq	L7614
+10482  21e7 b600          	ld	a,_but
+10483  21e9 a177          	cp	a,#119
+10484  21eb 2703          	jreq	L636
+10485  21ed cc2416        	jp	L5153
+10486  21f0               L636:
+10487  21f0               L7614:
+10488                     ; 1778 			tempUC=TABLE_TEMPER_EE[num_of_day][num_of_set];
+10490  21f0 7b02          	ld	a,(OFST-1,sp)
+10491  21f2 97            	ld	xl,a
+10492  21f3 a605          	ld	a,#5
+10493  21f5 42            	mul	x,a
+10494  21f6 01            	rrwa	x,a
+10495  21f7 1b03          	add	a,(OFST+0,sp)
+10496  21f9 2401          	jrnc	L005
+10497  21fb 5c            	incw	x
+10498  21fc               L005:
+10499  21fc 02            	rlwa	x,a
+10500  21fd d64048        	ld	a,(_TABLE_TEMPER_EE,x)
+10501  2200 b701          	ld	_tempUC,a
+10502                     ; 1779 			if(tempUC)tempUC--;
+10504  2202 3d01          	tnz	_tempUC
+10505  2204 2702          	jreq	L1714
+10508  2206 3a01          	dec	_tempUC
+10509  2208               L1714:
+10510                     ; 1780 			if(tempUC>35)tempUC=35;
+10512  2208 b601          	ld	a,_tempUC
+10513  220a a124          	cp	a,#36
+10514  220c 2504          	jrult	L3714
+10517  220e 35230001      	mov	_tempUC,#35
+10518  2212               L3714:
+10519                     ; 1781 			if(tempUC<5)tempUC=5;
+10521  2212 b601          	ld	a,_tempUC
+10522  2214 a105          	cp	a,#5
+10523  2216 2404          	jruge	L5714
+10526  2218 35050001      	mov	_tempUC,#5
+10527  221c               L5714:
+10528                     ; 1782 			if(TABLE_TEMPER_EE[num_of_day][num_of_set]!=tempUC)TABLE_TEMPER_EE[num_of_day][num_of_set]=tempUC;
+10530  221c 7b02          	ld	a,(OFST-1,sp)
+10531  221e 97            	ld	xl,a
+10532  221f a605          	ld	a,#5
+10533  2221 42            	mul	x,a
+10534  2222 01            	rrwa	x,a
+10535  2223 1b03          	add	a,(OFST+0,sp)
+10536  2225 2401          	jrnc	L205
+10537  2227 5c            	incw	x
+10538  2228               L205:
+10539  2228 02            	rlwa	x,a
+10540  2229 d64048        	ld	a,(_TABLE_TEMPER_EE,x)
+10541  222c 5f            	clrw	x
+10542  222d 4d            	tnz	a
+10543  222e 2a01          	jrpl	L405
+10544  2230 53            	cplw	x
+10545  2231               L405:
+10546  2231 97            	ld	xl,a
+10547  2232 b601          	ld	a,_tempUC
+10548  2234 905f          	clrw	y
+10549  2236 9097          	ld	yl,a
+10550  2238 90bf00        	ldw	c_y,y
+10551  223b b300          	cpw	x,c_y
+10552  223d 2715          	jreq	L7714
+10555  223f 7b02          	ld	a,(OFST-1,sp)
+10556  2241 97            	ld	xl,a
+10557  2242 a605          	ld	a,#5
+10558  2244 42            	mul	x,a
+10559  2245 01            	rrwa	x,a
+10560  2246 1b03          	add	a,(OFST+0,sp)
+10561  2248 2401          	jrnc	L605
+10562  224a 5c            	incw	x
+10563  224b               L605:
+10564  224b 02            	rlwa	x,a
+10565  224c b601          	ld	a,_tempUC
+10566  224e 1c4048        	addw	x,#_TABLE_TEMPER_EE
+10567  2251 cd0000        	call	c_eewrc
+10569  2254               L7714:
+10570                     ; 1783 			speed=1;
+10572  2254 35010000      	mov	_speed,#1
+10573  2258 ac162416      	jpf	L5153
+10574  225c               L3014:
+10575                     ; 1787 else if(ind==iDeb)
+10577  225c b661          	ld	a,_a_ind
+10578  225e a107          	cp	a,#7
+10579  2260 2703          	jreq	L046
+10580  2262 cc22f6        	jp	L3024
+10581  2265               L046:
+10582                     ; 1789 	if(but==butU)
+10584  2265 b600          	ld	a,_but
+10585  2267 a1fb          	cp	a,#251
+10586  2269 2617          	jrne	L5024
+10587                     ; 1791 		sub_ind++;
+10589  226b 3c62          	inc	_a_ind+1
+10590                     ; 1792 		gran_char(&sub_ind,0,12);
+10592  226d 4b0c          	push	#12
+10593  226f 4b00          	push	#0
+10594  2271 ae0062        	ldw	x,#_a_ind+1
+10595  2274 cd0000        	call	_gran_char
+10597  2277 85            	popw	x
+10598                     ; 1793 		clear_ind();
+10600  2278 cd0000        	call	_clear_ind
+10602                     ; 1794 		ind_hndl();
+10604  227b cd0683        	call	_ind_hndl
+10607  227e ac162416      	jpf	L5153
+10608  2282               L5024:
+10609                     ; 1796 	else if(but==butD)
+10611  2282 b600          	ld	a,_but
+10612  2284 a1f7          	cp	a,#247
+10613  2286 2617          	jrne	L1124
+10614                     ; 1798 		sub_ind--;
+10616  2288 3a62          	dec	_a_ind+1
+10617                     ; 1799 		gran_char(&sub_ind,0,12);
+10619  228a 4b0c          	push	#12
+10620  228c 4b00          	push	#0
+10621  228e ae0062        	ldw	x,#_a_ind+1
+10622  2291 cd0000        	call	_gran_char
+10624  2294 85            	popw	x
+10625                     ; 1800 		clear_ind();
+10627  2295 cd0000        	call	_clear_ind
+10629                     ; 1801 		ind_hndl();
+10631  2298 cd0683        	call	_ind_hndl
+10634  229b ac162416      	jpf	L5153
+10635  229f               L1124:
+10636                     ; 1803 	else if(but==butD_)
+10638  229f b600          	ld	a,_but
+10639  22a1 a177          	cp	a,#119
+10640  22a3 260b          	jrne	L5124
+10641                     ; 1805 		tree_down(-1,0);
+10643  22a5 5f            	clrw	x
+10644  22a6 a6ff          	ld	a,#255
+10645  22a8 95            	ld	xh,a
+10646  22a9 cd0000        	call	_tree_down
+10649  22ac ac162416      	jpf	L5153
+10650  22b0               L5124:
+10651                     ; 1807 	else if(but==butM)
+10653  22b0 b600          	ld	a,_but
+10654  22b2 a1fd          	cp	a,#253
+10655  22b4 2610          	jrne	L1224
+10656                     ; 1809 		tree_up(iModem_deb,0,0,0);
+10658  22b6 4b00          	push	#0
+10659  22b8 4b00          	push	#0
+10660  22ba 5f            	clrw	x
+10661  22bb a60a          	ld	a,#10
+10662  22bd 95            	ld	xh,a
+10663  22be cd0000        	call	_tree_up
+10665  22c1 85            	popw	x
+10667  22c2 ac162416      	jpf	L5153
+10668  22c6               L1224:
+10669                     ; 1814 	else if(sub_ind==8)
+10671  22c6 b662          	ld	a,_a_ind+1
+10672  22c8 a108          	cp	a,#8
+10673  22ca 2703          	jreq	L246
+10674  22cc cc2416        	jp	L5153
+10675  22cf               L246:
+10676                     ; 1816 		if((but==butU)||(but==butD)||(but==butM)||(but==butON))	
+10678  22cf b600          	ld	a,_but
+10679  22d1 a1fb          	cp	a,#251
+10680  22d3 2715          	jreq	L1324
+10682  22d5 b600          	ld	a,_but
+10683  22d7 a1f7          	cp	a,#247
+10684  22d9 270f          	jreq	L1324
+10686  22db b600          	ld	a,_but
+10687  22dd a1fd          	cp	a,#253
+10688  22df 2709          	jreq	L1324
+10690  22e1 b600          	ld	a,_but
+10691  22e3 a1fe          	cp	a,#254
+10692  22e5 2703          	jreq	L446
+10693  22e7 cc2416        	jp	L5153
+10694  22ea               L446:
+10695  22ea               L1324:
+10696                     ; 1818 			beepTestCnt=10;
+10698  22ea 350a0005      	mov	_beepTestCnt,#10
+10699                     ; 1819 			ind_check_cnt=0;
+10701  22ee 5f            	clrw	x
+10702  22ef cf0003        	ldw	_ind_check_cnt,x
+10703  22f2 ac162416      	jpf	L5153
+10704  22f6               L3024:
+10705                     ; 1824 else if(ind==iModem_deb)
+10707  22f6 b661          	ld	a,_a_ind
+10708  22f8 a10a          	cp	a,#10
+10709  22fa 2703          	jreq	L646
+10710  22fc cc23ab        	jp	L1424
+10711  22ff               L646:
+10712                     ; 1826 	if(but==butU)
+10714  22ff b600          	ld	a,_but
+10715  2301 a1fb          	cp	a,#251
+10716  2303 2603          	jrne	L056
+10717  2305 cc2416        	jp	L5153
+10718  2308               L056:
+10720                     ; 1837 	else if(but==butD)
+10722  2308 b600          	ld	a,_but
+10723  230a a1f7          	cp	a,#247
+10724  230c 2603          	jrne	L256
+10725  230e cc2416        	jp	L5153
+10726  2311               L256:
+10728                     ; 1845 	else if(but==butUD_)
+10730  2311 b600          	ld	a,_but
+10731  2313 a173          	cp	a,#115
+10732  2315 260a          	jrne	L3524
+10733                     ; 1847 		tree_down(0,0);
+10735  2317 5f            	clrw	x
+10736  2318 4f            	clr	a
+10737  2319 95            	ld	xh,a
+10738  231a cd0000        	call	_tree_down
+10741  231d ac162416      	jpf	L5153
+10742  2321               L3524:
+10743                     ; 1865 	else if(but==butD_)
+10745  2321 b600          	ld	a,_but
+10746  2323 a177          	cp	a,#119
+10747  2325 2616          	jrne	L7524
+10748                     ; 1867 		AUTH_NUMBER_FLAGS=0;
+10750  2327 4f            	clr	a
+10751  2328 ae407f        	ldw	x,#_AUTH_NUMBER_FLAGS
+10752  232b cd0000        	call	c_eewrc
+10754                     ; 1872 		HUMAN_SET_EE=1;
+10756  232e ae0001        	ldw	x,#1
+10757  2331 89            	pushw	x
+10758  2332 ae401e        	ldw	x,#_HUMAN_SET_EE
+10759  2335 cd0000        	call	c_eewrw
+10761  2338 85            	popw	x
+10763  2339 ac162416      	jpf	L5153
+10764  233d               L7524:
+10765                     ; 1874 	else if(but==butU_)
+10767  233d b600          	ld	a,_but
+10768  233f a17b          	cp	a,#123
+10769  2341 261a          	jrne	L3624
+10770                     ; 1876 		AUTH_NUMBER_FLAGS&=0x01;
+10772  2343 c6407f        	ld	a,_AUTH_NUMBER_FLAGS
+10773  2346 a401          	and	a,#1
+10774  2348 ae407f        	ldw	x,#_AUTH_NUMBER_FLAGS
+10775  234b cd0000        	call	c_eewrc
+10777                     ; 1881 		HUMAN_SET_EE=1;
+10779  234e ae0001        	ldw	x,#1
+10780  2351 89            	pushw	x
+10781  2352 ae401e        	ldw	x,#_HUMAN_SET_EE
+10782  2355 cd0000        	call	c_eewrw
+10784  2358 85            	popw	x
+10786  2359 ac162416      	jpf	L5153
+10787  235d               L3624:
+10788                     ; 1883 	else if(but==butUD_)
+10790  235d b600          	ld	a,_but
+10791  235f a173          	cp	a,#115
+10792  2361 2703          	jreq	L456
+10793  2363 cc2416        	jp	L5153
+10794  2366               L456:
+10795                     ; 1885 		AUTH_NUMBER_FLAGS=0x0f;
+10797  2366 a60f          	ld	a,#15
+10798  2368 ae407f        	ldw	x,#_AUTH_NUMBER_FLAGS
+10799  236b cd0000        	call	c_eewrc
+10801                     ; 1886 		memcpy(MAIN_NUMBER,"9139294352",10);
+10803  236e ae000a        	ldw	x,#10
+10804  2371               L015:
+10805  2371 d6006b        	ld	a,(L1724-1,x)
+10806  2374 d74001        	ld	(_MAIN_NUMBER-1,x),a
+10807  2377 5a            	decw	x
+10808  2378 26f7          	jrne	L015
+10809                     ; 1887 		memcpy(AUTH_NUMBER_1,"9134863890",10);
+10811  237a ae000a        	ldw	x,#10
+10812  237d               L215:
+10813  237d d60060        	ld	a,(L3724-1,x)
+10814  2380 d7400b        	ld	(_AUTH_NUMBER_1-1,x),a
+10815  2383 5a            	decw	x
+10816  2384 26f7          	jrne	L215
+10817                     ; 1888 		memcpy(AUTH_NUMBER_2,"9237328354",10);
+10819  2386 ae000a        	ldw	x,#10
+10820  2389               L415:
+10821  2389 d60055        	ld	a,(L5724-1,x)
+10822  238c d7406a        	ld	(_AUTH_NUMBER_2-1,x),a
+10823  238f 5a            	decw	x
+10824  2390 26f7          	jrne	L415
+10825                     ; 1889 		memcpy(AUTH_NUMBER_3,"11234567890",10);
+10827  2392 ae000a        	ldw	x,#10
+10828  2395               L615:
+10829  2395 d60049        	ld	a,(L7724-1,x)
+10830  2398 d74074        	ld	(_AUTH_NUMBER_3-1,x),a
+10831  239b 5a            	decw	x
+10832  239c 26f7          	jrne	L615
+10833                     ; 1890 		HUMAN_SET_EE=1;
+10835  239e ae0001        	ldw	x,#1
+10836  23a1 89            	pushw	x
+10837  23a2 ae401e        	ldw	x,#_HUMAN_SET_EE
+10838  23a5 cd0000        	call	c_eewrw
+10840  23a8 85            	popw	x
+10841  23a9 206b          	jra	L5153
+10842  23ab               L1424:
+10843                     ; 1894 else if(ind==iDefSet)
+10845  23ab b661          	ld	a,_a_ind
+10846  23ad a109          	cp	a,#9
+10847  23af 263f          	jrne	L3034
+10848                     ; 1896 	if(but==butMU_)
+10850  23b1 b600          	ld	a,_but
+10851  23b3 a179          	cp	a,#121
+10852  23b5 265f          	jrne	L5153
+10853                     ; 1975 		MODE_EE=1;
+10855  23b7 a601          	ld	a,#1
+10856  23b9 ae4046        	ldw	x,#_MODE_EE
+10857  23bc cd0000        	call	c_eewrc
+10859                     ; 1976 		NECC_TEMPER_WATER_EE=50;
+10861  23bf a632          	ld	a,#50
+10862  23c1 ae4045        	ldw	x,#_NECC_TEMPER_WATER_EE
+10863  23c4 cd0000        	call	c_eewrc
+10865                     ; 1977 		NECC_TEMPER_AIR_EE=20;
+10867  23c7 a614          	ld	a,#20
+10868  23c9 ae4044        	ldw	x,#_NECC_TEMPER_AIR_EE
+10869  23cc cd0000        	call	c_eewrc
+10871                     ; 1978 		MAX_POWER_EE=3;
+10873  23cf a603          	ld	a,#3
+10874  23d1 ae4047        	ldw	x,#_MAX_POWER_EE
+10875  23d4 cd0000        	call	c_eewrc
+10877                     ; 1980 		tree_down(0,0);
+10879  23d7 5f            	clrw	x
+10880  23d8 4f            	clr	a
+10881  23d9 95            	ld	xh,a
+10882  23da cd0000        	call	_tree_down
+10884                     ; 1981 		ret_ind(0,0);
+10886  23dd 5f            	clrw	x
+10887  23de 4f            	clr	a
+10888  23df 95            	ld	xh,a
+10889  23e0 cd0000        	call	_ret_ind
+10891                     ; 1982 		HUMAN_SET_EE=1;
+10893  23e3 ae0001        	ldw	x,#1
+10894  23e6 89            	pushw	x
+10895  23e7 ae401e        	ldw	x,#_HUMAN_SET_EE
+10896  23ea cd0000        	call	c_eewrw
+10898  23ed 85            	popw	x
+10899  23ee 2026          	jra	L5153
+10900  23f0               L3034:
+10901                     ; 1986 else if(ind==iInterf)
+10903  23f0 b661          	ld	a,_a_ind
+10904  23f2 a10f          	cp	a,#15
+10905  23f4 2620          	jrne	L5153
+10906                     ; 1988 	if((but==butU)||(but==butD)||(but==butM)||(but==butON))	
+10908  23f6 b600          	ld	a,_but
+10909  23f8 a1fb          	cp	a,#251
+10910  23fa 2712          	jreq	L5134
+10912  23fc b600          	ld	a,_but
+10913  23fe a1f7          	cp	a,#247
+10914  2400 270c          	jreq	L5134
+10916  2402 b600          	ld	a,_but
+10917  2404 a1fd          	cp	a,#253
+10918  2406 2706          	jreq	L5134
+10920  2408 b600          	ld	a,_but
+10921  240a a1fe          	cp	a,#254
+10922  240c 2608          	jrne	L5153
+10923  240e               L5134:
+10924                     ; 1990 		beepTestCnt=10;
+10926  240e 350a0005      	mov	_beepTestCnt,#10
+10927                     ; 1991 		ind_check_cnt=0;
+10929  2412 5f            	clrw	x
+10930  2413 cf0003        	ldw	_ind_check_cnt,x
+10931  2416               L5153:
+10932                     ; 1994 }
+10933  2416               L025:
+10936  2416 5b03          	addw	sp,#3
+10937  2418 81            	ret
+10960                     ; 1996 void t4_init(void)
+10960                     ; 1997 {
+10961                     	switch	.text
+10962  2419               _t4_init:
+10966                     ; 1998 TIM4->PSCR = 6;
+10968  2419 35065345      	mov	21317,#6
+10969                     ; 1999 TIM4->ARR= 158;
+10971  241d 359e5346      	mov	21318,#158
+10972                     ; 2000 TIM4->IER|= TIM4_IER_UIE;					// enable break interrupt
+10974  2421 72105341      	bset	21313,#0
+10975                     ; 2002 TIM4->CR1=(TIM4_CR1_URS | TIM4_CR1_CEN | TIM4_CR1_ARPE);	
+10977  2425 35855340      	mov	21312,#133
+10978                     ; 2004 }
+10981  2429 81            	ret
+11024                     ; 2010 @far @interrupt void TIM4_UPD_Interrupt (void) 
+11024                     ; 2011 {
+11026                     	switch	.text
+11027  242a               f_TIM4_UPD_Interrupt:
+11031                     ; 2013 GPIOD->ODR|=0b00111100;
+11033  242a c6500f        	ld	a,20495
+11034  242d aa3c          	or	a,#60
+11035  242f c7500f        	ld	20495,a
+11036                     ; 2014 ind_cnt++;
+11038  2432 3c81          	inc	_ind_cnt
+11039                     ; 2015 if(ind_cnt>=10)
+11041  2434 b681          	ld	a,_ind_cnt
+11042  2436 a10a          	cp	a,#10
+11043  2438 2507          	jrult	L3434
+11044                     ; 2017 	ind_cnt=0;
+11046  243a 3f81          	clr	_ind_cnt
+11047                     ; 2018 	but_new=GPIOB->IDR;
+11049  243c 5550060000    	mov	_but_new,20486
+11050  2441               L3434:
+11051                     ; 2020 GPIOB->ODR=ind_outB[ind_cnt];
+11053  2441 b681          	ld	a,_ind_cnt
+11054  2443 5f            	clrw	x
+11055  2444 97            	ld	xl,a
+11056  2445 e675          	ld	a,(_ind_outB,x)
+11057  2447 c75005        	ld	20485,a
+11058                     ; 2021 GPIOC->ODR=ind_outC[ind_cnt];
+11060  244a b681          	ld	a,_ind_cnt
+11061  244c 5f            	clrw	x
+11062  244d 97            	ld	xl,a
+11063  244e e60a          	ld	a,(_ind_outC,x)
+11064  2450 c7500a        	ld	20490,a
+11065                     ; 2022 if(powerStat==psOFF)GPIOC->ODR=0xff;
+11067  2453 3d29          	tnz	_powerStat
+11068  2455 2604          	jrne	L5434
+11071  2457 35ff500a      	mov	20490,#255
+11072  245b               L5434:
+11073                     ; 2023 GPIOG->ODR|=0x01;
+11075  245b 7210501e      	bset	20510,#0
+11076                     ; 2024 GPIOG->ODR&=ind_outG[ind_cnt];
+11078  245f b681          	ld	a,_ind_cnt
+11079  2461 5f            	clrw	x
+11080  2462 97            	ld	xl,a
+11081  2463 c6501e        	ld	a,20510
+11082  2466 e416          	and	a,(_ind_outG,x)
+11083  2468 c7501e        	ld	20510,a
+11084                     ; 2025 if(ind_cnt==9)GPIOB->DDR=0x00;
+11086  246b b681          	ld	a,_ind_cnt
+11087  246d a109          	cp	a,#9
+11088  246f 2606          	jrne	L7434
+11091  2471 725f5007      	clr	20487
+11093  2475 2004          	jra	L1534
+11094  2477               L7434:
+11095                     ; 2026 else GPIOB->DDR=0xff;
+11097  2477 35ff5007      	mov	20487,#255
+11098  247b               L1534:
+11099                     ; 2027 if(powerStat==psOFF)
+11101  247b 3d29          	tnz	_powerStat
+11102  247d 2618          	jrne	L3534
+11103                     ; 2029 	GPIOD->ODR|=0b00111100;
+11105  247f c6500f        	ld	a,20495
+11106  2482 aa3c          	or	a,#60
+11107  2484 c7500f        	ld	20495,a
+11108                     ; 2030 	if((ind_cnt==0)||(ind_cnt>3))GPIOD->ODR&=ind_strob[0];
+11110  2487 3d81          	tnz	_ind_cnt
+11111  2489 2706          	jreq	L7534
+11113  248b b681          	ld	a,_ind_cnt
+11114  248d a104          	cp	a,#4
+11115  248f 2513          	jrult	L1634
+11116  2491               L7534:
+11119  2491 721b500f      	bres	20495,#5
+11120  2495 200d          	jra	L1634
+11121  2497               L3534:
+11122                     ; 2032 else GPIOD->ODR&=ind_strob[ind_cnt];
+11124  2497 b681          	ld	a,_ind_cnt
+11125  2499 5f            	clrw	x
+11126  249a 97            	ld	xl,a
+11127  249b c6500f        	ld	a,20495
+11128  249e d40012        	and	a,(_ind_strob,x)
+11129  24a1 c7500f        	ld	20495,a
+11130  24a4               L1634:
+11131                     ; 2034 if(++t0_cnt0>=10)
+11133  24a4 3c05          	inc	_t0_cnt0
+11134  24a6 b605          	ld	a,_t0_cnt0
+11135  24a8 a10a          	cp	a,#10
+11136  24aa 255f          	jrult	L3634
+11137                     ; 2036   t0_cnt0=0;
+11139  24ac 3f05          	clr	_t0_cnt0
+11140                     ; 2037   b100Hz=1;
+11142  24ae 35010000      	mov	_b100Hz,#1
+11143                     ; 2039 	if(++t0_cnt1>=10)
+11145  24b2 3c06          	inc	_t0_cnt1
+11146  24b4 b606          	ld	a,_t0_cnt1
+11147  24b6 a10a          	cp	a,#10
+11148  24b8 2506          	jrult	L5634
+11149                     ; 2041 		t0_cnt1=0;
+11151  24ba 3f06          	clr	_t0_cnt1
+11152                     ; 2042 		b10Hz=1;
+11154  24bc 35010001      	mov	_b10Hz,#1
+11155  24c0               L5634:
+11156                     ; 2045 	if(++t0_cnt2>=20)
+11158  24c0 3c07          	inc	_t0_cnt2
+11159  24c2 b607          	ld	a,_t0_cnt2
+11160  24c4 a114          	cp	a,#20
+11161  24c6 2511          	jrult	L7634
+11162                     ; 2047 		t0_cnt2=0;
+11164  24c8 3f07          	clr	_t0_cnt2
+11165                     ; 2048 		b5Hz=1;
+11167  24ca 35010002      	mov	_b5Hz,#1
+11168                     ; 2049 		bFL5=!bFL5;
+11170  24ce 3d28          	tnz	_bFL5
+11171  24d0 2604          	jrne	L266
+11172  24d2 a601          	ld	a,#1
+11173  24d4 2001          	jra	L466
+11174  24d6               L266:
+11175  24d6 4f            	clr	a
+11176  24d7               L466:
+11177  24d7 b728          	ld	_bFL5,a
+11178  24d9               L7634:
+11179                     ; 2052 	if(++t0_cnt3>=50)
+11181  24d9 3c08          	inc	_t0_cnt3
+11182  24db b608          	ld	a,_t0_cnt3
+11183  24dd a132          	cp	a,#50
+11184  24df 2511          	jrult	L1734
+11185                     ; 2054 		t0_cnt3=0;
+11187  24e1 3f08          	clr	_t0_cnt3
+11188                     ; 2055 		b2Hz=1;
+11190  24e3 35010003      	mov	_b2Hz,#1
+11191                     ; 2056 		bFL2=!bFL2;
+11193  24e7 3d27          	tnz	_bFL2
+11194  24e9 2604          	jrne	L666
+11195  24eb a601          	ld	a,#1
+11196  24ed 2001          	jra	L076
+11197  24ef               L666:
+11198  24ef 4f            	clr	a
+11199  24f0               L076:
+11200  24f0 b727          	ld	_bFL2,a
+11201  24f2               L1734:
+11202                     ; 2058 	if(++t0_cnt4>=100)
+11204  24f2 3c09          	inc	_t0_cnt4
+11205  24f4 b609          	ld	a,_t0_cnt4
+11206  24f6 a164          	cp	a,#100
+11207  24f8 2511          	jrult	L3634
+11208                     ; 2060 		t0_cnt4=0;
+11210  24fa 3f09          	clr	_t0_cnt4
+11211                     ; 2061 		b1Hz=1;
+11213  24fc 35010004      	mov	_b1Hz,#1
+11214                     ; 2062 		bFL1=!bFL1;
+11216  2500 3d26          	tnz	_bFL1
+11217  2502 2604          	jrne	L276
+11218  2504 a601          	ld	a,#1
+11219  2506 2001          	jra	L476
+11220  2508               L276:
+11221  2508 4f            	clr	a
+11222  2509               L476:
+11223  2509 b726          	ld	_bFL1,a
+11224  250b               L3634:
+11225                     ; 2065 TIM4->SR1&=~TIM4_SR1_UIF;			// disable break interrupt
+11227  250b 72115342      	bres	21314,#0
+11228                     ; 2066 return;
+11231  250f 80            	iret
+11297                     ; 2073 main()
+11297                     ; 2074 {
+11299                     	switch	.text
+11300  2510               _main:
+11304                     ; 2075 CLK->ECKR|=1;
+11306  2510 721050c1      	bset	20673,#0
+11308  2514               L7044:
+11309                     ; 2076 while((CLK->ECKR & 2) == 0);
+11311  2514 c650c1        	ld	a,20673
+11312  2517 a502          	bcp	a,#2
+11313  2519 27f9          	jreq	L7044
+11314                     ; 2077 CLK->SWCR|=2;
+11316  251b 721250c5      	bset	20677,#1
+11317                     ; 2078 CLK->SWR=0xB4;	
+11319  251f 35b450c4      	mov	20676,#180
+11320                     ; 2080 CLK->CKDIVR=0;
+11322  2523 725f50c6      	clr	20678
+11323                     ; 2082 FLASH_DUKR=0xae;
+11325  2527 35ae5064      	mov	_FLASH_DUKR,#174
+11326                     ; 2083 FLASH_DUKR=0x56;
+11328  252b 35565064      	mov	_FLASH_DUKR,#86
+11329                     ; 2086 GPIOD->DDR|=0b00111100;		//PD2-PD5 выходы открытый коллектор
+11331  252f c65011        	ld	a,20497
+11332  2532 aa3c          	or	a,#60
+11333  2534 c75011        	ld	20497,a
+11334                     ; 2087 GPIOD->CR1&=0b11000011;		//....
+11336  2537 c65012        	ld	a,20498
+11337  253a a4c3          	and	a,#195
+11338  253c c75012        	ld	20498,a
+11339                     ; 2088 GPIOD->CR2&=0b11000011;		//....
+11341  253f c65013        	ld	a,20499
+11342  2542 a4c3          	and	a,#195
+11343  2544 c75013        	ld	20499,a
+11344                     ; 2089 GPIOB->DDR|=0b11111111;		//PORTB все выходы ТТЛ
+11346  2547 c65007        	ld	a,20487
+11347  254a aaff          	or	a,#255
+11348  254c c75007        	ld	20487,a
+11349                     ; 2090 GPIOB->CR1|=0b11111111;		//....
+11351  254f c65008        	ld	a,20488
+11352  2552 aaff          	or	a,#255
+11353  2554 c75008        	ld	20488,a
+11354                     ; 2091 GPIOB->CR2&=0b00000000;		//....
+11356  2557 725f5009      	clr	20489
+11357                     ; 2092 GPIOC->DDR|=0b11111111;		//PORTC все выходы открытый коллектор
+11359  255b c6500c        	ld	a,20492
+11360  255e aaff          	or	a,#255
+11361  2560 c7500c        	ld	20492,a
+11362                     ; 2093 GPIOC->CR1&=0b00000000;		//....
+11364  2563 725f500d      	clr	20493
+11365                     ; 2094 GPIOC->CR2&=0b00000000;		//....
+11367  2567 725f500e      	clr	20494
+11368                     ; 2095 GPIOG->DDR|=0b00000001;		//PG0 выход открытый коллектор
+11370  256b 72105020      	bset	20512,#0
+11371                     ; 2096 GPIOG->CR1&=0b11111110;		//....
+11373  256f 72115021      	bres	20513,#0
+11374                     ; 2097 GPIOG->CR2&=0b11111110;		//....
+11376  2573 72115022      	bres	20514,#0
+11377                     ; 2098 t4_init();
+11379  2577 cd2419        	call	_t4_init
+11381                     ; 2099 uart3_init();
+11383  257a cd0000        	call	_uart3_init
+11385                     ; 2100 uart1_init();
+11387  257d cd0000        	call	_uart1_init
+11389                     ; 2101 modem_gpio_init();
+11391  2580 cd0000        	call	_modem_gpio_init
+11393                     ; 2103 enableInterrupts();
+11396  2583 9a            rim
+11398                     ; 2105 clear_ind();
+11401  2584 cd0000        	call	_clear_ind
+11403                     ; 2106 ind=iMn;//iModem_deb;
+11405  2587 3f61          	clr	_a_ind
+11406                     ; 2112 bERR=0;
+11408  2589 3f08          	clr	_bERR
+11409                     ; 2113 bWARN=0;
+11411  258b 3f07          	clr	_bWARN
+11412                     ; 2115 modemDrvInitStepCnt=1;
+11414  258d ae0001        	ldw	x,#1
+11415  2590 bf00          	ldw	_modemDrvInitStepCnt,x
+11416                     ; 2120 watchdog_enable();
+11418  2592 cd0000        	call	_watchdog_enable
+11420                     ; 2122 if(power_in_test()==0)
+11422  2595 cd0169        	call	_power_in_test
+11424  2598 a30000        	cpw	x,#0
+11425  259b 2609          	jrne	L3144
+11426                     ; 2124 	GPIOD->ODR|=0b00111100;
+11428  259d c6500f        	ld	a,20495
+11429  25a0 aa3c          	or	a,#60
+11430  25a2 c7500f        	ld	20495,a
+11431                     ; 2125 	halt();
+11434  25a5 8e            halt
+11437  25a6               L3144:
+11438                     ; 2128 isp_main_cnt=0;
+11440  25a6 ae0000        	ldw	x,#0
+11441  25a9 bf02          	ldw	c_lreg+2,x
+11442  25ab ae0000        	ldw	x,#0
+11443  25ae bf00          	ldw	c_lreg,x
+11444  25b0 ae4020        	ldw	x,#_isp_main_cnt
+11445  25b3 cd0000        	call	c_eewrl
+11447  25b6               L5144:
+11448                     ; 2132 	uart1_in_an();
+11450  25b6 cd0000        	call	_uart1_in_an
+11452                     ; 2133 	if(b100Hz)
+11454  25b9 3d00          	tnz	_b100Hz
+11455  25bb 270b          	jreq	L1244
+11456                     ; 2135 		b100Hz=0;
+11458  25bd 3f00          	clr	_b100Hz
+11459                     ; 2137 		but_drv();
+11461  25bf cd0000        	call	_but_drv
+11463                     ; 2138 		but_an();
+11465  25c2 cd1767        	call	_but_an
+11467                     ; 2140 		modem_stat_drv();
+11469  25c5 cd0000        	call	_modem_stat_drv
+11471  25c8               L1244:
+11472                     ; 2143 	if(b10Hz)
+11474  25c8 3d01          	tnz	_b10Hz
+11475  25ca 271e          	jreq	L3244
+11476                     ; 2145 		b10Hz=0;
+11478  25cc 3f01          	clr	_b10Hz
+11479                     ; 2147 		if(bWATCHDOG_REFRESH)watchdog_reset();
+11481  25ce 3d2a          	tnz	_bWATCHDOG_REFRESH
+11482  25d0 2703          	jreq	L5244
+11485  25d2 cd0000        	call	_watchdog_reset
+11487  25d5               L5244:
+11488                     ; 2148 		ind_hndl();
+11490  25d5 cd0683        	call	_ind_hndl
+11492                     ; 2149 		uart3_in_an();
+11494  25d8 cd0000        	call	_uart3_in_an
+11496                     ; 2150 		out_drv();
+11498  25db cd0000        	call	_out_drv
+11500                     ; 2151 		matemath();
+11502  25de cd0626        	call	_matemath
+11504                     ; 2152 		modem_drv();
+11506  25e1 cd0000        	call	_modem_drv
+11508                     ; 2153 		sms_fifo_drv();
+11510  25e4 cd0000        	call	_sms_fifo_drv
+11512                     ; 2154 		power_in_drv();
+11514  25e7 cd0000        	call	_power_in_drv
+11516  25ea               L3244:
+11517                     ; 2156 	if(b5Hz)
+11519  25ea 3d02          	tnz	_b5Hz
+11520  25ec 270c          	jreq	L7244
+11521                     ; 2158 		b5Hz=0;
+11523  25ee 3f02          	clr	_b5Hz
+11524                     ; 2160 		if(version_show_cnt)version_show_cnt--;
+11526  25f0 725d000c      	tnz	_version_show_cnt
+11527  25f4 2704          	jreq	L7244
+11530  25f6 725a000c      	dec	_version_show_cnt
+11531  25fa               L7244:
+11532                     ; 2162 	if(b2Hz)
+11534  25fa 3d03          	tnz	_b2Hz
+11535  25fc 2705          	jreq	L3344
+11536                     ; 2164 		b2Hz=0;
+11538  25fe 3f03          	clr	_b2Hz
+11539                     ; 2166 		time_drv();
+11541  2600 cd0430        	call	_time_drv
+11543  2603               L3344:
+11544                     ; 2168 	if(b1Hz)
+11546  2603 3d04          	tnz	_b1Hz
+11547  2605 27af          	jreq	L5144
+11548                     ; 2170 		b1Hz=0;
+11550  2607 3f04          	clr	_b1Hz
+11551                     ; 2172 		isp_hndl();
+11553  2609 cd04c4        	call	_isp_hndl
+11555                     ; 2175 		if(mainCnt<1000)
+11557  260c 9c            	rvf
+11558  260d be82          	ldw	x,_mainCnt
+11559  260f a303e8        	cpw	x,#1000
+11560  2612 2e07          	jrsge	L7344
+11561                     ; 2177 			mainCnt++;
+11563  2614 be82          	ldw	x,_mainCnt
+11564  2616 1c0001        	addw	x,#1
+11565  2619 bf82          	ldw	_mainCnt,x
+11566  261b               L7344:
+11567                     ; 2181 		ds18b20_temper_drv();
+11569  261b cd0000        	call	_ds18b20_temper_drv
+11571                     ; 2182 		ret_ind_hndl();
+11573  261e cd0000        	call	_ret_ind_hndl
+11575                     ; 2183 		random_gen();
+11577  2621 cd0000        	call	_random_gen
+11579                     ; 2186 		sheduler_hndl();
+11581  2624 cd04c3        	call	_sheduler_hndl
+11583                     ; 2187 		error_warn_hndl();
+11585  2627 cd01ac        	call	_error_warn_hndl
+11587                     ; 2188 		airSensorLineErrorDrv();
+11589  262a cd020e        	call	_airSensorLineErrorDrv
+11591                     ; 2189 		waterTemperAlarmHndl();
+11593  262d cd02ae        	call	_waterTemperAlarmHndl
+11595  2630 2084          	jra	L5144
+12872                     	xdef	_main
+12873                     	xdef	f_TIM4_UPD_Interrupt
+12874                     	xdef	_matemath
+12875                     	xdef	_power_necc_hndl
+12876                     	xdef	_power_hndl
+12877                     	xdef	_isp_hndl
+12878                     	xdef	_sheduler_hndl
+12879                     	xdef	_time_drv
+12880                     	xdef	_beep_drv
+12881                     	xdef	_waterTemperAlarmHndl
+12882                     	xdef	_airSensorLineErrorDrv
+12883                     	xdef	_error_warn_hndl
+12884                     	xdef	_power_in_test
+12885                     	xdef	_power_in_drv
+12886                     	switch	.bss
+12887  0000               _isp_cnt:
+12888  0000 00            	ds.b	1
+12889                     	xdef	_isp_cnt
+12890                     	xdef	_version_show_cnt
+12891                     	switch	.ubsct
+12892  0000               _bDEB:
+12893  0000 00            	ds.b	1
+12894                     	xdef	_bDEB
+12895                     	xdef	_bWATCHDOG_REFRESH
+12896  0001               _tempUC:
+12897  0001 00            	ds.b	1
+12898                     	xdef	_tempUC
+12899                     	xdef	_TABLE_TIME_EE_MAX
+12900                     	xdef	_TABLE_TIME_EE_MIN
+12901  0002               _day_sheduler_time:
+12902  0002 00            	ds.b	1
+12903                     	xdef	_day_sheduler_time
+12904  0003               _time_date:
+12905  0003 00            	ds.b	1
+12906                     	xdef	_time_date
+12907  0004               _temperRegToSheduler:
+12908  0004 00            	ds.b	1
+12909                     	xdef	_temperRegToSheduler
+12910                     	xdef	_b1Hz
+12911                     	xdef	_b2Hz
+12912                     	xdef	_b5Hz
+12913                     	xdef	_b10Hz
+12914                     	xdef	_b100Hz
+12915                     	xref	_watchdog_reset
+12916                     	xref	_watchdog_enable
+12917                     	xref	_strcpy
+12918                     	xref	_sms_fifo_drv
+12919                     	xref	_modem_send_sms
+12920                     	xref	_modem_drv
+12921                     	xref	_modem_stat_drv
+12922                     	xref	_modem_gpio_init
+12923                     	xref	_tempRussianText
+12924                     	xref.b	_modemDrvWatchDogCnt
+12925                     	xref.b	_modemDrvPowerDownStepCnt
+12926                     	xref.b	_modemDrvPDUSMSSendStepCnt
+12927                     	xref.b	_modemDrvInitStepCnt
+12928                     	xref.b	_modemState
+12929                     	xref	__ds1307_read_time
+12930                     	xref	__ds1307_write_byte
+12931                     	xref	_uart1_in_an
+12932                     	xref	_uart1_init
+12933                     	xref	_modem_plazma1
+12934                     	xref	_modem_plazma
+12935                     	xref	_tx_counter1
+12936                     	xref	_tx_wr_index1
+12937                     	xref	_uart3_in_an
+12938                     	xref	_uart3_init
+12939                     	xref	_ds18b20_temper_drv
+12940                     	xref	_waterSensorErrorStat
+12941                     	xref	_wire1_in
+12942                     	xref	_random_gen
+12943                     	xref	_led_flash
+12944                     	xref	_led_on
+12945                     	xref	_led_off
+12946                     	xref	_led_mask_off
+12947                     	xref	_led_set
+12948                     	xref	_ret_ind_hndl
+12949                     	xref	_ret_ind
+12950                     	xref	_int2indII_slkuf
+12951                     	xref	_int2indI_slkuf
+12952                     	xref	_gran_ring_char
+12953                     	xref	_gran_char
+12954                     	xref	_tree_up
+12955                     	xref	_tree_down
+12956                     	xref	_clear_ind
+12957                     	xref	_but_drv
+12958                     	xref	_out_drv
+12959                     	xref.b	_speed
+12960                     	xref.b	_n_but
+12961                     	xref.b	_but
+12962                     	xref.b	_but_new
+12963                     	xdef	_t4_init
+12964                     	xdef	_ind_hndl
+12965                     	xdef	_but_an
+12966                     	switch	.bss
+12967  0001               _ind_check_cnt1:
+12968  0001 0000          	ds.b	2
+12969                     	xdef	_ind_check_cnt1
+12970  0003               _ind_check_cnt:
+12971  0003 0000          	ds.b	2
+12972                     	xdef	_ind_check_cnt
+12973  0005               _beepTestCnt:
+12974  0005 00            	ds.b	1
+12975                     	xdef	_beepTestCnt
+12976  0006               _bCBC_SELF:
+12977  0006 00            	ds.b	1
+12978                     	xdef	_bCBC_SELF
+12979  0007               _cbcVoltage:
+12980  0007 0000          	ds.b	2
+12981                     	xdef	_cbcVoltage
+12982  0009               _cbc_temp1:
+12983  0009 000000000000  	ds.b	15
+12984                     	xdef	_cbc_temp1
+12985  0018               _cbc_temp:
+12986  0018 000000000000  	ds.b	15
+12987                     	xdef	_cbc_temp
+12988  0027               _cbcSystemRequ:
+12989  0027 00            	ds.b	1
+12990                     	xdef	_cbcSystemRequ
+12991  0028               _main_power_off_hndl_cnt:
+12992  0028 0000          	ds.b	2
+12993                     	xdef	_main_power_off_hndl_cnt
+12994                     	xdef	_powerStat
+12995                     	xdef	_power_in_drv_alarm_cnt
+12996                     	xdef	_power_in_drv_off_cnt
+12997                     	xdef	_rand_dig_str
+12998  002a               _rand_dig:
+12999  002a 000000000000  	ds.b	7
+13000                     	xdef	_rand_dig
+13001  0031               _waterTemperAlarmCnt:
+13002  0031 00            	ds.b	1
+13003                     	xdef	_waterTemperAlarmCnt
+13004                     	xdef	_waterTemperAlarmOld
+13005                     	xdef	_waterTemperAlarm
+13006                     	switch	.ubsct
+13007  0005               _cntAirSensorLineErrorHi:
+13008  0005 00            	ds.b	1
+13009                     	xdef	_cntAirSensorLineErrorHi
+13010  0006               _cntAirSensorLineErrorLo:
+13011  0006 00            	ds.b	1
+13012                     	xdef	_cntAirSensorLineErrorLo
+13013  0007               _bWARN:
+13014  0007 00            	ds.b	1
+13015                     	xdef	_bWARN
+13016  0008               _bERR:
+13017  0008 00            	ds.b	1
+13018                     	xdef	_bERR
+13019  0009               _beep_drv_cnt:
+13020  0009 00            	ds.b	1
+13021                     	xdef	_beep_drv_cnt
+13022  000a               _powerEnabled:
+13023  000a 00            	ds.b	1
+13024                     	xdef	_powerEnabled
+13025  000b               _powerNeccDelta:
+13026  000b 00            	ds.b	1
+13027                     	xdef	_powerNeccDelta
+13028                     	xdef	_powerNeccOld
+13029                     	xdef	_powerNecc
+13030  000c               _time_year:
+13031  000c 00            	ds.b	1
+13032                     	xdef	_time_year
+13033  000d               _time_month:
+13034  000d 00            	ds.b	1
+13035                     	xdef	_time_month
+13036  000e               _time_day_of_week:
+13037  000e 00            	ds.b	1
+13038                     	xdef	_time_day_of_week
+13039  000f               _time_hour:
+13040  000f 00            	ds.b	1
+13041                     	xdef	_time_hour
+13042  0010               _time_min:
+13043  0010 00            	ds.b	1
+13044                     	xdef	_time_min
+13045  0011               _time_sec:
+13046  0011 00            	ds.b	1
+13047                     	xdef	_time_sec
+13048  0012               _buff_for_time:
+13049  0012 000000000000  	ds.b	10
+13050                     	xdef	_buff_for_time
+13051                     	xdef	_airSensorErrorStatOld
+13052                     	xdef	_airSensorErrorStat
+13053  001c               _targetTemper:
+13054  001c 00            	ds.b	1
+13055                     	xdef	_targetTemper
+13056  001d               _aktualTemper:
+13057  001d 00            	ds.b	1
+13058                     	xdef	_aktualTemper
+13059  001e               _temperOfAir:
+13060  001e 00            	ds.b	1
+13061                     	xdef	_temperOfAir
+13062  001f               _temperOfWater:
+13063  001f 00            	ds.b	1
+13064                     	xdef	_temperOfWater
+13065                     	switch	.bss
+13066  0032               _optr_kontr_cnt:
+13067  0032 00            	ds.b	1
+13068                     	xdef	_optr_kontr_cnt
+13069  0033               _optr_stat:
+13070  0033 00            	ds.b	1
+13071                     	xdef	_optr_stat
+13072                     	switch	.ubsct
+13073  0020               _out_stat:
+13074  0020 000000        	ds.b	3
+13075                     	xdef	_out_stat
+13076  0023               _led_ind_out2:
+13077  0023 00            	ds.b	1
+13078                     	xdef	_led_ind_out2
+13079  0024               _led_ind_out1:
+13080  0024 00            	ds.b	1
+13081                     	xdef	_led_ind_out1
+13082  0025               _bFL_:
+13083  0025 00            	ds.b	1
+13084                     	xdef	_bFL_
+13085  0026               _bFL1:
+13086  0026 00            	ds.b	1
+13087                     	xdef	_bFL1
+13088  0027               _bFL2:
+13089  0027 00            	ds.b	1
+13090                     	xdef	_bFL2
+13091  0028               _bFL5:
+13092  0028 00            	ds.b	1
+13093                     	xdef	_bFL5
+13094  0029               _zero_on:
+13095  0029 00            	ds.b	1
+13096                     	xdef	_zero_on
+13097                     	xdef	_ind_pointer
+13098  002a               _c_ind:
+13099  002a 0000000000    	ds.b	5
+13100                     	xdef	_c_ind
+13101  002f               _b_ind:
+13102  002f 000000000000  	ds.b	50
+13103                     	xdef	_b_ind
+13104  0061               _a_ind:
+13105  0061 0000000000    	ds.b	5
+13106                     	xdef	_a_ind
+13107                     	xdef	_DIGISYM
+13108  0066               _ind_out_:
+13109  0066 0000000000    	ds.b	5
+13110                     	xdef	_ind_out_
+13111  006b               _dig:
+13112  006b 000000000000  	ds.b	10
+13113                     	xdef	_dig
+13114                     	xdef	_ind_strob
+13115                     	xdef	_ind_outG
+13116                     	xdef	_ind_outC
+13117  0075               _ind_outB:
+13118  0075 000000000000  	ds.b	12
+13119                     	xdef	_ind_outB
+13120  0081               _ind_cnt:
+13121  0081 00            	ds.b	1
+13122                     	xdef	_ind_cnt
+13123  0082               _mainCnt:
+13124  0082 0000          	ds.b	2
+13125                     	xdef	_mainCnt
+13126                     	xdef	_t0_cnt4
+13127                     	xdef	_t0_cnt3
+13128                     	xdef	_t0_cnt2
+13129                     	xdef	_t0_cnt1
+13130                     	xdef	_t0_cnt0
+13131  0084               _fiksRandom:
+13132  0084 00            	ds.b	1
+13133                     	xdef	_fiksRandom
+13134  0085               _currRandom:
+13135  0085 00            	ds.b	1
+13136                     	xdef	_currRandom
+13137                     	xdef	_warmOrder
+13138                     	switch	.const
+13139  004a               L7724:
+13140  004a 313132333435  	dc.b	"11234567890",0
+13141  0056               L5724:
+13142  0056 393233373332  	dc.b	"9237328354",0
+13143  0061               L3724:
+13144  0061 393133343836  	dc.b	"9134863890",0
+13145  006c               L1724:
+13146  006c 393133393239  	dc.b	"9139294352",0
+13147  0077               L1522:
+13148  0077 d2e5ecefe5f0  	dc.b	210,229,236,239,229,240
+13149  007d e0f2f3f0e020  	dc.b	224,242,243,240,224,32
+13150  0083 e2eee4fb20e2  	dc.b	226,238,228,251,32,226
+13151  0089 20f1          	dc.b	" ",241
+13152  008b e8f1f2e5ece5  	dc.b	232,241,242,229,236,229
+13153  0091 20e2          	dc.b	" ",226
+13154  0093 fbf8e5203930  	dc.b	251,248,229,32,57,48
+13155  0099 20e3          	dc.b	" ",227
+13156  009b f02ed62e00    	dc.b	240,46,214,46,0
+13157  00a0               L3422:
+13158  00a0 d2e5ecefe5f0  	dc.b	210,229,236,239,229,240
+13159  00a6 e0f2f3f0e020  	dc.b	224,242,243,240,224,32
+13160  00ac e2eee4fb20e2  	dc.b	226,238,228,251,32,226
+13161  00b2 20f1          	dc.b	" ",241
+13162  00b4 e8f1f2e5ece5  	dc.b	232,241,242,229,236,229
+13163  00ba 20ed          	dc.b	" ",237
+13164  00bc e8e6e5203320  	dc.b	232,230,229,32,51,32
+13165  00c2 e3f02ed62e00  	dc.b	227,240,46,214,46,0
+13166  00c8               L5612:
+13167  00c8 cde5e8f1eff0  	dc.b	205,229,232,241,239,240
+13168  00ce e0e2edeef1f2  	dc.b	224,226,237,238,241,242
+13169  00d4 fc20e4e0f2f7  	dc.b	252,32,228,224,242,247
+13170  00da e8eae020f2e5  	dc.b	232,234,224,32,242,229
+13171  00e0 ecefe5f0e0f2  	dc.b	236,239,229,240,224,242
+13172  00e6 f3f0fb20e2ee  	dc.b	243,240,251,32,226,238
+13173  00ec e7e4f3f5e000  	dc.b	231,228,243,245,224,0
+13174  00f2               L7302:
+13175  00f2 ddebe5eaf2f0  	dc.b	221,235,229,234,242,240
+13176  00f8 e8f7e5f1f2e2  	dc.b	232,247,229,241,242,226
+13177  00fe ee20e2eaebfe  	dc.b	238,32,226,234,235,254
+13178  0104 f7e5edee00    	dc.b	247,229,237,238,0
+13179  0109               L3102:
+13180  0109 ddebe5eaf2f0  	dc.b	221,235,229,234,242,240
+13181  010f e8f7e5f1f2e2  	dc.b	232,247,229,241,242,226
+13182  0115 ee20eef2eaeb  	dc.b	238,32,238,242,234,235
+13183  011b fef7e5edee00  	dc.b	254,247,229,237,238,0
+13184                     	xref.b	c_lreg
+13185                     	xref.b	c_x
+13186                     	xref.b	c_y
+13206                     	xref	c_idiv
+13207                     	xref	c_eewrw
+13208                     	xref	c_smodx
+13209                     	xref	c_smody
+13210                     	xref	c_imul
+13211                     	xref	c_sdivx
+13212                     	xref	c_ldiv
+13213                     	xref	c_lmod
+13214                     	xref	c_eewrl
+13215                     	xref	c_ladc
+13216                     	xref	c_ltor
+13217                     	xref	c_eewrc
+13218                     	end
