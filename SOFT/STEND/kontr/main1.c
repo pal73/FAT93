@@ -183,6 +183,29 @@ bool bDEB;
 @near signed short isp_in_cnt[3];
 
 //-----------------------------------------------
+void isp_gpio_init(void)
+{
+//1-е реле - вход с подтяжкой
+GPIOE->DDR&=~(1<<6);		
+GPIOE->CR1|=(1<<6);		
+GPIOE->CR2&=~(1<<6);
+GPIOE->ODR&=~(1<<6);	
+
+//2-е реле - вход с подтяжкой
+GPIOE->DDR&=~(1<<7);		
+GPIOE->CR1|=(1<<7);		
+GPIOE->CR2&=~(1<<7);
+GPIOE->ODR&=~(1<<7);
+
+//3-е реле - вход с подтяжкой
+GPIOD->DDR&=~(1<<0);		
+GPIOD->CR1|=(1<<0);		
+GPIOD->CR2&=~(1<<0);
+GPIOD->ODR&=~(1<<0);
+
+}
+
+//-----------------------------------------------
 //оценка текущего состояния модема
 void input_stat_drv(void)
 {
@@ -219,29 +242,6 @@ else
   if(isp_in_cnt[2])isp_in_cnt[2]--;
 	if(isp_in_cnt[2]<0)isp_in_cnt[2]=0;
 	}	
-}
-
-//-----------------------------------------------
-void isp_gpio_init(void)
-{
-//1-е реле - вход с подтяжкой
-GPIOE->DDR&=~(1<<6);		
-GPIOE->CR1|=(1<<6);		
-GPIOE->CR2&=~(1<<6);
-GPIOE->ODR&=~(1<<6);	
-
-//2-е реле - вход с подтяжкой
-GPIOE->DDR&=~(1<<7);		
-GPIOE->CR1|=(1<<7);		
-GPIOE->CR2&=~(1<<7);
-GPIOE->ODR&=~(1<<7);
-
-//3-е реле - вход с подтяжкой
-GPIOD->DDR&=~(1<<0);		
-GPIOD->CR1|=(1<<0);		
-GPIOD->CR2&=~(1<<0);
-GPIOD->ODR&=~(1<<0);
-
 }
 
 //-----------------------------------------------
@@ -692,7 +692,8 @@ else */if(ind==iMn)
 	{
 	//int2indII_slkuf(time_hour,2, 2, 0, 0, 0);
 	int2indII_slkuf(isp_main_cnt%10000,0, 4, 0, 0, 0);
-	int2indI_slkuf(isp_in_cnt[0]/*isp_main_cnt/10000*/,1, 3, 0, 0, 0);
+	///int2indI_slkuf(isp_main_cnt/10000,1, 3, 0, 0, 0);
+	int2indI_slkuf(isp_in_cnt[0],1, 3, 0, 0, 0);
 	//int2indII_slkuf(power_in_drv_off_cnt,2, 2, 0, 0, 0);
 	//int2indII_slkuf(power_in_drv_alarm_cnt,0, 2, 0, 0, 0);
 	//if(bFL2)	ind_outG[2]&=0b11111110;
@@ -2188,7 +2189,7 @@ if(power_in_test()==0)
 	halt();
 	}
 
-//isp_main_cnt=0;
+isp_main_cnt=0;
 
 while (1)
 	{
@@ -2200,7 +2201,6 @@ while (1)
 		but_drv();
 		but_an();
 		//beep_drv();
-		//modem_stat_drv();
 		input_stat_drv();
 		
 		}
@@ -2213,9 +2213,9 @@ while (1)
 		uart3_in_an();
 		out_drv();
 		matemath();
-		modem_drv();
-		sms_fifo_drv();
-		power_in_drv();
+		//modem_drv();
+		//sms_fifo_drv();
+		//power_in_drv();
 		}
 	if(b5Hz)
 		{
@@ -2242,15 +2242,15 @@ while (1)
 			//if(mainCnt==3)outMode=osON;
 			}
 		
-		ds18b20_temper_drv();
+		//ds18b20_temper_drv();
 		ret_ind_hndl();
 		random_gen();
 		//power_necc_hndl();
 		//power_hndl();
-		sheduler_hndl();
-		error_warn_hndl();
-		airSensorLineErrorDrv();
-		waterTemperAlarmHndl();
+		//sheduler_hndl();
+		//error_warn_hndl();
+		//airSensorLineErrorDrv();
+		//waterTemperAlarmHndl();
 //		power_off_hndl();
 		
 		//printf("%s \r", MAIN_NUMBER);
